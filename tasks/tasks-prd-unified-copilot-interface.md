@@ -58,7 +58,7 @@
   - [x] 1.1 Initialize Node.js project with `npm init` and configure basic package.json
   - [x] 1.2 Install core dependencies: electron, react, react-dom, typescript, @fluentui/react-components
   - [x] 1.3 Install development dependencies: webpack, webpack-cli, ts-loader, html-webpack-plugin, css-loader, style-loader
-  - [ ] 1.4 Install testing dependencies: jest, @testing-library/react, @testing-library/jest-dom, @types/jest, ts-jest
+  - [x] 1.4 Install testing dependencies: jest, @testing-library/react, @testing-library/jest-dom, @types/jest, ts-jest
   - [ ] 1.5 Configure TypeScript with tsconfig.json for strict mode and React JSX support
   - [ ] 1.6 Configure Webpack for main and renderer processes with TypeScript compilation
   - [ ] 1.7 Configure Jest testing framework with TypeScript and React Testing Library
