@@ -53,7 +53,7 @@ class SupportPilotMCPServer {
       try {
         switch (name) {
           case "searchAdoWorkItem": {
-            const results = await searchAdoWorkItem(args);
+            const results = await searchAdoWorkItem(args as any);
             return {
               content: [
                 {
@@ -77,7 +77,7 @@ class SupportPilotMCPServer {
           }
 
           case "searchICM": {
-            const results = await searchICM(args);
+            const results = await searchICM(args as any);
             return {
               content: [
                 {
@@ -102,7 +102,7 @@ class SupportPilotMCPServer {
           }
 
           case "searchErrorMessage": {
-            const results = await searchErrorMessage(args);
+            const results = await searchErrorMessage(args as any);
             return {
               content: [
                 {
@@ -126,7 +126,7 @@ class SupportPilotMCPServer {
           }
 
           case "summarizeCustomerEmail": {
-            const result = await summarizeCustomerEmail(args);
+            const result = await summarizeCustomerEmail(args as any);
             return {
               content: [
                 {

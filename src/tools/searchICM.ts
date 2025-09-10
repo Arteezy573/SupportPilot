@@ -110,7 +110,7 @@ export async function searchICM(args: SearchICMArgs): Promise<ICMIncident[]> {
 
     // Filter by similarity threshold and sort by similarity score
     return incidents
-      .filter(incident => incident.similarityScore >= similarityThreshold)
+      .filter(incident => (incident.similarityScore || 0) >= similarityThreshold)
       .sort((a, b) => (b.similarityScore || 0) - (a.similarityScore || 0))
       .slice(0, maxResults);
 
@@ -199,7 +199,7 @@ function getMockICMIncidents(args: SearchICMArgs, maxResults: number, similarity
 
   // Filter by similarity threshold and other criteria
   let filteredIncidents = mockIncidents.filter(incident => 
-    incident.similarityScore >= similarityThreshold
+    (incident.similarityScore || 0) >= similarityThreshold
   );
 
   if (!args.includeResolved) {
