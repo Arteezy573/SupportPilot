@@ -5,11 +5,17 @@
 - `src/sources/renderer/index.html` - Main HTML template with Fluent UI theme provider setup.
 - `src/sources/renderer/index.tsx` - React app entry point with FluentProvider and theme configuration.
 - `src/sources/renderer/App.tsx` - Root React component with main application layout using Fluent UI Stack.
-- `src/sources/renderer/components/ChatContainer.tsx` - Main chat container with Fluent UI styling and layout.
-- `src/sources/renderer/components/MessageList.tsx` - Scrollable message list with virtualization for performance.
-- `src/sources/renderer/components/MessageBubble.tsx` - Individual message component using Fluent UI Persona and MessageBar.
-- `src/sources/renderer/components/ChatInput.tsx` - Message input component with Fluent UI TextField and send button.
-- `src/sources/renderer/components/TypingIndicator.tsx` - Animated typing indicator using Fluent UI Spinner.
+- `src/sources/renderer/components/SupportPilotHeader.tsx` - Header component with tool branding and chat history access.
+- `src/sources/renderer/components/GreetingText.tsx` - Personalized greeting and usage guidance component.
+- `src/sources/renderer/components/SuggestedActions.tsx` - Container for suggested action buttons (Summarize, Create ICM).
+- `src/sources/renderer/components/MessageInputArea.tsx` - Input area with file attachment and message field.
+- `src/sources/renderer/components/AgentMessageCard.tsx` - Main agent message container with ReAct pattern support.
+- `src/sources/renderer/components/AgentThoughtSection.tsx` - Component for displaying agent reasoning.
+- `src/sources/renderer/components/AgentActionSection.tsx` - Component for showing agent actions and status.
+- `src/sources/renderer/components/AgentResultExpandable.tsx` - Expandable result display using Fluent UI Accordion.
+- `src/sources/renderer/components/AgentCitationsList.tsx` - Citations and references list using Fluent UI DetailsList.
+- `src/sources/renderer/components/AttachFileButton.tsx` - File attachment button with drag-and-drop support.
+- `src/sources/renderer/components/MessageInputField.tsx` - Text input field for user queries and commands.
 - `src/sources/renderer/hooks/useChat.ts` - Custom React hook for chat state management and message handling.
 - `src/sources/renderer/styles/theme.ts` - Fluent UI custom theme configuration with dark/light mode support.
 - `src/sources/types/chat.ts` - TypeScript interfaces for Message, ChatState, and related types.
@@ -17,11 +23,15 @@
 - `src/tests/main.test.ts` - Unit tests for main process functionality.
 - `src/tests/preload.test.ts` - Unit tests for preload script.
 - `src/tests/renderer/App.test.tsx` - Unit tests for App component.
-- `src/tests/renderer/components/ChatContainer.test.tsx` - Unit tests for ChatContainer component.
-- `src/tests/renderer/components/MessageList.test.tsx` - Unit tests for MessageList component.
-- `src/tests/renderer/components/MessageBubble.test.tsx` - Unit tests for MessageBubble component.
-- `src/tests/renderer/components/ChatInput.test.tsx` - Unit tests for ChatInput component.
-- `src/tests/renderer/components/TypingIndicator.test.tsx` - Unit tests for TypingIndicator component.
+- `src/tests/renderer/components/SupportPilotHeader.test.tsx` - Unit tests for SupportPilotHeader component.
+- `src/tests/renderer/components/GreetingText.test.tsx` - Unit tests for GreetingText component.
+- `src/tests/renderer/components/SuggestedActions.test.tsx` - Unit tests for SuggestedActions component.
+- `src/tests/renderer/components/MessageInputArea.test.tsx` - Unit tests for MessageInputArea component.
+- `src/tests/renderer/components/AgentMessageCard.test.tsx` - Unit tests for AgentMessageCard component.
+- `src/tests/renderer/components/AgentThoughtSection.test.tsx` - Unit tests for AgentThoughtSection component.
+- `src/tests/renderer/components/AgentActionSection.test.tsx` - Unit tests for AgentActionSection component.
+- `src/tests/renderer/components/AgentResultExpandable.test.tsx` - Unit tests for AgentResultExpandable component.
+- `src/tests/renderer/components/AgentCitationsList.test.tsx` - Unit tests for AgentCitationsList component.
 - `src/tests/renderer/hooks/useChat.test.ts` - Unit tests for useChat hook.
 - `package.json` - Project dependencies including Electron, React, TypeScript, and Fluent UI.
 - `webpack.config.js` - Webpack configuration for TypeScript and React compilation.
@@ -68,19 +78,25 @@
   - [ ] 2.9 Test basic Electron app launch and window functionality
   - [ ] 2.10 Write unit tests for main process and preload script functionality
 
-- [ ] 3.0 Chat Interface Implementation with Fluent UI
+- [ ] 3.0 Support Pilot Interface Implementation with Fluent UI
   - [ ] 3.1 Create React app entry point (src/sources/renderer/index.tsx) with FluentProvider and theme setup
-  - [ ] 3.2 Define TypeScript interfaces for chat types (Message, ChatState, User) in src/sources/types/chat.ts
+  - [ ] 3.2 Define TypeScript interfaces for support pilot types (Message, AgentAction, SupportSession, IssueContext) in src/sources/types/chat.ts
   - [ ] 3.3 Create custom Fluent UI theme configuration with dark/light mode support in src/sources/renderer/styles/theme.ts
   - [ ] 3.4 Implement root App component (src/sources/renderer/App.tsx) with main layout using Fluent UI Stack
-  - [ ] 3.5 Create ChatContainer component with proper Fluent UI styling and responsive layout
-  - [ ] 3.6 Implement MessageList component with virtualization support for performance optimization
-  - [ ] 3.7 Create MessageBubble component using Fluent UI MessageBar with user/AI styling differences
-  - [ ] 3.8 Implement ChatInput component with Fluent UI TextField, send button, and keyboard shortcuts
-  - [ ] 3.9 Create TypingIndicator component with Fluent UI Spinner and animation
-  - [ ] 3.10 Develop useChat custom hook for chat state management, message handling, and local storage persistence
-  - [ ] 3.11 Implement message sending functionality with proper state updates and UI feedback
-  - [ ] 3.12 Add theme toggle functionality for switching between dark and light modes
-  - [ ] 3.13 Implement proper error handling and loading states for chat operations
-  - [ ] 3.14 Write comprehensive unit tests for all React components and custom hooks
-  - [ ] 3.15 Test complete chat interface functionality including message sending, display, and theme switching
+  - [ ] 3.5 Create SupportPilotHeader component with tool branding and ChatHistoryButton integration
+  - [ ] 3.6 Implement GreetingText component with personalized welcome message and usage guidance
+  - [ ] 3.7 Create SuggestedActions component containing SummarizeIssueButton and CreateICMButton with Fluent UI Button styling
+  - [ ] 3.8 Implement MessageInputArea component with AttachFileButton and MessageInputField using Fluent UI TextField
+  - [ ] 3.9 Create AgentMessageCard component with expandable sections for ReAct pattern support
+  - [ ] 3.10 Implement AgentThoughtSection component to display agent reasoning with Fluent UI Text styling
+  - [ ] 3.11 Create AgentActionSection component to show agent actions with appropriate icons and status indicators
+  - [ ] 3.12 Implement AgentResultExpandable component using Fluent UI Accordion for collapsible result display
+  - [ ] 3.13 Create AgentCitationsList component using Fluent UI DetailsList for references and sources
+  - [ ] 3.14 Develop useChat custom hook for support session management, message handling, and local storage persistence
+  - [ ] 3.15 Implement file attachment functionality with drag-and-drop support and file preview capabilities
+  - [ ] 3.16 Add suggested action handlers for issue summarization and ICM creation workflows
+  - [ ] 3.17 Implement chat history persistence and retrieval functionality
+  - [ ] 3.18 Add theme toggle functionality for switching between dark and light modes
+  - [ ] 3.19 Implement proper error handling and loading states for all support operations
+  - [ ] 3.20 Write comprehensive unit tests for all React components and custom hooks
+  - [ ] 3.21 Test complete support pilot interface functionality including file attachment, agent interactions, and workflow triggers
