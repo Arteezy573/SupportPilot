@@ -62,5 +62,17 @@
   "browserslist": [
     "Chrome >= 108"
   ],
-  "electronVersion": "latest"
+  "electronVersion": "latest",
+  "dependencies": {
+    "@fluentui/react-components": "^9.70.0",
+    "electron": "^38.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.9.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.1",
+    "@types/react": "^18.3.24",
+    "@types/react-dom": "^18.3.7"
+  }
 }
