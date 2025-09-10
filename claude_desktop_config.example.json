@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "support-pilot": {
+      "command": "node",
+      "args": ["C:\\project\\SupportPilot\\dist\\index.js"],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  }
+}
