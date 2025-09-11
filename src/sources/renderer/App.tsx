@@ -10,7 +10,7 @@ import { makeStyles, tokens, shorthands } from "@fluentui/react-components";
 import { SupportPilotHeader } from "./components/SupportPilotHeader";
 import { GreetingText } from "./components/GreetingText";
 import { SuggestedActions } from "./components/SuggestedActions";
-// import { MessageInputArea } from "./components/MessageInputArea";
+import { MessageInputArea } from "./components/MessageInputArea";
 // import { AgentMessageCard } from "./components/AgentMessageCard";
 
 // Import hooks (these will be implemented in subsequent tasks)
@@ -69,9 +69,6 @@ const useAppStyles = makeStyles({
     },
     inputArea: {
         flexShrink: 0,
-        ...shorthands.borderTop(tokens.strokeWidthThin, "solid", tokens.colorNeutralStroke2),
-        backgroundColor: tokens.colorNeutralBackground2,
-        ...shorthands.padding(tokens.spacingVerticalM, tokens.spacingHorizontalM),
     },
     // Temporary placeholder styles for development
     placeholder: {
@@ -115,6 +112,10 @@ export const App: React.FC<AppProps> = ({
 
     // TODO: Replace with actual useChat hook in task 3.14
     const [messages] = React.useState<Message[]>(initialMessages);
+    const [currentMessage, setCurrentMessage] = React.useState<string>("");
+    const [attachedFiles, setAttachedFiles] = React.useState<File[]>([]);
+    const [isSending, setIsSending] = React.useState<boolean>(false);
+    
     const hasMessages = messages.length > 0;
     const shouldShowWelcome = showWelcome && !hasMessages;
 
@@ -134,6 +135,30 @@ export const App: React.FC<AppProps> = ({
 
     const handleCreateIcmClick = React.useCallback(() => {
         // TODO: Implement ICM creation in task 3.16
+    }, []);
+
+    // Event handlers for message input
+    const handleMessageChange = React.useCallback((value: string) => {
+        setCurrentMessage(value);
+    }, []);
+
+    const handleSendMessage = React.useCallback(() => {
+        if (currentMessage.trim()) {
+            setIsSending(true);
+            // TODO: Implement message sending in task 3.14
+            // For now, just reset the input
+            setCurrentMessage("");
+            setAttachedFiles([]);
+            setIsSending(false);
+        }
+    }, [currentMessage]);
+
+    const handleFilesAttached = React.useCallback((files: File[]) => {
+        setAttachedFiles(prev => [...prev, ...files]);
+    }, []);
+
+    const handleFileRemove = React.useCallback((fileToRemove: File) => {
+        setAttachedFiles(prev => prev.filter(file => file !== fileToRemove));
     }, []);
 
     return (
@@ -173,7 +198,17 @@ export const App: React.FC<AppProps> = ({
 
             {/* Input Area */}
             <div className={styles.inputArea}>
-                <div className={styles.placeholder}>MessageInputArea Component (Task 3.8)</div>
+                <MessageInputArea
+                    value={currentMessage}
+                    onChange={handleMessageChange}
+                    onSend={handleSendMessage}
+                    onFilesAttached={handleFilesAttached}
+                    onFileRemove={handleFileRemove}
+                    attachedFiles={attachedFiles}
+                    isSending={isSending}
+                    disabled={false}
+                    placeholder="Ask me about your support issue..."
+                />
             </div>
         </div>
     );
