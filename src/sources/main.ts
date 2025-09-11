@@ -21,19 +21,19 @@ const defaultWindowState: WindowState = {
  */
 function loadWindowState(): WindowState {
     try {
-        const fs = require('fs');
-        const windowStatePath = path.join(app.getPath('userData'), 'window-state.json');
-        
+        const fs = require("fs");
+        const windowStatePath = path.join(app.getPath("userData"), "window-state.json");
+
         if (fs.existsSync(windowStatePath)) {
-            const savedState = JSON.parse(fs.readFileSync(windowStatePath, 'utf8'));
-            logger.info('Loaded window state from storage');
+            const savedState = JSON.parse(fs.readFileSync(windowStatePath, "utf8"));
+            logger.info("Loaded window state from storage");
             return { ...defaultWindowState, ...savedState };
         }
     } catch (error) {
-        logger.warn('Failed to load window state:', error);
+        logger.warn("Failed to load window state:", error);
     }
-    
-    logger.info('Using default window state');
+
+    logger.info("Using default window state");
     return { ...defaultWindowState };
 }
 
@@ -42,11 +42,11 @@ function loadWindowState(): WindowState {
  */
 function saveWindowState(): void {
     if (!mainWindow) return;
-    
+
     try {
-        const fs = require('fs');
-        const windowStatePath = path.join(app.getPath('userData'), 'window-state.json');
-        
+        const fs = require("fs");
+        const windowStatePath = path.join(app.getPath("userData"), "window-state.json");
+
         // Get current window bounds and state
         const bounds = mainWindow.getBounds();
         const currentState: WindowState = {
@@ -56,11 +56,11 @@ function saveWindowState(): void {
             height: bounds.height,
             isMaximized: mainWindow.isMaximized(),
         };
-        
+
         fs.writeFileSync(windowStatePath, JSON.stringify(currentState, null, 2));
-        logger.info('Saved window state to storage');
+        logger.info("Saved window state to storage");
     } catch (error) {
-        logger.warn('Failed to save window state:', error);
+        logger.warn("Failed to save window state:", error);
     }
 }
 
@@ -70,7 +70,7 @@ function saveWindowState(): void {
 function createMainWindow(): void {
     // Load saved window state
     const savedState = loadWindowState();
-    
+
     // Create the browser window
     mainWindow = new BrowserWindow({
         // Window dimensions and position from saved state
@@ -78,7 +78,7 @@ function createMainWindow(): void {
         y: savedState.y,
         width: savedState.width,
         height: savedState.height,
-        
+
         // Window constraints
         minWidth: 800,
         minHeight: 600,
@@ -170,7 +170,7 @@ function createMainWindow(): void {
     // Load the application
     if (isDev()) {
         // Development: try to load from webpack dev server with fallback
-        mainWindow.loadURL("http://127.0.0.1:9000").catch((error) => {
+        mainWindow.loadURL("http://127.0.0.1:9000").catch(error => {
             logger.warn("Failed to load from dev server, falling back to built files", error);
             // Fallback to built files if dev server is not available
             if (mainWindow) {
@@ -224,7 +224,7 @@ function createMainWindow(): void {
     });
 
     // Handle window close with potential confirmation
-    mainWindow.on("close", (_event) => {
+    mainWindow.on("close", _event => {
         if (mainWindow) {
             // Save window state before closing
             saveWindowState();
@@ -323,14 +323,12 @@ function createApplicationMenu(): void {
                                 // Find all log files in the selected directory
                                 const fs = await import("fs/promises");
                                 const path = await import("path");
-                                
+
                                 try {
                                     const dirPath = result.filePaths[0];
                                     const files = await fs.readdir(dirPath);
-                                    const logFiles = files
-                                        .filter(file => /\.(log|txt)$/i.test(file))
-                                        .map(file => path.join(dirPath, file));
-                                    
+                                    const logFiles = files.filter(file => /\.(log|txt)$/i.test(file)).map(file => path.join(dirPath, file));
+
                                     if (logFiles.length > 0) {
                                         mainWindow.webContents.send("menu:files-selected", logFiles);
                                     } else {
@@ -397,18 +395,20 @@ function createApplicationMenu(): void {
                     accelerator: "CmdOrCtrl+Shift+Delete",
                     click: () => {
                         if (mainWindow) {
-                            dialog.showMessageBox(mainWindow, {
-                                type: "warning",
-                                title: "Clear Chat History",
-                                message: "Are you sure you want to clear all chat history? This action cannot be undone.",
-                                buttons: ["Cancel", "Clear History"],
-                                defaultId: 0,
-                                cancelId: 0,
-                            }).then((result) => {
-                                if (result.response === 1 && mainWindow) {
-                                    mainWindow.webContents.send("menu:clear-history");
-                                }
-                            });
+                            dialog
+                                .showMessageBox(mainWindow, {
+                                    type: "warning",
+                                    title: "Clear Chat History",
+                                    message: "Are you sure you want to clear all chat history? This action cannot be undone.",
+                                    buttons: ["Cancel", "Clear History"],
+                                    defaultId: 0,
+                                    cancelId: 0,
+                                })
+                                .then(result => {
+                                    if (result.response === 1 && mainWindow) {
+                                        mainWindow.webContents.send("menu:clear-history");
+                                    }
+                                });
                         }
                     },
                 },
@@ -550,7 +550,7 @@ function createApplicationMenu(): void {
 
         // Window menu for macOS (now at index 5 due to Help menu)
         template[5].submenu = [{ role: "close" }, { role: "minimize" }, { role: "zoom" }, { type: "separator" }, { role: "front" }];
-        
+
         // Move About to app menu on macOS and remove from Help menu
         const helpMenu = template[6].submenu as Electron.MenuItemConstructorOptions[];
         helpMenu.shift(); // Remove "About Support Pilot"
@@ -573,12 +573,12 @@ let isAppQuitting = false;
  */
 async function attemptAppQuit(): Promise<void> {
     if (isAppQuitting) return;
-    
+
     try {
         // For future enhancement: Check for unsaved work
-        // const hasUnsavedWork = mainWindow ? 
+        // const hasUnsavedWork = mainWindow ?
         //     await mainWindow.webContents.executeJavaScript('window.hasUnsavedWork || false') : false;
-        
+
         // if (hasUnsavedWork && mainWindow) {
         //     const response = await dialog.showMessageBox(mainWindow, {
         //         type: 'warning',
@@ -588,22 +588,21 @@ async function attemptAppQuit(): Promise<void> {
         //         defaultId: 0,
         //         cancelId: 0,
         //     });
-        //     
+        //
         //     if (response.response !== 1) {
         //         return; // User canceled quit
         //     }
         // }
-        
+
         isAppQuitting = true;
-        
+
         // Save window state before quitting
         if (mainWindow) {
             saveWindowState();
         }
-        
+
         logger.info("Application quit confirmed - cleaning up");
         app.quit();
-        
     } catch (error) {
         logger.error("Error during app quit:", error);
         isAppQuitting = false;
@@ -633,7 +632,7 @@ app.on("window-all-closed", async () => {
         logger.info("All windows closed - keeping app running on macOS");
         return;
     }
-    
+
     // On other platforms, quit the app
     logger.info("All windows closed - attempting to quit app");
     await attemptAppQuit();
@@ -642,7 +641,7 @@ app.on("window-all-closed", async () => {
 // Enhanced macOS app reactivation handler
 app.on("activate", () => {
     logger.info("App activated");
-    
+
     // If no windows exist, create a new one
     if (BrowserWindow.getAllWindows().length === 0) {
         logger.info("No windows found - creating new main window");
@@ -657,16 +656,16 @@ app.on("activate", () => {
 });
 
 // Handle app quit attempts (Cmd+Q, Alt+F4, etc.)
-app.on("before-quit", async (event) => {
+app.on("before-quit", async event => {
     if (isAppQuitting) {
         logger.info("App is already quitting - allowing quit to proceed");
         return;
     }
-    
+
     // Prevent immediate quit and handle confirmation
     event.preventDefault();
     logger.info("App quit requested - checking for unsaved work");
-    
+
     await attemptAppQuit();
 });
 
@@ -706,7 +705,7 @@ app.on("certificate-error", (event, webContents, url, error, certificate, callba
 // Handle app will quit event (final cleanup)
 app.on("will-quit", () => {
     logger.info("Application is about to quit - performing final cleanup");
-    
+
     // Save window state one final time
     if (mainWindow) {
         saveWindowState();
@@ -722,22 +721,22 @@ if (!gotTheLock) {
 } else {
     app.on("second-instance", (event, commandLine, workingDirectory) => {
         logger.info("Second instance detected - focusing existing window", { commandLine, workingDirectory });
-        
+
         // Someone tried to run a second instance, focus our window instead
         if (mainWindow) {
             // Restore window if minimized
             if (mainWindow.isMinimized()) {
                 mainWindow.restore();
             }
-            
+
             // Show window if hidden
             if (!mainWindow.isVisible()) {
                 mainWindow.show();
             }
-            
+
             // Focus the window
             mainWindow.focus();
-            
+
             // Bring to front on macOS
             if (process.platform === "darwin") {
                 app.dock?.show();

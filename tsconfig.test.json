@@ -8,8 +8,7 @@
     "isolatedModules": true,
     "types": [
       "node",
-      "jest",
-      "@testing-library/jest-dom"
+      "jest"
     ],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true

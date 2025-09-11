@@ -227,3 +227,9 @@ Multi-target webpack setup for Electron application development:
 - **`dev`** - Watch mode for all processes (full development)
 - **`dev:server`** - Hot reload server (UI-focused development)
 - **`start:dev`** - Complete development workflow with Electron launch
+
+### Reminder
+After making changes to TypeScript or Webpack configuration files, make sure to:
+1. Run `npm run format` to ensure code style consistency.
+1. Run `npx eslint` for tests and sources code to catch linting issues.
+1. Run `npm run test` to ensure all tests pass.

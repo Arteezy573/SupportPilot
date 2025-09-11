@@ -15,10 +15,10 @@ import { logger } from "../utils/logger";
 export function setupIpcHandlers(mainWindow: BrowserWindow | null): void {
     // Basic app information handlers
     setupAppHandlers();
-    
+
     // Dialog and window control handlers
     setupWindowHandlers(mainWindow);
-    
+
     // Support Pilot specific handlers
     setupSupportPilotHandlers(mainWindow);
 }
@@ -139,12 +139,12 @@ function setupSupportPilotHandlers(mainWindow: BrowserWindow | null): void {
         try {
             // Clear any existing session data (placeholder for future implementation)
             logger.info("Creating new Support Pilot session");
-            
+
             // Send menu event to renderer to clear UI state
             if (mainWindow) {
                 mainWindow.webContents.send("menu:new-session");
             }
-            
+
             return { success: true };
         } catch (error) {
             logger.error("Failed to create new session:", error);
@@ -163,7 +163,7 @@ function setupSupportPilotHandlers(mainWindow: BrowserWindow | null): void {
                     const stats = await fs.stat(filePath);
                     const fileName = path.basename(filePath);
                     const fileExt = path.extname(filePath).toLowerCase();
-                    
+
                     // Determine file type
                     let fileType = "unknown";
                     if ([".txt", ".log"].includes(fileExt)) {
@@ -217,7 +217,7 @@ function setupSupportPilotHandlers(mainWindow: BrowserWindow | null): void {
         try {
             // Placeholder log analysis - this would integrate with AI service in production
             logger.info("Analyzing log content (length:", content.length, "characters)");
-            
+
             // Simple pattern matching for demonstration
             const lines = content.split("\n");
             const errors: string[] = [];
@@ -225,7 +225,8 @@ function setupSupportPilotHandlers(mainWindow: BrowserWindow | null): void {
             const suggestions: string[] = [];
             const timeline: LogAnalysis["timeline"] = [];
 
-            for (const line of lines.slice(0, 100)) { // Limit to first 100 lines for demo
+            for (const line of lines.slice(0, 100)) {
+                // Limit to first 100 lines for demo
                 const trimmedLine = line.trim();
                 if (!trimmedLine) continue;
 
@@ -282,17 +283,17 @@ function setupSupportPilotHandlers(mainWindow: BrowserWindow | null): void {
         try {
             // Placeholder email processing - this would integrate with AI service in production
             logger.info("Processing email content (length:", content.length, "characters)");
-            
+
             // Simple pattern extraction for demonstration
             const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
             const participants = [...new Set(content.match(emailRegex) || [])];
-            
+
             // Extract timestamps (basic patterns)
             const timestampPatterns = [
                 /(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2})/g, // MM/DD/YYYY HH:MM
                 /(\w{3}\s+\w{3}\s+\d{1,2}\s+\d{4}\s+\d{1,2}:\d{2})/g, // Mon Mar 15 2024 14:30
             ];
-            
+
             const timeline: string[] = [];
             for (const pattern of timestampPatterns) {
                 const matches = content.match(pattern);
@@ -306,7 +307,7 @@ function setupSupportPilotHandlers(mainWindow: BrowserWindow | null): void {
             const issueKeywords = ["error", "issue", "problem", "fail", "down", "outage", "unable", "cannot", "broken"];
             const issues: string[] = [];
             const lines = content.split("\n");
-            
+
             for (const line of lines) {
                 const lowerLine = line.toLowerCase();
                 for (const keyword of issueKeywords) {
@@ -322,7 +323,7 @@ function setupSupportPilotHandlers(mainWindow: BrowserWindow | null): void {
             const highImpactKeywords = ["critical", "urgent", "down", "outage", "production", "customer", "revenue"];
             let customerImpact = "Low";
             const lowerContent = content.toLowerCase();
-            
+
             const impactCount = highImpactKeywords.filter(keyword => lowerContent.includes(keyword)).length;
             if (impactCount >= 3) {
                 customerImpact = "High";

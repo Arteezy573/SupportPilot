@@ -19,7 +19,7 @@ npm run build
 
 # Or build each component individually:
 npm run build:preload   # Build preload script (IPC bridge)
-npm run build:main      # Build main Electron process  
+npm run build:main      # Build main Electron process
 npm run build:renderer  # Build React renderer with optimizations
 ```
 
@@ -66,7 +66,7 @@ npm run dist
 
 # Package for specific platforms
 npm run dist:win    # Windows
-npm run dist:mac    # macOS  
+npm run dist:mac    # macOS
 npm run dist:linux  # Linux
 ```
 
@@ -75,7 +75,7 @@ npm run dist:linux  # Linux
 #### Production Mode Features:
 - ✅ **Optimized Builds**: Minified and compressed bundles
 - ✅ **No DevTools**: Developer tools disabled for security
-- ✅ **Built Files**: Loads from `dist/renderer/index.html` 
+- ✅ **Built Files**: Loads from `dist/renderer/index.html`
 - ✅ **Enhanced Security**: Stricter content security policies
 - ✅ **Better Performance**: Production React builds with optimizations
 - ✅ **Smaller Bundle Size**: 139 KiB vs 1.14 MiB (development)
@@ -88,8 +88,8 @@ npm run dist:linux  # Linux
 - 🔧 **Fallback Loading**: Graceful fallback to built files if dev server unavailable
 
 ### 4. Environment Detection Logic
-
 The application automatically detects the environment using:
+
 1. **NODE_ENV Environment Variable** (primary)
 2. **Electron Packaging Status** (fallback)
 
@@ -101,16 +101,14 @@ return !app.isPackaged; // Fallback for unset NODE_ENV
 ```
 
 ### 5. Troubleshooting Production Issues
-
 #### Common Issues and Solutions:
-
 **Issue**: "Failed to load renderer files"
 ```
 Solution: Ensure dist/renderer/ directory exists with index.html
 Command: npm run build:renderer
 ```
 
-**Issue**: "Preload script not found"  
+**Issue**: "Preload script not found"
 ```
 Solution: Ensure preload.js is in dist/ directory
 Command: npm run build:preload
@@ -129,7 +127,6 @@ Location: User data directory (app.getPath('userData'))
 ```
 
 ### 6. Performance Monitoring
-
 #### Bundle Size Analysis
 ```powershell
 # Analyze bundle sizes and dependencies
@@ -138,54 +135,54 @@ npx webpack-bundle-analyzer dist/renderer/vendors.js
 
 #### Production Build Metrics
 - **Main Process**: ~51 KiB (Electron backend)
-- **Preload Script**: ~6 KiB (Security bridge)  
+- **Preload Script**: ~6 KiB (Security bridge)
 - **React App**: ~139 KiB total (2 KiB app + 137 KiB vendors)
 - **HTML Template**: ~9 KiB (Entry point)
 - **Total App Size**: ~205 KiB (excluding Node.js/Electron runtime)
 
 ### 7. Security Considerations
-
 #### Content Security Policy (Production)
 ```html
-<meta http-equiv="Content-Security-Policy" 
-      content="default-src 'self'; 
+<meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self'; 
                script-src 'self'; 
                style-src 'self' 'unsafe-inline'; 
                img-src 'self' data: https:; 
-               font-src 'self' data:;" />
+               font-src 'self' data:;"
+/>
 ```
 
 #### Electron Security Features
 - ✅ **Context Isolation**: Enabled (`contextIsolation: true`)
-- ✅ **Node Integration**: Disabled (`nodeIntegration: false`) 
+- ✅ **Node Integration**: Disabled (`nodeIntegration: false`)
 - ✅ **Web Security**: Enabled (`webSecurity: true`)
 - ✅ **Sandbox**: Disabled for preload access (`sandbox: false`)
 - ✅ **Secure IPC**: All communication via contextBridge
 
 ### 8. Deployment Automation
-
 #### GitHub Actions Workflow (Example)
 ```yaml
 name: Build and Release
 on:
-  push:
-    tags: ['v*']
-    
+    push:
+        tags: ["v*"]
+
 jobs:
-  build:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - run: npm ci
-      - run: npm run build
-      - run: npm run dist
-      - uses: actions/upload-artifact@v3
-        with:
-          name: support-pilot-windows
-          path: dist/*.exe
+    build:
+        runs-on: windows-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: "18"
+            - run: npm ci
+            - run: npm run build
+            - run: npm run dist
+            - uses: actions/upload-artifact@v3
+              with:
+                  name: support-pilot-windows
+                  path: dist/*.exe
 ```
 
 ### 9. Production Monitoring
@@ -200,14 +197,13 @@ jobs:
 ```powershell
 # Verify all production files exist
 Test-Path "dist/main.js"      # Should return True
-Test-Path "dist/preload.js"   # Should return True  
+Test-Path "dist/preload.js"   # Should return True
 Test-Path "dist/renderer/index.html" # Should return True
 ```
 
 ---
 
 ## Quick Production Launch Commands
-
 ```powershell
 # One-command production build and launch
 npm run clean && npm run build && $env:NODE_ENV="production" && npx electron .

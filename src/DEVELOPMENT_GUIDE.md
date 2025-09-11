@@ -3,6 +3,7 @@
 ## Complete Development Setup and Troubleshooting
 
 ### Prerequisites
+
 - Node.js 18+ installed
 - npm or yarn package manager
 - Git (for source code)
@@ -11,6 +12,7 @@
 ## 🚀 Quick Start Development
 
 ### 1. One-Command Full Development Setup
+
 ```powershell
 # Install dependencies, build, and start development
 npm install && npm run build:dev && npm run start:dev
@@ -19,24 +21,27 @@ npm install && npm run build:dev && npm run start:dev
 ### 2. Step-by-Step Development Setup
 
 #### Step 1: Install Dependencies
+
 ```powershell
 npm install
 ```
 
 #### Step 2: Build Development Assets
+
 ```powershell
 # Build all components for development
 npm run build:dev
 
 # Or build individually for debugging:
 npm run build:preload:dev  # IPC bridge (7.11 KiB)
-npm run build:main:dev     # Main process (51.8 KiB)  
+npm run build:main:dev     # Main process (51.8 KiB)
 npm run build:renderer:dev # React app (1.14 MiB with source maps)
 ```
 
 #### Step 3: Launch Development Environment
 
 **🔥 Recommended: Separate Terminal Windows**
+
 ```powershell
 # Terminal 1 (Webpack Dev Server) - Keep this running
 npm run dev:server
@@ -47,18 +52,21 @@ npm run electron:dev       # Start Electron in development mode
 ```
 
 **Option A: Concurrent Development (Alternative)**
+
 ```powershell
 # Single terminal with concurrent processes
 npm run dev:hot
 ```
 
 **Option B: Watch Mode Development**
+
 ```powershell
 # Start file watchers and Electron together
 npm run start:watch
 ```
 
 **Option C: Quick Restart Development**
+
 ```powershell
 # Rebuild and restart (useful after main/preload changes)
 npm run dev:restart
@@ -67,12 +75,14 @@ npm run dev:restart
 ## 🔧 Development Modes
 
 ### Hot Reload Development (Recommended)
+
 - **Dev Server**: Webpack serves React app on http://127.0.0.1:9000
 - **Hot Module Replacement**: React Fast Refresh (~88ms updates)
 - **DevTools**: Automatically opens for debugging
 - **Live Updates**: Changes appear instantly without restart
 
-### Build-Only Development  
+### Build-Only Development
+
 - **Static Files**: Loads from `dist/renderer/index.html`
 - **Manual Refresh**: Requires app restart for changes
 - **Debugging**: Full source maps available
@@ -83,6 +93,7 @@ npm run dev:restart
 ### Issue 1: "ERR_CONNECTION_REFUSED" on localhost:9000
 
 **Symptoms:**
+
 ```
 (node:XXXX) electron: Failed to load URL: http://localhost:9000/ with error: ERR_CONNECTION_REFUSED
 ```
@@ -90,6 +101,7 @@ npm run dev:restart
 **Root Causes & Solutions:**
 
 #### Cause A: IPv6/IPv4 Binding Conflict
+
 ```powershell
 # Check what's listening on port 9000
 netstat -an | findstr ":9000"
@@ -100,6 +112,7 @@ netstat -an | findstr ":9000"
 ```
 
 #### Cause B: Dev Server Not Running
+
 ```powershell
 # Start the dev server first
 npm run dev:server
@@ -109,6 +122,7 @@ npm run dev:server
 ```
 
 #### Cause C: Port Conflict
+
 ```powershell
 # Check if another process is using port 9000
 netstat -ano | findstr ":9000"
@@ -120,6 +134,7 @@ taskkill /F /PID <process_id>
 ```
 
 #### Cause D: Firewall/Network Issues
+
 ```powershell
 # Test direct access to dev server
 curl http://127.0.0.1:9000
@@ -131,6 +146,7 @@ start http://127.0.0.1:9000
 ### Issue 2: "Unable to load preload script"
 
 **Solution:**
+
 ```powershell
 # Ensure preload script exists
 npm run build:preload:dev
@@ -142,6 +158,7 @@ Test-Path "dist/preload.js"  # Should return True
 ### Issue 3: React App Not Hot Reloading
 
 **Check React Fast Refresh:**
+
 ```powershell
 # Verify dev server is running with HMR
 npm run dev:server
@@ -152,6 +169,7 @@ npm run dev:server
 ```
 
 **Test Hot Reload:**
+
 1. Make a change to `src/sources/renderer/index.tsx`
 2. Save the file
 3. Changes should appear in ~88ms without full reload
@@ -159,6 +177,7 @@ npm run dev:server
 ### Issue 4: Blank Screen in Development
 
 **Debugging Steps:**
+
 ```powershell
 # 1. Check console for errors (DevTools auto-opens)
 # 2. Verify React app is building:
@@ -172,6 +191,7 @@ npm run build:renderer:dev
 ### Issue 6: Terminal Management
 
 **Best Practice: Separate Terminal Windows**
+
 ```powershell
 # Terminal 1: Dedicated Dev Server (keep running)
 npm run dev:server
@@ -184,6 +204,7 @@ npm run build:main:dev && npm run electron:dev
 ```
 
 **If Dev Server Terminal Gets Killed:**
+
 ```powershell
 # Simply restart the dev server in a new terminal
 npm run dev:server
@@ -193,6 +214,7 @@ npm run dev:server
 ```
 
 **Managing Multiple Terminals:**
+
 - **VS Code**: Use integrated terminal split panes (`Ctrl+Shift+5`)
 - **Windows Terminal**: Use tabs or panes
 - **PowerShell**: Open multiple windows
@@ -201,6 +223,7 @@ npm run dev:server
 ### Issue 5: Window State Not Persisting
 
 **Check JSON Storage:**
+
 ```powershell
 # Window state is saved to user data directory
 # Location: %APPDATA%/Support Pilot/window-state.json
@@ -241,12 +264,14 @@ dist/ (Build Output)
 ## ⚡ Development Performance
 
 ### Build Times (Development)
+
 - **Main Process**: ~1000ms
-- **Preload Script**: ~600ms  
+- **Preload Script**: ~600ms
 - **React App**: ~1200ms (with source maps)
 - **Hot Reload Update**: ~88ms
 
 ### Memory Usage (Development)
+
 - **Electron Main**: ~50-100 MB
 - **Renderer Process**: ~200-400 MB (includes DevTools)
 - **Webpack Dev Server**: ~100-200 MB
@@ -254,12 +279,14 @@ dist/ (Build Output)
 ## 🔍 Debugging Tools
 
 ### DevTools (Auto-Opens in Development)
+
 - **Console**: View logs and errors
 - **Sources**: Debug TypeScript with source maps
 - **Network**: Monitor requests and loading
 - **Elements**: Inspect React components
 
 ### VS Code Integration
+
 ```json
 // .vscode/launch.json (coming in task 2.10)
 {
@@ -275,6 +302,7 @@ dist/ (Build Output)
 ```
 
 ### Logging System
+
 ```typescript
 // Available log levels in development
 logger.debug("Detailed debugging information");
@@ -286,6 +314,7 @@ logger.error("Error messages");
 ## 🔄 Development Workflow
 
 ### Typical Development Session
+
 ```powershell
 # 🔥 RECOMMENDED WORKFLOW:
 
@@ -303,6 +332,7 @@ npm run electron:dev         # Start Electron app
 ```
 
 **Alternative: Single Terminal Workflow**
+
 ```powershell
 # If you prefer everything in one terminal
 npm run dev:hot             # Starts all watchers concurrently
@@ -311,6 +341,7 @@ npm run electron:dev         # Start Electron
 ```
 
 ### Git Workflow Integration
+
 ```powershell
 # Before committing, verify both modes work:
 npm run build:dev && npm run electron:dev  # Test development
@@ -320,6 +351,7 @@ npm run build && npm run start            # Test production
 ## 🚀 Advanced Development
 
 ### Environment Variables
+
 ```powershell
 # Force development mode
 $env:NODE_ENV="development"
@@ -332,6 +364,7 @@ npm run electron:dev
 ```
 
 ### Performance Profiling
+
 ```powershell
 # Analyze bundle sizes
 npx webpack-bundle-analyzer dist/renderer/vendors.js
@@ -341,6 +374,7 @@ npm run electron:inspect  # Enables Node.js inspector on port 5858
 ```
 
 ### Custom Scripts
+
 ```powershell
 # Quick restart development
 npm run dev:restart
@@ -357,6 +391,7 @@ npm run test:hot-reload
 ## 🎯 Development Checklist
 
 ### Before Starting Development:
+
 - [ ] `npm install` completed successfully
 - [ ] `npm run build:dev` builds without errors
 - [ ] Dev server starts on http://127.0.0.1:9000
@@ -366,6 +401,7 @@ npm run test:hot-reload
 - [ ] Window state persistence working
 
 ### Daily Development:
+
 - [ ] Start dev server first (`npm run dev:server`)
 - [ ] Start Electron second (`npm run electron:dev`)
 - [ ] Verify hot reload on first change
@@ -373,6 +409,7 @@ npm run test:hot-reload
 - [ ] Test fallback loading occasionally
 
 ### Before Committing:
+
 - [ ] Development mode working
 - [ ] Production build successful (`npm run build`)
 - [ ] Production mode working (`npm run start`)

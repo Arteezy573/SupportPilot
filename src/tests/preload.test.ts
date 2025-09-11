@@ -22,7 +22,7 @@ jest.mock("electron", () => ({
 // Global process mock setup
 (global as any).process = {
     contextIsolated: true,
-    env: { NODE_ENV: 'test' }
+    env: { NODE_ENV: "test" },
 };
 
 // Shared variables for all test suites
@@ -34,12 +34,12 @@ describe("Preload Script - Core Functionality", () => {
         // Clear module cache to ensure fresh load
         const preloadPath = require.resolve("../sources/preload");
         delete require.cache[preloadPath];
-        
+
         // Get the existing mock from the jest setup
         globalMockExposeInMainWorld = contextBridge.exposeInMainWorld as jest.Mock;
-        
+
         require("../sources/preload");
-        
+
         // Get the exposed API from the mock calls
         const mockCalls = globalMockExposeInMainWorld.mock.calls;
         if (mockCalls.length > 0) {
@@ -191,10 +191,7 @@ describe("Preload Script - API Testing", () => {
         expect(ipcRenderer.on).toHaveBeenCalledWith("menu:new-session", callback);
 
         globalExposedAPI.ipc.onMenuFilesSelected(callback);
-        expect(ipcRenderer.on).toHaveBeenCalledWith(
-            "menu:files-selected",
-            expect.any(Function)
-        );
+        expect(ipcRenderer.on).toHaveBeenCalledWith("menu:files-selected", expect.any(Function));
 
         // Test removeAllListeners
         globalExposedAPI.ipc.removeAllListeners("menu:new-session");
@@ -214,7 +211,7 @@ describe("Preload Script - Security", () => {
         // Verify only expected APIs are exposed
         const exposedKeys = Object.keys(globalExposedAPI);
         const expectedKeys = ["app", "dialog", "window", "shell", "ipc", "supportPilot"];
-        
+
         expect(exposedKeys.sort()).toEqual(expectedKeys.sort());
     });
 
@@ -230,8 +227,8 @@ describe("Preload Script - Security", () => {
     it("should use contextBridge for secure communication", () => {
         // Test that the API was properly exposed rather than testing mock calls
         expect(globalExposedAPI).toBeDefined();
-        expect(typeof globalExposedAPI.app.getVersion).toBe('function');
-        expect(typeof globalExposedAPI.dialog.openFile).toBe('function');
-        expect(typeof globalExposedAPI.window.minimize).toBe('function');
+        expect(typeof globalExposedAPI.app.getVersion).toBe("function");
+        expect(typeof globalExposedAPI.dialog.openFile).toBe("function");
+        expect(typeof globalExposedAPI.window.minimize).toBe("function");
     });
 });
