@@ -1,10 +1,10 @@
-const js = require("@eslint/js");
-const tseslint = require("@typescript-eslint/eslint-plugin");
-const tsparser = require("@typescript-eslint/parser");
-const react = require("eslint-plugin-react");
-const reactHooks = require("eslint-plugin-react-hooks");
+import js from "@eslint/js";
+import tseslint from "@typescript-eslint/eslint-plugin";
+import tsparser from "@typescript-eslint/parser";
+import react from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
 
-module.exports = [
+export default [
   js.configs.recommended,
   {
     files: ["src/**/*.{ts,tsx}"],
@@ -145,7 +145,6 @@ module.exports = [
         },
       },
       globals: {
-        // Jest globals
         jest: "readonly",
         describe: "readonly",
         it: "readonly",
@@ -155,32 +154,6 @@ module.exports = [
         afterAll: "readonly",
         beforeEach: "readonly",
         afterEach: "readonly",
-        // Browser globals for test files
-        window: "readonly",
-        document: "readonly",
-        console: "readonly",
-        global: "readonly",
-        // Node.js globals
-        process: "readonly",
-        Buffer: "readonly",
-        __dirname: "readonly",
-        __filename: "readonly",
-        module: "readonly",
-        require: "readonly",
-        exports: "readonly",
-        setTimeout: "readonly",
-        clearTimeout: "readonly",
-        setInterval: "readonly",
-        clearInterval: "readonly",
-        // Web APIs for testing
-        File: "readonly",
-        FileReader: "readonly",
-        ReadableStream: "readonly",
-        Response: "readonly",
-        Request: "readonly",
-        Headers: "readonly",
-        URL: "readonly",
-        URLSearchParams: "readonly",
       },
     },
     plugins: {
@@ -190,15 +163,6 @@ module.exports = [
     },
     rules: {
       "no-console": "off",
-      "no-undef": "off", // TypeScript handles this better in test files
-      "no-unused-vars": "off", // Use TypeScript version
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-        },
-      ],
       "@typescript-eslint/no-explicit-any": "off", // More lenient in tests
       "@typescript-eslint/no-empty-function": "off", // Allow empty functions in tests
     },
