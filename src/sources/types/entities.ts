@@ -53,3 +53,12 @@ export interface AnalyzeLogResponse extends APIResponse {
 export interface ProcessEmailResponse extends APIResponse {
     summary?: EmailSummary;
 }
+
+// Interface for window state management
+export interface WindowState {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    isMaximized: boolean;
+}

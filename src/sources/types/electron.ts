@@ -23,6 +23,20 @@ export interface ElectronAPI {
         minimize: () => Promise<void>;
         maximize: () => Promise<void>;
         close: () => Promise<void>;
+        isMaximized: () => Promise<boolean>;
+        isMinimized: () => Promise<boolean>;
+        restore: () => Promise<void>;
+        getState: () => Promise<{
+            isMaximized: boolean;
+            isMinimized: boolean;
+            isVisible: boolean;
+            bounds: {
+                x: number;
+                y: number;
+                width: number;
+                height: number;
+            };
+        }>;
     };
 
     // External shell operations

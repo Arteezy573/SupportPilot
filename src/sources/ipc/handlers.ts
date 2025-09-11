@@ -82,6 +82,47 @@ function setupWindowHandlers(mainWindow: BrowserWindow | null): void {
         }
     });
 
+    ipcMain.handle("window:is-maximized", () => {
+        return mainWindow ? mainWindow.isMaximized() : false;
+    });
+
+    ipcMain.handle("window:is-minimized", () => {
+        return mainWindow ? mainWindow.isMinimized() : false;
+    });
+
+    ipcMain.handle("window:restore", () => {
+        if (mainWindow) {
+            if (mainWindow.isMinimized()) {
+                mainWindow.restore();
+            } else if (mainWindow.isMaximized()) {
+                mainWindow.unmaximize();
+            }
+        }
+    });
+
+    ipcMain.handle("window:get-state", () => {
+        if (mainWindow) {
+            const bounds = mainWindow.getBounds();
+            return {
+                isMaximized: mainWindow.isMaximized(),
+                isMinimized: mainWindow.isMinimized(),
+                isVisible: mainWindow.isVisible(),
+                bounds: {
+                    x: bounds.x,
+                    y: bounds.y,
+                    width: bounds.width,
+                    height: bounds.height,
+                },
+            };
+        }
+        return {
+            isMaximized: false,
+            isMinimized: false,
+            isVisible: false,
+            bounds: { x: 0, y: 0, width: 1200, height: 800 },
+        };
+    });
+
     // Handle external link opening
     ipcMain.handle("shell:open-external", async (_, url: string) => {
         await shell.openExternal(url);

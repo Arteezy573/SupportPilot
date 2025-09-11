@@ -2,19 +2,84 @@ import { app, BrowserWindow, Menu, dialog, shell } from "electron";
 import * as path from "path";
 import { isDev, logger } from "./utils";
 import { setupIpcHandlers } from "./ipc/handlers";
+import { WindowState } from "./types/entities";
 
 // Keep a global reference of the window object
 let mainWindow: BrowserWindow | null = null;
+
+// Default window state
+const defaultWindowState: WindowState = {
+    x: 0,
+    y: 0,
+    width: 1200,
+    height: 800,
+    isMaximized: false,
+};
+
+/**
+ * Loads window state from local storage equivalent (app.getPath('userData'))
+ */
+function loadWindowState(): WindowState {
+    try {
+        const fs = require('fs');
+        const windowStatePath = path.join(app.getPath('userData'), 'window-state.json');
+        
+        if (fs.existsSync(windowStatePath)) {
+            const savedState = JSON.parse(fs.readFileSync(windowStatePath, 'utf8'));
+            logger.info('Loaded window state from storage');
+            return { ...defaultWindowState, ...savedState };
+        }
+    } catch (error) {
+        logger.warn('Failed to load window state:', error);
+    }
+    
+    logger.info('Using default window state');
+    return { ...defaultWindowState };
+}
+
+/**
+ * Saves window state to local storage equivalent
+ */
+function saveWindowState(): void {
+    if (!mainWindow) return;
+    
+    try {
+        const fs = require('fs');
+        const windowStatePath = path.join(app.getPath('userData'), 'window-state.json');
+        
+        // Get current window bounds and state
+        const bounds = mainWindow.getBounds();
+        const currentState: WindowState = {
+            x: bounds.x,
+            y: bounds.y,
+            width: bounds.width,
+            height: bounds.height,
+            isMaximized: mainWindow.isMaximized(),
+        };
+        
+        fs.writeFileSync(windowStatePath, JSON.stringify(currentState, null, 2));
+        logger.info('Saved window state to storage');
+    } catch (error) {
+        logger.warn('Failed to save window state:', error);
+    }
+}
 
 /**
  * Creates the main application window with proper configuration
  */
 function createMainWindow(): void {
+    // Load saved window state
+    const savedState = loadWindowState();
+    
     // Create the browser window
     mainWindow = new BrowserWindow({
-        // Window dimensions and constraints
-        width: 1200,
-        height: 800,
+        // Window dimensions and position from saved state
+        x: savedState.x,
+        y: savedState.y,
+        width: savedState.width,
+        height: savedState.height,
+        
+        // Window constraints
         minWidth: 800,
         minHeight: 600,
         maxWidth: 2560, // Reasonable maximum for ultrawide monitors
@@ -22,7 +87,7 @@ function createMainWindow(): void {
 
         // Window behavior and appearance
         show: false, // Don't show until ready-to-show to prevent visual flash
-        center: true, // Center window on screen
+        center: savedState.x === 0 && savedState.y === 0, // Center only if no saved position
         resizable: true, // Allow window resizing
         minimizable: true, // Allow window minimization
         maximizable: true, // Allow window maximization
@@ -119,10 +184,61 @@ function createMainWindow(): void {
         if (mainWindow) {
             mainWindow.show();
 
+            // Restore maximized state if it was saved
+            if (savedState.isMaximized) {
+                mainWindow.maximize();
+            }
+
             // Focus on window when shown
             if (isDev()) {
                 mainWindow.focus();
             }
+        }
+    });
+
+    // Window state change event handlers
+    mainWindow.on("resize", () => {
+        if (mainWindow && !mainWindow.isMaximized()) {
+            saveWindowState();
+        }
+    });
+
+    mainWindow.on("move", () => {
+        if (mainWindow && !mainWindow.isMaximized()) {
+            saveWindowState();
+        }
+    });
+
+    mainWindow.on("maximize", () => {
+        saveWindowState();
+    });
+
+    mainWindow.on("unmaximize", () => {
+        saveWindowState();
+    });
+
+    // Handle window close with potential confirmation
+    mainWindow.on("close", (_event) => {
+        if (mainWindow) {
+            // Save window state before closing
+            saveWindowState();
+
+            // For future enhancement: Add unsaved work check
+            // const hasUnsavedWork = await mainWindow.webContents.executeJavaScript('window.hasUnsavedWork || false');
+            // if (hasUnsavedWork) {
+            //     event.preventDefault();
+            //     const response = await dialog.showMessageBox(mainWindow, {
+            //         type: 'warning',
+            //         title: 'Unsaved Changes',
+            //         message: 'You have unsaved work. Are you sure you want to close?',
+            //         buttons: ['Cancel', 'Close Without Saving'],
+            //         defaultId: 0,
+            //         cancelId: 0,
+            //     });
+            //     if (response.response === 1) {
+            //         mainWindow.destroy();
+            //     }
+            // }
         }
     });
 
@@ -139,7 +255,7 @@ function createMainWindow(): void {
 
     // Handle unresponsive window
     mainWindow.on("unresponsive", () => {
-        console.warn("Main window became unresponsive");
+        logger.warn("Main window became unresponsive");
     });
 
     // Handle window restored from unresponsive state
@@ -443,6 +559,51 @@ function createApplicationMenu(): void {
 
 // App event handlers
 
+// Flag to track if app is quitting to prevent multiple confirmations
+let isAppQuitting = false;
+
+/**
+ * Attempts to quit the application with proper cleanup
+ */
+async function attemptAppQuit(): Promise<void> {
+    if (isAppQuitting) return;
+    
+    try {
+        // For future enhancement: Check for unsaved work
+        // const hasUnsavedWork = mainWindow ? 
+        //     await mainWindow.webContents.executeJavaScript('window.hasUnsavedWork || false') : false;
+        
+        // if (hasUnsavedWork && mainWindow) {
+        //     const response = await dialog.showMessageBox(mainWindow, {
+        //         type: 'warning',
+        //         title: 'Unsaved Changes',
+        //         message: 'You have unsaved work. Are you sure you want to quit?',
+        //         buttons: ['Cancel', 'Quit Without Saving'],
+        //         defaultId: 0,
+        //         cancelId: 0,
+        //     });
+        //     
+        //     if (response.response !== 1) {
+        //         return; // User canceled quit
+        //     }
+        // }
+        
+        isAppQuitting = true;
+        
+        // Save window state before quitting
+        if (mainWindow) {
+            saveWindowState();
+        }
+        
+        logger.info("Application quit confirmed - cleaning up");
+        app.quit();
+        
+    } catch (error) {
+        logger.error("Error during app quit:", error);
+        isAppQuitting = false;
+    }
+}
+
 // This method will be called when Electron has finished initialization
 app.whenReady().then(() => {
     logger.info("Electron app is ready");
@@ -459,24 +620,54 @@ app.whenReady().then(() => {
     });
 });
 
-// Quit when all windows are closed, except on macOS
-app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
-        app.quit();
+// Enhanced window-all-closed handler with proper quit logic
+app.on("window-all-closed", async () => {
+    // On macOS, keep app running when all windows are closed
+    if (process.platform === "darwin") {
+        logger.info("All windows closed - keeping app running on macOS");
+        return;
+    }
+    
+    // On other platforms, quit the app
+    logger.info("All windows closed - attempting to quit app");
+    await attemptAppQuit();
+});
+
+// Enhanced macOS app reactivation handler
+app.on("activate", () => {
+    logger.info("App activated");
+    
+    // If no windows exist, create a new one
+    if (BrowserWindow.getAllWindows().length === 0) {
+        logger.info("No windows found - creating new main window");
+        createMainWindow();
+    } else if (mainWindow) {
+        // If main window exists but is minimized, restore it
+        if (mainWindow.isMinimized()) {
+            mainWindow.restore();
+        }
+        mainWindow.focus();
     }
 });
 
-// macOS: Handle app reactivation
-app.on("activate", () => {
-    if (mainWindow === null) {
-        createMainWindow();
+// Handle app quit attempts (Cmd+Q, Alt+F4, etc.)
+app.on("before-quit", async (event) => {
+    if (isAppQuitting) {
+        logger.info("App is already quitting - allowing quit to proceed");
+        return;
     }
+    
+    // Prevent immediate quit and handle confirmation
+    event.preventDefault();
+    logger.info("App quit requested - checking for unsaved work");
+    
+    await attemptAppQuit();
 });
 
 // Security: Prevent new window creation from renderer
 app.on("web-contents-created", (_, contents) => {
     contents.setWindowOpenHandler(({ url }) => {
-        console.warn("Blocked new window creation:", url);
+        logger.warn("Blocked new window creation:", url);
         shell.openExternal(url);
         return { action: "deny" };
     });
@@ -487,7 +678,7 @@ app.on("web-contents-created", (_, contents) => {
         // Allow navigation within the app
         if (parsedUrl.origin !== "http://localhost:9000" && parsedUrl.origin !== "file://") {
             event.preventDefault();
-            console.warn("Blocked navigation to:", url);
+            logger.warn("Blocked navigation to:", url);
         }
     });
 });
@@ -498,30 +689,57 @@ app.on("certificate-error", (event, webContents, url, error, certificate, callba
         // In development, ignore certificate errors for localhost
         event.preventDefault();
         callback(true);
+        logger.warn("Certificate error ignored in development:", error, url);
     } else {
         // In production, use default behavior
         callback(false);
+        logger.error("Certificate error in production:", error, url);
     }
 });
 
-// Handle app before quit event
-app.on("before-quit", () => {
-    logger.info("Application is about to quit");
+// Handle app will quit event (final cleanup)
+app.on("will-quit", () => {
+    logger.info("Application is about to quit - performing final cleanup");
+    
+    // Save window state one final time
+    if (mainWindow) {
+        saveWindowState();
+    }
 });
 
 // Ensure single instance of the app
 const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
+    logger.info("Another instance is already running - quitting this instance");
     app.quit();
 } else {
-    app.on("second-instance", () => {
+    app.on("second-instance", (event, commandLine, workingDirectory) => {
+        logger.info("Second instance detected - focusing existing window", { commandLine, workingDirectory });
+        
         // Someone tried to run a second instance, focus our window instead
         if (mainWindow) {
+            // Restore window if minimized
             if (mainWindow.isMinimized()) {
                 mainWindow.restore();
             }
+            
+            // Show window if hidden
+            if (!mainWindow.isVisible()) {
+                mainWindow.show();
+            }
+            
+            // Focus the window
             mainWindow.focus();
+            
+            // Bring to front on macOS
+            if (process.platform === "darwin") {
+                app.dock?.show();
+            }
+        } else {
+            // If no main window exists, create one
+            logger.info("No main window found during second instance - creating new window");
+            createMainWindow();
         }
     });
 }

@@ -24,6 +24,10 @@ const electronAPI: ElectronAPI = {
         minimize: () => ipcRenderer.invoke("window:minimize"),
         maximize: () => ipcRenderer.invoke("window:maximize"),
         close: () => ipcRenderer.invoke("window:close"),
+        isMaximized: () => ipcRenderer.invoke("window:is-maximized"),
+        isMinimized: () => ipcRenderer.invoke("window:is-minimized"),
+        restore: () => ipcRenderer.invoke("window:restore"),
+        getState: () => ipcRenderer.invoke("window:get-state"),
     },
 
     // Shell APIs for external operations
