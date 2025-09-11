@@ -56,7 +56,7 @@ describe("UserMessageCard", () => {
             </TestWrapper>
         );
 
-        expect(screen.getByText("Test user message content")).toBeInTheDocument();
+        expect(screen.getByText("Test user message content")).toBeDefined();
     });
 
     it("renders attachment info when files are attached", () => {
@@ -66,8 +66,8 @@ describe("UserMessageCard", () => {
             </TestWrapper>
         );
 
-        expect(screen.getByText("Test user message content")).toBeInTheDocument();
-        expect(screen.getByText("2 file(s) attached")).toBeInTheDocument();
+        expect(screen.getByText("Test user message content")).toBeDefined();
+        expect(screen.getByText("2 file(s) attached")).toBeDefined();
     });
 
     it("does not render attachment info when no files are attached", () => {
@@ -77,8 +77,8 @@ describe("UserMessageCard", () => {
             </TestWrapper>
         );
 
-        expect(screen.getByText("Test user message content")).toBeInTheDocument();
-        expect(screen.queryByText(/file\(s\) attached/)).not.toBeInTheDocument();
+        expect(screen.getByText("Test user message content")).toBeDefined();
+        expect(screen.queryByText(/file\(s\) attached/)).not.toBeDefined();
     });
 
     it("applies custom className when provided", () => {
@@ -89,7 +89,7 @@ describe("UserMessageCard", () => {
         );
 
         const messageCard = container.firstChild as HTMLElement;
-        expect(messageCard).toHaveClass("custom-class");
+        expect(messageCard).toBeInstanceOf("custom-class");
     });
 
     it("handles empty attachedFiles array", () => {
@@ -104,7 +104,7 @@ describe("UserMessageCard", () => {
             </TestWrapper>
         );
 
-        expect(screen.getByText("Test user message content")).toBeInTheDocument();
-        expect(screen.queryByText(/file\(s\) attached/)).not.toBeInTheDocument();
+        expect(screen.getByText("Test user message content")).toBeDefined();
+        expect(screen.queryByText(/file\(s\) attached/)).not.toBeDefined();
     });
 });

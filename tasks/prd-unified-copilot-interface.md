@@ -112,6 +112,7 @@ The primary goal is to reduce the time spent on information gathering and improv
 - Information synthesis and export
 
 **Phase 2**:
+- Chat completion api integration
 - ADO work item integration
 - Kusto telemetry queries
 - Enhanced AI suggestions
