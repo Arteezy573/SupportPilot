@@ -4,14 +4,10 @@
  */
 
 import React from "react";
-import {
-    makeStyles,
-    tokens,
-    shorthands,
-} from "@fluentui/react-components";
+import { makeStyles, tokens, shorthands } from "@fluentui/react-components";
 
 // Import components (these will be implemented in subsequent tasks)
-// import { SupportPilotHeader } from "./components/SupportPilotHeader";
+import { SupportPilotHeader } from "./components/SupportPilotHeader";
 // import { GreetingText } from "./components/GreetingText";
 // import { SuggestedActions } from "./components/SuggestedActions";
 // import { MessageInputArea } from "./components/MessageInputArea";
@@ -122,13 +118,23 @@ export const App: React.FC<AppProps> = ({
     const hasMessages = messages.length > 0;
     const shouldShowWelcome = showWelcome && !hasMessages;
 
+    // Event handlers for header actions
+    const handleHistoryClick = React.useCallback(() => {
+        // TODO: Implement chat history functionality in task 3.17
+    }, []);
+
+    const handleSettingsClick = React.useCallback(() => {
+        // TODO: Implement settings functionality in task 3.18
+    }, []);
+
     return (
-        <div className={styles.root}>
+                <div className={styles.root}>
             {/* Header Section */}
             <div className={styles.header}>
-                <div className={styles.placeholder}>
-                    SupportPilotHeader Component (Task 3.5)
-                </div>
+                <SupportPilotHeader
+                    onHistoryClick={handleHistoryClick}
+                    onSettingsClick={handleSettingsClick}
+                />
             </div>
 
             {/* Main Content Area */}
@@ -137,12 +143,8 @@ export const App: React.FC<AppProps> = ({
                     {shouldShowWelcome ? (
                         /* Welcome Section */
                         <div className={styles.welcomeSection}>
-                            <div className={styles.placeholder}>
-                                GreetingText Component (Task 3.6)
-                            </div>
-                            <div className={styles.placeholder}>
-                                SuggestedActions Component (Task 3.7)
-                            </div>
+                            <div className={styles.placeholder}>GreetingText Component (Task 3.6)</div>
+                            <div className={styles.placeholder}>SuggestedActions Component (Task 3.7)</div>
                         </div>
                     ) : (
                         /* Messages Container */
@@ -159,9 +161,7 @@ export const App: React.FC<AppProps> = ({
 
             {/* Input Area */}
             <div className={styles.inputArea}>
-                <div className={styles.placeholder}>
-                    MessageInputArea Component (Task 3.8)
-                </div>
+                <div className={styles.placeholder}>MessageInputArea Component (Task 3.8)</div>
             </div>
         </div>
     );

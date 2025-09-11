@@ -6,11 +6,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { FluentProvider } from "@fluentui/react-components";
-import { 
-    getTheme, 
-    useThemeDetection, 
-    ThemeMode 
-} from "./styles/theme";
+import { getTheme, useThemeDetection, ThemeMode } from "./styles/theme";
 import { App } from "./App";
 
 // Main app component with FluentProvider and theme management

@@ -3,15 +3,7 @@
  * Provides light/dark mode support with Microsoft design system tokens
  */
 
-import {
-    Theme,
-    teamsDarkTheme,
-    teamsLightTheme,
-    createDarkTheme,
-    createLightTheme,
-    BrandVariants,
-    tokens,
-} from "@fluentui/react-components";
+import { Theme, teamsDarkTheme, teamsLightTheme, createDarkTheme, createLightTheme, BrandVariants, tokens } from "@fluentui/react-components";
 
 // =============================================================================
 // BRAND COLOR DEFINITIONS
@@ -55,7 +47,7 @@ export const supportPilotTokens = {
         sectionGap: "24px",
         componentGap: "8px",
     },
-    
+
     // Typography tokens for chat interface
     typography: {
         chatHeaderSize: tokens.fontSizeHero700,
@@ -63,32 +55,32 @@ export const supportPilotTokens = {
         timestampSize: tokens.fontSizeBase200,
         captionSize: tokens.fontSizeBase100,
     },
-    
+
     // Chat-specific color tokens
     colors: {
         // Message bubble colors
         userMessageBackground: "#e3f2fd",
         agentMessageBackground: "#f8f9fa",
         systemMessageBackground: "#fff3cd",
-        
+
         // Dark mode message colors
         userMessageBackgroundDark: "#1a365d",
         agentMessageBackgroundDark: "#2d3748",
         systemMessageBackgroundDark: "#744210",
-        
+
         // Status indicator colors
         processingColor: "#ff8c00",
         successColor: "#107c10",
         errorColor: "#d13438",
         warningColor: "#ff8c00",
-        
+
         // Border and accent colors
         attachmentBorder: "#d1d1d1",
         focusBorder: "#0078d4",
         hoverBackground: "#f3f2f1",
         hoverBackgroundDark: "#484644",
     },
-    
+
     // Animation tokens
     animations: {
         messageAppear: "0.2s ease-out",
@@ -96,7 +88,7 @@ export const supportPilotTokens = {
         accordionExpand: "0.3s ease-in-out",
         typingIndicator: "1.5s ease-in-out infinite",
     },
-    
+
     // Shadow tokens for depth
     shadows: {
         message: "0 1px 2px rgba(0,0,0,0.1)",
@@ -119,23 +111,23 @@ export const supportPilotLightTheme: Theme = createLightTheme(supportPilotBrandC
  */
 export const supportPilotLightThemeEnhanced: Theme = {
     ...supportPilotLightTheme,
-    
+
     // Custom color overrides for better chat experience
     colorNeutralBackground1: "#ffffff",
     colorNeutralBackground2: "#fafafa",
     colorNeutralBackground3: "#f5f5f5",
     colorNeutralBackground4: "#f0f0f0",
-    
+
     // Enhanced text colors for better readability
     colorNeutralForeground1: "#323130",
     colorNeutralForeground2: "#605e5c",
     colorNeutralForeground3: "#8a8886",
-    
+
     // Chat-specific background colors
     colorBrandBackground: supportPilotBrandColors[90],
     colorBrandBackgroundHover: supportPilotBrandColors[100],
     colorBrandBackgroundPressed: supportPilotBrandColors[80],
-    
+
     // Border and stroke customizations
     colorNeutralStroke1: "#d1d1d1",
     colorNeutralStroke2: "#e1e1e1",
@@ -156,23 +148,23 @@ export const supportPilotDarkTheme: Theme = createDarkTheme(supportPilotBrandCol
  */
 export const supportPilotDarkThemeEnhanced: Theme = {
     ...supportPilotDarkTheme,
-    
+
     // Custom dark background colors
     colorNeutralBackground1: "#1f1f1f",
     colorNeutralBackground2: "#2d2d2d",
     colorNeutralBackground3: "#404040",
     colorNeutralBackground4: "#4a4a4a",
-    
+
     // Enhanced dark text colors
     colorNeutralForeground1: "#ffffff",
     colorNeutralForeground2: "#e1e1e1",
     colorNeutralForeground3: "#c7c7c7",
-    
+
     // Dark mode brand colors
     colorBrandBackground: supportPilotBrandColors[100],
     colorBrandBackgroundHover: supportPilotBrandColors[110],
     colorBrandBackgroundPressed: supportPilotBrandColors[90],
-    
+
     // Dark mode borders and strokes
     colorNeutralStroke1: "#484644",
     colorNeutralStroke2: "#3b3a39",
@@ -250,15 +242,15 @@ export function getTheme(mode: ThemeMode, systemPrefersDark = false): ThemeConfi
         default:
             return systemPrefersDark
                 ? {
-                    mode: "auto",
-                    theme: supportPilotDarkThemeEnhanced,
-                    isDark: true,
-                }
+                      mode: "auto",
+                      theme: supportPilotDarkThemeEnhanced,
+                      isDark: true,
+                  }
                 : {
-                    mode: "auto",
-                    theme: supportPilotLightThemeEnhanced,
-                    isDark: false,
-                };
+                      mode: "auto",
+                      theme: supportPilotLightThemeEnhanced,
+                      isDark: false,
+                  };
     }
 }
 
@@ -277,7 +269,7 @@ export function useThemeDetection(): boolean {
         if (typeof window !== "undefined" && window.matchMedia) {
             const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
             const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
-            
+
             mediaQuery.addEventListener("change", handler);
             return () => mediaQuery.removeEventListener("change", handler);
         }
@@ -295,13 +287,13 @@ export function useThemeDetection(): boolean {
  */
 export const supportPilotHighContrastTheme: Theme = {
     ...supportPilotLightThemeEnhanced,
-    
+
     // High contrast colors for accessibility
     colorNeutralForeground1: "#000000",
     colorNeutralBackground1: "#ffffff",
     colorBrandBackground: "#0000ff",
     colorBrandForeground1: "#0000ff",
-    
+
     // Enhanced border contrast
     colorNeutralStroke1: "#000000",
     colorStrokeFocus2: "#ff0000",
@@ -325,7 +317,7 @@ export function getAccessibilityTheme(
     prefersReducedMotion = false
 ): AccessibilityThemeConfig {
     const baseTheme = getTheme(mode, systemPrefersDark);
-    
+
     return {
         ...baseTheme,
         theme: prefersHighContrast ? supportPilotHighContrastTheme : baseTheme.theme,
