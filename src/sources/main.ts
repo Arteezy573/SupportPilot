@@ -1,6 +1,7 @@
-import { app, BrowserWindow, Menu, ipcMain, dialog, shell } from "electron";
+import { app, BrowserWindow, Menu, dialog, shell } from "electron";
 import * as path from "path";
-import { isDev } from "@/utils/environment";
+import { isDev, logger } from "./utils";
+import { setupIpcHandlers } from "./ipc/handlers";
 
 // Keep a global reference of the window object
 let mainWindow: BrowserWindow | null = null;
@@ -143,7 +144,7 @@ function createMainWindow(): void {
 
     // Handle window restored from unresponsive state
     mainWindow.on("responsive", () => {
-        console.log("Main window became responsive again");
+        logger.info("Main window became responsive again");
     });
 }
 
@@ -244,74 +245,15 @@ function createApplicationMenu(): void {
     Menu.setApplicationMenu(menu);
 }
 
-/**
- * Sets up IPC handlers for communication with renderer process
- */
-function setupIpcHandlers(): void {
-    // Handle app version request
-    ipcMain.handle("app:get-version", () => {
-        return app.getVersion();
-    });
-
-    // Handle app name request
-    ipcMain.handle("app:get-name", () => {
-        return app.getName();
-    });
-
-    // Handle file dialog requests
-    ipcMain.handle("dialog:open-file", async () => {
-        if (mainWindow) {
-            const result = await dialog.showOpenDialog(mainWindow, {
-                properties: ["openFile", "multiSelections"],
-                filters: [
-                    { name: "Log Files", extensions: ["log", "txt"] },
-                    { name: "Email Files", extensions: ["msg", "eml"] },
-                    { name: "All Files", extensions: ["*"] },
-                ],
-            });
-            return result;
-        }
-        return { canceled: true, filePaths: [] };
-    });
-
-    // Handle window control requests
-    ipcMain.handle("window:minimize", () => {
-        if (mainWindow) {
-            mainWindow.minimize();
-        }
-    });
-
-    ipcMain.handle("window:maximize", () => {
-        if (mainWindow) {
-            if (mainWindow.isMaximized()) {
-                mainWindow.unmaximize();
-            } else {
-                mainWindow.maximize();
-            }
-        }
-    });
-
-    ipcMain.handle("window:close", () => {
-        if (mainWindow) {
-            mainWindow.close();
-        }
-    });
-
-    // Handle external link opening
-    ipcMain.handle("shell:open-external", async (_, url: string) => {
-        await shell.openExternal(url);
-    });
-}
-
 // App event handlers
 
 // This method will be called when Electron has finished initialization
 app.whenReady().then(() => {
-    console.log("Electron app is ready");
+    logger.info("Electron app is ready");
 
     createMainWindow();
     createApplicationMenu();
-    setupIpcHandlers();
+    setupIpcHandlers(mainWindow);
 
     // macOS: Re-create window when dock icon is clicked
     app.on("activate", () => {
@@ -368,7 +310,7 @@ app.on("certificate-error", (event, webContents, url, error, certificate, callba
 
 // Handle app before quit event
 app.on("before-quit", () => {
-    console.log("Application is about to quit");
+    logger.info("Application is about to quit");
 });
 
 // Ensure single instance of the app
@@ -389,4 +331,4 @@ if (!gotTheLock) {
 }
 
 // Export for testing
-export { createMainWindow, createApplicationMenu, setupIpcHandlers };
+export { createMainWindow, createApplicationMenu };

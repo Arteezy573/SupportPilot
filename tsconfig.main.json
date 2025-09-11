@@ -13,7 +13,8 @@
     "src/sources/main.ts",
     "src/sources/preload.ts",
     "src/sources/utils/**/*",
-    "src/sources/types/**/*"
+    "src/sources/types/**/*",
+    "src/sources/ipc/**/*"
   ],
   "exclude": [
     "node_modules",
