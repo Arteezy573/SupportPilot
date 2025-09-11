@@ -80,7 +80,7 @@ Object.defineProperty(window, "matchMedia", {
     onabort: any = null;
     onloadend: any = null;
 
-    readAsText(file: any) {
+    readAsText(_file: any) {
         setTimeout(() => {
             this.readyState = 2;
             this.result = "mock file content";
@@ -89,7 +89,7 @@ Object.defineProperty(window, "matchMedia", {
         }, 0);
     }
 
-    readAsDataURL(file: any) {
+    readAsDataURL(_file: any) {
         setTimeout(() => {
             this.readyState = 2;
             this.result = "data:text/plain;base64,bW9jayBmaWxlIGNvbnRlbnQ=";
