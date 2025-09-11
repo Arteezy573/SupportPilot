@@ -1,7 +1,7 @@
 const path = require("path");
+const webpack = require("webpack");
 const { merge } = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const common = require("./webpack.common.js");
 
 module.exports = merge(common, {
@@ -15,7 +15,9 @@ module.exports = merge(common, {
         path: path.resolve(__dirname, "dist"),
         filename: "[name].js",
         publicPath: "/",
-        clean: true,
+        clean: {
+            keep: /main\.(js|js\.map)$|preload\.(js|js\.map)$/, // Keep main and preload files
+        },
     },
     module: {
         rules: [
@@ -55,9 +57,10 @@ module.exports = merge(common, {
             inject: "body",
             minify: false, // Disable minification in development
         }),
-        new ReactRefreshWebpackPlugin({
-            overlay: false, // Disable overlay for Electron
-            exclude: [/node_modules/, /\.test\./],
+        // Define global variables for the renderer process
+        new webpack.DefinePlugin({
+            "process.env.NODE_ENV": JSON.stringify("development"),
+            global: "globalThis", // Use globalThis instead of window for better compatibility
         }),
     ],
     devServer: {
@@ -68,23 +71,16 @@ module.exports = merge(common, {
         compress: true,
         port: 9000,
         host: "127.0.0.1", // Use IPv4 instead of localhost to avoid IPv6 binding
-        hot: true, // Enable Hot Module Replacement
-        liveReload: true, // Enable live reload as fallback
+        hot: false, // Disable Hot Module Replacement
+        liveReload: false, // Disable live reload to avoid require issues
         open: false, // Don't open browser automatically
         allowedHosts: "all",
         headers: {
             "Content-Security-Policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: ws: wss:;",
         },
-        client: {
-            overlay: {
-                errors: true,
-                warnings: false,
-            },
-            progress: true,
-            reconnect: 5,
-        },
+        client: false, // Disable webpack-dev-server client to avoid Node.js module issues
         devMiddleware: {
-            writeToDisk: false, // Keep files in memory for faster reload
+            writeToDisk: true, // Write files to disk for Electron to load
         },
         // Ensure source maps are properly served
         setupMiddlewares: (middlewares, devServer) => {
@@ -111,10 +107,14 @@ module.exports = merge(common, {
     },
     externals: {
         electron: "commonjs electron",
+        // Exclude Node.js modules from the bundle to prevent require errors
+        fs: "commonjs fs",
+        path: "commonjs path",
+        events: "commonjs events",
     },
     optimization: {
         minimize: false, // Disable minification in development
-        runtimeChunk: "single", // Enable runtime chunk for better HMR
+        runtimeChunk: false, // Disable runtime chunk to avoid HMR issues
         splitChunks: {
             chunks: "all",
             cacheGroups: {
@@ -139,6 +139,21 @@ module.exports = merge(common, {
             "@": path.resolve(__dirname, "src/sources"),
         },
         extensions: [".tsx", ".ts", ".js", ".jsx"],
+        fallback: {
+            // For Electron renderer, we don't need these polyfills
+            // The renderer process should use Electron's APIs through the preload script
+            fs: false,
+            path: false,
+            crypto: false,
+            stream: false,
+            util: false,
+            buffer: false,
+            process: false,
+            events: false,
+            url: false,
+            querystring: false,
+            os: false,
+        },
     },
     stats: {
         colors: true,

@@ -62,7 +62,7 @@ const SupportPilotApp: React.FC = () => {
         <FluentProvider theme={themeConfig.theme}>
             <div className={styles.container}>
                 <h1 className={styles.title}>Support Pilot - Fluent UI Ready ✅</h1>
-                <p className={styles.description}>FluentProvider is configured with custom theme. Hot reload is working!</p>
+                <p className={styles.description}>FluentProvider is configured with custom theme. Live development mode enabled!</p>
                 <div className={styles.buttonContainer}>
                     <button onClick={() => setCount(count + 1)} className={styles.primaryButton}>
                         Count: {count}

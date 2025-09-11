@@ -47,13 +47,31 @@ module.exports = merge(common, {
             // Define global as window
             global: "window",
         }),
+        // Provide polyfills for Node.js modules needed by some packages
+        new webpack.ProvidePlugin({
+            process: "process/browser",
+            Buffer: ["buffer", "Buffer"],
+        }),
     ],
     externals: {
         electron: "commonjs electron",
     },
     resolve: {
-        fallback: {
-            // Disable Node.js core modules for browser compatibility
+        fallback: process.env.NODE_ENV === "development" ? {
+            // Provide polyfills for Node.js core modules in development
+            events: require.resolve("events/"),
+            fs: false,
+            path: require.resolve("path-browserify"),
+            crypto: require.resolve("crypto-browserify"),
+            stream: require.resolve("stream-browserify"),
+            util: require.resolve("util/"),
+            buffer: require.resolve("buffer/"),
+            process: require.resolve("process/browser"),
+            url: require.resolve("url/"),
+            querystring: require.resolve("querystring-es3"),
+            os: require.resolve("os-browserify/browser"),
+        } : {
+            // Disable Node.js core modules for browser compatibility in production
             fs: false,
             path: false,
             crypto: false,
@@ -61,6 +79,10 @@ module.exports = merge(common, {
             util: false,
             buffer: false,
             process: false,
+            events: false,
+            url: false,
+            querystring: false,
+            os: false,
         },
     },
     optimization: {
