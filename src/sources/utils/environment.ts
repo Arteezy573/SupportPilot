@@ -9,7 +9,15 @@ import { app } from "electron";
  * @returns {boolean} True if in development mode, false otherwise
  */
 export function isDev(): boolean {
-    return process.env.NODE_ENV === "development" || !app.isPackaged;
+    // Prioritize NODE_ENV over packaging status for source builds
+    if (process.env.NODE_ENV === "development") {
+        return true;
+    }
+    if (process.env.NODE_ENV === "production") {
+        return false;
+    }
+    // Fallback to packaging status if NODE_ENV is not set
+    return !app.isPackaged;
 }
 
 /**

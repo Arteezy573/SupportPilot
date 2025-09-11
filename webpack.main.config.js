@@ -10,7 +10,9 @@ module.exports = merge(common, {
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: "[name].js",
-        clean: true,
+        clean: {
+            keep: /^(?!main\.)/,  // Keep everything except main.js files when cleaning
+        },
     },
     module: {
         rules: [

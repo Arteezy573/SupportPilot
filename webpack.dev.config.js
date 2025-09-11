@@ -67,7 +67,7 @@ module.exports = merge(common, {
         },
         compress: true,
         port: 9000,
-        host: "localhost",
+        host: "127.0.0.1", // Use IPv4 instead of localhost to avoid IPv6 binding
         hot: true, // Enable Hot Module Replacement
         liveReload: true, // Enable live reload as fallback
         open: false, // Don't open browser automatically

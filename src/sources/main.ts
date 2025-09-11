@@ -169,14 +169,20 @@ function createMainWindow(): void {
 
     // Load the application
     if (isDev()) {
-        // Development: load from webpack dev server
-        mainWindow.loadURL("http://localhost:9000");
+        // Development: try to load from webpack dev server with fallback
+        mainWindow.loadURL("http://127.0.0.1:9000").catch((error) => {
+            logger.warn("Failed to load from dev server, falling back to built files", error);
+            // Fallback to built files if dev server is not available
+            if (mainWindow) {
+                mainWindow.loadFile(path.join(__dirname, "renderer/index.html"));
+            }
+        });
 
         // Open DevTools in development
         mainWindow.webContents.openDevTools();
     } else {
         // Production: load from built files
-        mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
+        mainWindow.loadFile(path.join(__dirname, "renderer/index.html"));
     }
 
     // Show window when ready to prevent visual flash

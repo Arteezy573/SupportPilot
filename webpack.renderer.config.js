@@ -9,7 +9,7 @@ module.exports = merge(common, {
         renderer: "./src/sources/renderer/index.tsx",
     },
     output: {
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(__dirname, "dist/renderer"),
         filename: "[name].js",
         publicPath: "./",
     },
