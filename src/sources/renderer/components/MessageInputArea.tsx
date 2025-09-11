@@ -4,15 +4,8 @@
  */
 
 import React from "react";
-import {
-    makeStyles,
-    tokens,
-    shorthands,
-    Button,
-} from "@fluentui/react-components";
-import {
-    Send24Regular,
-} from "@fluentui/react-icons";
+import { makeStyles, tokens, shorthands, Button } from "@fluentui/react-components";
+import { Send24Regular } from "@fluentui/react-icons";
 import { AttachFileButton } from "./AttachFileButton";
 import { MessageInputField } from "./MessageInputField";
 
@@ -222,7 +215,7 @@ export const MessageInputArea: React.FC<MessageInputAreaProps> = ({
             {attachedFiles.length > 0 && (
                 <div className={styles.attachedFilesContainer}>
                     <div className={styles.attachedFilesTitle}>
-                        {attachedFiles.length} file{attachedFiles.length !== 1 ? 's' : ''}:
+                        {attachedFiles.length} file{attachedFiles.length !== 1 ? "s" : ""}:
                     </div>
                     <div className={styles.attachedFilesList}>
                         {attachedFiles.map((file, index) => (
@@ -231,13 +224,11 @@ export const MessageInputArea: React.FC<MessageInputAreaProps> = ({
                                     <div className={styles.fileName} title={file.name}>
                                         {file.name}
                                     </div>
-                                    <div className={styles.fileSize}>
-                                        {formatFileSize(file.size)}
-                                    </div>
+                                    <div className={styles.fileSize}>{formatFileSize(file.size)}</div>
                                 </div>
                                 <Button
-                                    appearance="subtle"
-                                    size="small"
+                                    appearance='subtle'
+                                    size='small'
                                     className={styles.removeFileButton}
                                     onClick={() => handleFileRemove(file)}
                                     aria-label={`Remove ${file.name}`}
@@ -259,9 +250,9 @@ export const MessageInputArea: React.FC<MessageInputAreaProps> = ({
                         onFilesSelected={onFilesAttached}
                         disabled={disabled}
                         multiple={true}
-                        acceptedFileTypes=".txt,.log,.json,.csv,.xml,.eml,.msg"
+                        acceptedFileTypes='.txt,.log,.json,.csv,.xml,.eml,.msg'
                         iconOnly={true}
-                        buttonText="Attach files"
+                        buttonText='Attach files'
                     />
                 </div>
 
@@ -281,12 +272,12 @@ export const MessageInputArea: React.FC<MessageInputAreaProps> = ({
                 {/* Send Button */}
                 <div className={styles.sendButtonContainer}>
                     <Button
-                        appearance="primary"
+                        appearance='primary'
                         className={styles.sendButton}
                         onClick={handleSendClick}
                         disabled={!canSend}
-                        aria-label="Send message"
-                        title="Send message (Enter)"
+                        aria-label='Send message'
+                        title='Send message (Enter)'
                     >
                         <Send24Regular />
                     </Button>

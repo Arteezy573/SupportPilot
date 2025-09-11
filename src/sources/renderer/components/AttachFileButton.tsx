@@ -4,15 +4,8 @@
  */
 
 import React, { useRef, useState } from "react";
-import {
-    Button,
-    makeStyles,
-    tokens,
-    shorthands,
-} from "@fluentui/react-components";
-import {
-    Attach24Regular,
-} from "@fluentui/react-icons";
+import { Button, makeStyles, tokens, shorthands } from "@fluentui/react-components";
+import { Attach24Regular } from "@fluentui/react-icons";
 
 // =============================================================================
 // COMPONENT INTERFACES
@@ -119,7 +112,7 @@ const formatFileSize = (bytes: number): string => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 };
 
-const validateFiles = (files: FileList, acceptedTypes?: string, maxSize?: number): { valid: File[], errors: string[] } => {
+const validateFiles = (files: FileList, acceptedTypes?: string, maxSize?: number): { valid: File[]; errors: string[] } => {
     const valid: File[] = [];
     const errors: string[] = [];
 
@@ -128,11 +121,8 @@ const validateFiles = (files: FileList, acceptedTypes?: string, maxSize?: number
         if (acceptedTypes) {
             const types = acceptedTypes.split(",").map(t => t.trim().toLowerCase());
             const fileExtension = "." + file.name.split(".").pop()?.toLowerCase();
-            const isValidType = types.some(type => 
-                type === fileExtension || 
-                (type.includes("/") && file.type === type)
-            );
-            
+            const isValidType = types.some(type => type === fileExtension || (type.includes("/") && file.type === type));
+
             if (!isValidType) {
                 errors.push(`${file.name}: Invalid file type. Accepted types: ${acceptedTypes}`);
                 return;
@@ -178,17 +168,17 @@ export const AttachFileButton: React.FC<AttachFileButtonProps> = ({
         const files = event.target.files;
         if (files && files.length > 0) {
             const { valid, errors } = validateFiles(files, acceptedFileTypes, maxFileSize);
-            
+
             if (errors.length > 0) {
                 // In a real app, you'd show these errors to the user
                 // For now, we'll silently ignore invalid files
             }
-            
+
             if (valid.length > 0) {
                 onFilesSelected(valid);
             }
         }
-        
+
         // Reset the input value to allow selecting the same file again
         if (event.target) {
             event.target.value = "";
@@ -219,12 +209,12 @@ export const AttachFileButton: React.FC<AttachFileButtonProps> = ({
         const files = event.dataTransfer.files;
         if (files && files.length > 0) {
             const { valid, errors } = validateFiles(files, acceptedFileTypes, maxFileSize);
-            
+
             if (errors.length > 0) {
                 // In a real app, you'd show these errors to the user
                 // For now, we'll silently ignore invalid files
             }
-            
+
             if (valid.length > 0) {
                 onFilesSelected(valid);
             }
@@ -234,14 +224,9 @@ export const AttachFileButton: React.FC<AttachFileButtonProps> = ({
     const buttonClassName = iconOnly ? styles.button : `${styles.button} ${styles.buttonWithText}`;
 
     return (
-        <div 
-            className={styles.root}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-        >
+        <div className={styles.root} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
             <Button
-                appearance="subtle"
+                appearance='subtle'
                 className={buttonClassName}
                 onClick={handleButtonClick}
                 disabled={disabled}
@@ -250,31 +235,25 @@ export const AttachFileButton: React.FC<AttachFileButtonProps> = ({
             >
                 <div className={styles.buttonContent}>
                     <Attach24Regular className={styles.icon} />
-                    {!iconOnly && (
-                        <span className={styles.text}>{buttonText}</span>
-                    )}
+                    {!iconOnly && <span className={styles.text}>{buttonText}</span>}
                 </div>
             </Button>
 
             {/* Hidden file input */}
             <input
                 ref={fileInputRef}
-                type="file"
+                type='file'
                 className={styles.hiddenInput}
                 onChange={handleFileChange}
                 multiple={multiple}
                 accept={acceptedFileTypes}
                 disabled={disabled}
-                aria-hidden="true"
+                aria-hidden='true'
                 tabIndex={-1}
             />
 
             {/* Drag overlay */}
-            {isDragOver && (
-                <div className={styles.dragOverlay}>
-                    Drop files here
-                </div>
-            )}
+            {isDragOver && <div className={styles.dragOverlay}>Drop files here</div>}
         </div>
     );
 };

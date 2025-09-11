@@ -4,12 +4,7 @@
  */
 
 import React from "react";
-import {
-    Textarea,
-    makeStyles,
-    tokens,
-    shorthands,
-} from "@fluentui/react-components";
+import { Textarea, makeStyles, tokens, shorthands } from "@fluentui/react-components";
 
 // =============================================================================
 // COMPONENT INTERFACES
@@ -109,12 +104,12 @@ export const MessageInputField: React.FC<MessageInputFieldProps> = ({
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newValue = event.target.value;
-        
+
         // Enforce max length
         if (maxLength && newValue.length > maxLength) {
             return;
         }
-        
+
         onChange(newValue);
     };
 
@@ -123,7 +118,7 @@ export const MessageInputField: React.FC<MessageInputFieldProps> = ({
         if (!multiline && event.key === "Enter") {
             event.preventDefault();
         }
-        
+
         // Call parent handler
         if (onKeyDown) {
             onKeyDown(event);
@@ -133,23 +128,20 @@ export const MessageInputField: React.FC<MessageInputFieldProps> = ({
     // Calculate dynamic rows based on content
     const calculateRows = (): number => {
         if (!multiline) return 1;
-        
+
         const lineCount = value.split("\n").length;
         const contentRows = Math.max(minRows || 1, lineCount);
-        
+
         if (maxRows && contentRows > maxRows) {
             return maxRows;
         }
-        
+
         return contentRows;
     };
 
-    const textareaClassName = [
-        styles.textarea,
-        multiline ? styles.multiLine : styles.singleLine,
-        disabled ? styles.disabled : "",
-        className,
-    ].filter(Boolean).join(" ");
+    const textareaClassName = [styles.textarea, multiline ? styles.multiLine : styles.singleLine, disabled ? styles.disabled : "", className]
+        .filter(Boolean)
+        .join(" ");
 
     return (
         <div className={styles.root}>
@@ -162,14 +154,14 @@ export const MessageInputField: React.FC<MessageInputFieldProps> = ({
                 autoFocus={autoFocus}
                 rows={calculateRows()}
                 className={textareaClassName}
-                resize="none"
-                appearance="filled-lighter"
-                aria-label="Message input"
+                resize='none'
+                appearance='filled-lighter'
+                aria-label='Message input'
                 aria-multiline={multiline}
                 spellCheck={true}
-                autoComplete="off"
-                autoCorrect="on"
-                autoCapitalize="sentences"
+                autoComplete='off'
+                autoCorrect='on'
+                autoCapitalize='sentences'
                 maxLength={maxLength}
             />
         </div>

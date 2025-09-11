@@ -4,17 +4,8 @@
  */
 
 import React from "react";
-import {
-    Text,
-    makeStyles,
-    tokens,
-    shorthands,
-} from "@fluentui/react-components";
-import {
-    ChatSparkle24Regular,
-    DocumentText24Regular,
-    Attach24Regular,
-} from "@fluentui/react-icons";
+import { Text, makeStyles, tokens, shorthands } from "@fluentui/react-components";
+import { ChatSparkle24Regular, DocumentText24Regular, Attach24Regular } from "@fluentui/react-icons";
 
 // =============================================================================
 // COMPONENT STYLES
@@ -102,7 +93,7 @@ const useGreetingStyles = makeStyles({
         fontSize: tokens.fontSizeBase200,
         color: tokens.colorNeutralForeground2,
         lineHeight: tokens.lineHeightBase200,
-    }
+    },
 });
 
 // =============================================================================
@@ -129,11 +120,7 @@ export interface GreetingTextProps {
  * GreetingText component that displays a personalized welcome message
  * and provides usage guidance for Support Pilot
  */
-export const GreetingText: React.FC<GreetingTextProps> = ({
-    userName,
-    showGuidance = true,
-    customMessage,
-}) => {
+export const GreetingText: React.FC<GreetingTextProps> = ({ userName, showGuidance = true, customMessage }) => {
     const styles = useGreetingStyles();
 
     // Get appropriate greeting based on time of day
@@ -144,44 +131,33 @@ export const GreetingText: React.FC<GreetingTextProps> = ({
         return "Good evening";
     };
 
-    const greeting = userName 
-        ? `${getTimeBasedGreeting()}, ${userName}!`
-        : `${getTimeBasedGreeting()}!`;
+    const greeting = userName ? `${getTimeBasedGreeting()}, ${userName}!` : `${getTimeBasedGreeting()}!`;
 
-    const welcomeMessage = customMessage || 
-        "I'm here to help you analyze logs, process emails, and create structured livesite tickets with AI assistance.";
+    const welcomeMessage = customMessage || "I'm here to help you analyze logs, process emails, and create structured livesite tickets with AI assistance.";
 
     return (
         <div className={styles.root}>
             {/* Welcome Section */}
             <div className={styles.welcomeSection}>
                 <ChatSparkle24Regular className={styles.icon} />
-                <Text className={styles.title}>
-                    {greeting}
-                </Text>
-                <Text className={styles.subtitle}>
-                    {welcomeMessage}
-                </Text>
+                <Text className={styles.title}>{greeting}</Text>
+                <Text className={styles.subtitle}>{welcomeMessage}</Text>
             </div>
 
             {/* Usage Guidance */}
             {showGuidance && (
                 <div className={styles.guidanceSection}>
-                    <Text className={styles.guidanceTitle}>
-                        How to get started:
-                    </Text>
-                    
+                    <Text className={styles.guidanceTitle}>How to get started:</Text>
+
                     <div className={styles.stepsContainer}>
                         {/* Step 1: Attach Files */}
                         <div className={styles.step}>
                             <Attach24Regular className={styles.stepIcon} />
                             <div className={styles.stepContent}>
-                                <Text className={styles.stepTitle}>
-                                    1. Attach your files
-                                </Text>
+                                <Text className={styles.stepTitle}>1. Attach your files</Text>
                                 <Text className={styles.stepDescription}>
-                                    Upload trace logs, email threads, or error reports to get started. 
-                                    I can analyze various file formats and extract key information.
+                                    Upload trace logs, email threads, or error reports to get started. I can analyze various file formats and extract key
+                                    information.
                                 </Text>
                             </div>
                         </div>
@@ -190,12 +166,9 @@ export const GreetingText: React.FC<GreetingTextProps> = ({
                         <div className={styles.step}>
                             <DocumentText24Regular className={styles.stepIcon} />
                             <div className={styles.stepContent}>
-                                <Text className={styles.stepTitle}>
-                                    2. Describe the issue
-                                </Text>
+                                <Text className={styles.stepTitle}>2. Describe the issue</Text>
                                 <Text className={styles.stepDescription}>
-                                    Tell me about the problem you're investigating. Include any relevant context, 
-                                    timeline, or customer impact details.
+                                    Tell me about the problem you're investigating. Include any relevant context, timeline, or customer impact details.
                                 </Text>
                             </div>
                         </div>
@@ -204,12 +177,10 @@ export const GreetingText: React.FC<GreetingTextProps> = ({
                         <div className={styles.step}>
                             <ChatSparkle24Regular className={styles.stepIcon} />
                             <div className={styles.stepContent}>
-                                <Text className={styles.stepTitle}>
-                                    3. Get AI-powered analysis
-                                </Text>
+                                <Text className={styles.stepTitle}>3. Get AI-powered analysis</Text>
                                 <Text className={styles.stepDescription}>
-                                    I'll analyze your files, suggest solutions, help with root cause analysis, 
-                                    and provide structured information for your livesite tickets.
+                                    I'll analyze your files, suggest solutions, help with root cause analysis, and provide structured information for your
+                                    livesite tickets.
                                 </Text>
                             </div>
                         </div>

@@ -82,15 +82,12 @@ export interface FileAnalysis {
 export interface AgentAction {
     id: string;
     type: AgentActionType;
-    name: string;
-    description: string;
     status: MessageStatus;
     startedAt: Date;
     completedAt?: Date;
-    input?: unknown;
+    parameters?: unknown;
     result?: AgentActionResult;
     error?: string;
-    citations?: Citation[];
 }
 
 /**
@@ -112,8 +109,6 @@ export interface AgentThought {
     id: string;
     content: string;
     timestamp: Date;
-    reasoning: string;
-    confidence: number;
 }
 
 /**
@@ -160,11 +155,9 @@ export interface UserMessage extends Message {
  */
 export interface AgentMessage extends Message {
     role: "agent";
-    thoughts?: AgentThought[];
-    actions?: AgentAction[];
-    citations?: Citation[];
+    steps?: (AgentThought | AgentAction)[];
     confidence?: number;
-    followUpSuggestions?: string[];
+    citations?: Citation[];
 }
 
 /**

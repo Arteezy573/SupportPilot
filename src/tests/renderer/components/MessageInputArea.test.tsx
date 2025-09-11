@@ -9,20 +9,12 @@ import { FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { MessageInputArea } from "../../../sources/renderer/components/MessageInputArea";
 
 // Test wrapper with FluentProvider
-const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <FluentProvider theme={webLightTheme}>
-        {children}
-    </FluentProvider>
-);
+const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => <FluentProvider theme={webLightTheme}>{children}</FluentProvider>;
 
 // Mock child components
 jest.mock("../../../sources/renderer/components/AttachFileButton", () => ({
     AttachFileButton: ({ onFilesSelected, disabled }: any) => (
-        <button 
-            data-testid="attach-file-button"
-            onClick={() => onFilesSelected([new File(["test"], "test.txt", { type: "text/plain" })])}
-            disabled={disabled}
-        >
+        <button data-testid='attach-file-button' onClick={() => onFilesSelected([new File(["test"], "test.txt", { type: "text/plain" })])} disabled={disabled}>
             Attach Files
         </button>
     ),
@@ -31,9 +23,9 @@ jest.mock("../../../sources/renderer/components/AttachFileButton", () => ({
 jest.mock("../../../sources/renderer/components/MessageInputField", () => ({
     MessageInputField: ({ value, onChange, onKeyDown, disabled, placeholder }: any) => (
         <textarea
-            data-testid="message-input-field"
+            data-testid='message-input-field'
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={e => onChange(e.target.value)}
             onKeyDown={onKeyDown}
             disabled={disabled}
             placeholder={placeholder}
@@ -68,12 +60,7 @@ describe("MessageInputArea", () => {
         it("renders with default props", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value=""
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                    />
+                    <MessageInputArea value='' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} />
                 </TestWrapper>
             );
 
@@ -85,12 +72,12 @@ describe("MessageInputArea", () => {
         it("renders with custom placeholder", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value=""
+                    <MessageInputArea
+                        value=''
                         onChange={mockOnChange}
                         onSend={mockOnSend}
                         onFilesAttached={mockOnFilesAttached}
-                        placeholder="Custom placeholder"
+                        placeholder='Custom placeholder'
                     />
                 </TestWrapper>
             );
@@ -102,12 +89,7 @@ describe("MessageInputArea", () => {
         it("renders send button as disabled when no text", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value=""
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                    />
+                    <MessageInputArea value='' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} />
                 </TestWrapper>
             );
 
@@ -118,12 +100,7 @@ describe("MessageInputArea", () => {
         it("renders send button as enabled when text is present", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value="Hello world"
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                    />
+                    <MessageInputArea value='Hello world' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} />
                 </TestWrapper>
             );
 
@@ -134,13 +111,7 @@ describe("MessageInputArea", () => {
         it("renders all components as disabled when disabled prop is true", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value="Test message"
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                        disabled={true}
-                    />
+                    <MessageInputArea value='Test message' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} disabled={true} />
                 </TestWrapper>
             );
 
@@ -154,12 +125,7 @@ describe("MessageInputArea", () => {
         it("calls onChange when text input changes", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value=""
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                    />
+                    <MessageInputArea value='' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} />
                 </TestWrapper>
             );
 
@@ -172,12 +138,7 @@ describe("MessageInputArea", () => {
         it("calls onSend when send button is clicked with valid text", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value="Hello world"
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                    />
+                    <MessageInputArea value='Hello world' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} />
                 </TestWrapper>
             );
 
@@ -190,12 +151,7 @@ describe("MessageInputArea", () => {
         it("does not call onSend when send button is clicked with empty text", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value=""
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                    />
+                    <MessageInputArea value='' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} />
                 </TestWrapper>
             );
 
@@ -208,12 +164,7 @@ describe("MessageInputArea", () => {
         it("calls onSend when Enter key is pressed", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value="Hello world"
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                    />
+                    <MessageInputArea value='Hello world' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} />
                 </TestWrapper>
             );
 
@@ -226,12 +177,7 @@ describe("MessageInputArea", () => {
         it("does not call onSend when Shift+Enter is pressed", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value="Hello world"
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                    />
+                    <MessageInputArea value='Hello world' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} />
                 </TestWrapper>
             );
 
@@ -246,38 +192,22 @@ describe("MessageInputArea", () => {
         it("calls onFilesAttached when files are selected", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value=""
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                    />
+                    <MessageInputArea value='' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} />
                 </TestWrapper>
             );
 
             const attachButton = screen.getByTestId("attach-file-button");
             fireEvent.click(attachButton);
 
-            expect(mockOnFilesAttached).toHaveBeenCalledWith([
-                expect.objectContaining({ name: "test.txt" })
-            ]);
+            expect(mockOnFilesAttached).toHaveBeenCalledWith([expect.objectContaining({ name: "test.txt" })]);
         });
 
         it("displays attached files", () => {
-            const mockFiles = [
-                createMockFile("document1.txt", 1024),
-                createMockFile("log.txt", 2048),
-            ];
+            const mockFiles = [createMockFile("document1.txt", 1024), createMockFile("log.txt", 2048)];
 
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value=""
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                        attachedFiles={mockFiles}
-                    />
+                    <MessageInputArea value='' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} attachedFiles={mockFiles} />
                 </TestWrapper>
             );
 
@@ -293,8 +223,8 @@ describe("MessageInputArea", () => {
 
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value=""
+                    <MessageInputArea
+                        value=''
                         onChange={mockOnChange}
                         onSend={mockOnSend}
                         onFilesAttached={mockOnFilesAttached}
@@ -313,13 +243,7 @@ describe("MessageInputArea", () => {
         it("does not display attached files section when no files", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value=""
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                        attachedFiles={[]}
-                    />
+                    <MessageInputArea value='' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} attachedFiles={[]} />
                 </TestWrapper>
             );
 
@@ -331,13 +255,7 @@ describe("MessageInputArea", () => {
         it("disables send button when isSending is true", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value="Hello world"
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                        isSending={true}
-                    />
+                    <MessageInputArea value='Hello world' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} isSending={true} />
                 </TestWrapper>
             );
 
@@ -348,13 +266,7 @@ describe("MessageInputArea", () => {
         it("does not call onSend when isSending is true", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value="Hello world"
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                        isSending={true}
-                    />
+                    <MessageInputArea value='Hello world' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} isSending={true} />
                 </TestWrapper>
             );
 
@@ -369,12 +281,7 @@ describe("MessageInputArea", () => {
         it("has proper ARIA labels on send button", () => {
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value="Test message"
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                    />
+                    <MessageInputArea value='Test message' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} />
                 </TestWrapper>
             );
 
@@ -388,8 +295,8 @@ describe("MessageInputArea", () => {
 
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value=""
+                    <MessageInputArea
+                        value=''
                         onChange={mockOnChange}
                         onSend={mockOnSend}
                         onFilesAttached={mockOnFilesAttached}
@@ -408,20 +315,14 @@ describe("MessageInputArea", () => {
     describe("File Size Formatting", () => {
         it("formats file sizes correctly", () => {
             const files = [
-                createMockFile("small.txt", 512),    // 512 Bytes
-                createMockFile("medium.txt", 1536),  // 1.5 KB
+                createMockFile("small.txt", 512), // 512 Bytes
+                createMockFile("medium.txt", 1536), // 1.5 KB
                 createMockFile("large.txt", 2097152), // 2 MB
             ];
 
             render(
                 <TestWrapper>
-                    <MessageInputArea 
-                        value=""
-                        onChange={mockOnChange}
-                        onSend={mockOnSend}
-                        onFilesAttached={mockOnFilesAttached}
-                        attachedFiles={files}
-                    />
+                    <MessageInputArea value='' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} attachedFiles={files} />
                 </TestWrapper>
             );
 

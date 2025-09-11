@@ -9,11 +9,7 @@ import { FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { MessageInputField } from "../../../sources/renderer/components/MessageInputField";
 
 // Test wrapper with FluentProvider
-const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <FluentProvider theme={webLightTheme}>
-        {children}
-    </FluentProvider>
-);
+const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => <FluentProvider theme={webLightTheme}>{children}</FluentProvider>;
 
 describe("MessageInputField", () => {
     const mockOnChange = jest.fn();
@@ -28,10 +24,7 @@ describe("MessageInputField", () => {
         it("renders with default props", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} />
                 </TestWrapper>
             );
 
@@ -43,11 +36,7 @@ describe("MessageInputField", () => {
         it("renders with custom placeholder", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                        placeholder="Custom placeholder"
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} placeholder='Custom placeholder' />
                 </TestWrapper>
             );
 
@@ -58,10 +47,7 @@ describe("MessageInputField", () => {
         it("renders with initial value", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value="Initial text"
-                        onChange={mockOnChange}
-                    />
+                    <MessageInputField value='Initial text' onChange={mockOnChange} />
                 </TestWrapper>
             );
 
@@ -72,11 +58,7 @@ describe("MessageInputField", () => {
         it("renders as disabled when disabled prop is true", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                        disabled={true}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} disabled={true} />
                 </TestWrapper>
             );
 
@@ -87,11 +69,7 @@ describe("MessageInputField", () => {
         it("auto-focuses when autoFocus is true", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                        autoFocus={true}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} autoFocus={true} />
                 </TestWrapper>
             );
 
@@ -104,10 +82,7 @@ describe("MessageInputField", () => {
         it("calls onChange when text is entered", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} />
                 </TestWrapper>
             );
 
@@ -120,10 +95,7 @@ describe("MessageInputField", () => {
         it("updates value when prop changes", () => {
             const { rerender } = render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value="Initial"
-                        onChange={mockOnChange}
-                    />
+                    <MessageInputField value='Initial' onChange={mockOnChange} />
                 </TestWrapper>
             );
 
@@ -132,10 +104,7 @@ describe("MessageInputField", () => {
 
             rerender(
                 <TestWrapper>
-                    <MessageInputField 
-                        value="Updated"
-                        onChange={mockOnChange}
-                    />
+                    <MessageInputField value='Updated' onChange={mockOnChange} />
                 </TestWrapper>
             );
 
@@ -145,11 +114,7 @@ describe("MessageInputField", () => {
         it("enforces max length limit", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                        maxLength={10}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} maxLength={10} />
                 </TestWrapper>
             );
 
@@ -163,11 +128,7 @@ describe("MessageInputField", () => {
         it("accepts text within max length limit", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                        maxLength={10}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} maxLength={10} />
                 </TestWrapper>
             );
 
@@ -182,11 +143,7 @@ describe("MessageInputField", () => {
         it("calls onKeyDown when a key is pressed", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                        onKeyDown={mockOnKeyDown}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} onKeyDown={mockOnKeyDown} />
                 </TestWrapper>
             );
 
@@ -199,12 +156,7 @@ describe("MessageInputField", () => {
         it("prevents Enter key in single-line mode", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                        onKeyDown={mockOnKeyDown}
-                        multiline={false}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} onKeyDown={mockOnKeyDown} multiline={false} />
                 </TestWrapper>
             );
 
@@ -219,12 +171,7 @@ describe("MessageInputField", () => {
         it("allows Enter key in multiline mode", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                        onKeyDown={mockOnKeyDown}
-                        multiline={true}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} onKeyDown={mockOnKeyDown} multiline={true} />
                 </TestWrapper>
             );
 
@@ -239,11 +186,7 @@ describe("MessageInputField", () => {
         it("sets aria-multiline correctly for multiline mode", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                        multiline={true}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} multiline={true} />
                 </TestWrapper>
             );
 
@@ -254,11 +197,7 @@ describe("MessageInputField", () => {
         it("sets aria-multiline correctly for single-line mode", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                        multiline={false}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} multiline={false} />
                 </TestWrapper>
             );
 
@@ -269,13 +208,7 @@ describe("MessageInputField", () => {
         it("calculates rows based on content in multiline mode", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value="Line 1\nLine 2\nLine 3"
-                        onChange={mockOnChange}
-                        multiline={true}
-                        minRows={1}
-                        maxRows={5}
-                    />
+                    <MessageInputField value='Line 1\nLine 2\nLine 3' onChange={mockOnChange} multiline={true} minRows={1} maxRows={5} />
                 </TestWrapper>
             );
 
@@ -286,12 +219,7 @@ describe("MessageInputField", () => {
         it("respects minimum rows setting", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                        multiline={true}
-                        minRows={3}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} multiline={true} minRows={3} />
                 </TestWrapper>
             );
 
@@ -303,12 +231,7 @@ describe("MessageInputField", () => {
             const longText = Array(10).fill("Line").join("\n");
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value={longText}
-                        onChange={mockOnChange}
-                        multiline={true}
-                        maxRows={5}
-                    />
+                    <MessageInputField value={longText} onChange={mockOnChange} multiline={true} maxRows={5} />
                 </TestWrapper>
             );
 
@@ -319,11 +242,7 @@ describe("MessageInputField", () => {
         it("uses single row in single-line mode", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value="Single line text\nwith newlines"
-                        onChange={mockOnChange}
-                        multiline={false}
-                    />
+                    <MessageInputField value='Single line text\nwith newlines' onChange={mockOnChange} multiline={false} />
                 </TestWrapper>
             );
 
@@ -336,10 +255,7 @@ describe("MessageInputField", () => {
         it("has proper ARIA attributes", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} />
                 </TestWrapper>
             );
 
@@ -351,10 +267,7 @@ describe("MessageInputField", () => {
         it("has proper autocomplete attributes", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} />
                 </TestWrapper>
             );
 
@@ -369,11 +282,7 @@ describe("MessageInputField", () => {
         it("applies custom className when provided", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                        className="custom-class"
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} className='custom-class' />
                 </TestWrapper>
             );
 
@@ -384,11 +293,7 @@ describe("MessageInputField", () => {
         it("sets maxLength attribute", () => {
             render(
                 <TestWrapper>
-                    <MessageInputField 
-                        value=""
-                        onChange={mockOnChange}
-                        maxLength={500}
-                    />
+                    <MessageInputField value='' onChange={mockOnChange} maxLength={500} />
                 </TestWrapper>
             );
 

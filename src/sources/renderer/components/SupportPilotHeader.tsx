@@ -4,17 +4,8 @@
  */
 
 import React from "react";
-import {
-    Button,
-    Text,
-    makeStyles,
-    tokens,
-    shorthands,
-} from "@fluentui/react-components";
-import {
-    History20Regular,
-    Settings20Regular,
-} from "@fluentui/react-icons";
+import { Button, Text, makeStyles, tokens, shorthands } from "@fluentui/react-components";
+import { History20Regular, Settings20Regular } from "@fluentui/react-icons";
 
 // =============================================================================
 // COMPONENT STYLES
@@ -115,18 +106,12 @@ export const SupportPilotHeader: React.FC<SupportPilotHeaderProps> = ({
             {/* Branding Section */}
             <div className={styles.brandingSection}>
                 {/* Logo */}
-                <div className={styles.logo}>
-                    SP
-                </div>
-                
+                <div className={styles.logo}>SP</div>
+
                 {/* Title and Subtitle */}
                 <div className={styles.titleSection}>
-                    <Text className={styles.title}>
-                        Support Pilot
-                    </Text>
-                    <Text className={styles.subtitle}>
-                        {subtitle}
-                    </Text>
+                    <Text className={styles.title}>Support Pilot</Text>
+                    <Text className={styles.subtitle}>{subtitle}</Text>
                 </div>
             </div>
 
@@ -134,23 +119,23 @@ export const SupportPilotHeader: React.FC<SupportPilotHeaderProps> = ({
             <div className={styles.actionsSection}>
                 {showHistoryButton && (
                     <Button
-                        appearance="subtle"
+                        appearance='subtle'
                         icon={<History20Regular />}
                         onClick={onHistoryClick}
                         className={styles.actionButton}
-                        title="Chat History"
-                        aria-label="Open chat history"
+                        title='Chat History'
+                        aria-label='Open chat history'
                     />
                 )}
-                
+
                 {showSettingsButton && (
                     <Button
-                        appearance="subtle"
+                        appearance='subtle'
                         icon={<Settings20Regular />}
                         onClick={onSettingsClick}
                         className={styles.actionButton}
-                        title="Settings"
-                        aria-label="Open settings"
+                        title='Settings'
+                        aria-label='Open settings'
                     />
                 )}
             </div>

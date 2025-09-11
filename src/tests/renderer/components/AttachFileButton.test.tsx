@@ -9,11 +9,7 @@ import { FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { AttachFileButton } from "../../../sources/renderer/components/AttachFileButton";
 
 // Test wrapper with FluentProvider
-const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <FluentProvider theme={webLightTheme}>
-        {children}
-    </FluentProvider>
-);
+const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => <FluentProvider theme={webLightTheme}>{children}</FluentProvider>;
 
 // Mock file for testing
 const createMockFile = (name: string, size: number, type: string): File => {
@@ -48,11 +44,7 @@ describe("AttachFileButton", () => {
         it("renders icon-only button when iconOnly is true", () => {
             render(
                 <TestWrapper>
-                    <AttachFileButton 
-                        onFilesSelected={mockOnFilesSelected} 
-                        iconOnly={true}
-                        buttonText="Custom Text"
-                    />
+                    <AttachFileButton onFilesSelected={mockOnFilesSelected} iconOnly={true} buttonText='Custom Text' />
                 </TestWrapper>
             );
 
@@ -64,10 +56,7 @@ describe("AttachFileButton", () => {
         it("renders with custom button text", () => {
             render(
                 <TestWrapper>
-                    <AttachFileButton 
-                        onFilesSelected={mockOnFilesSelected} 
-                        buttonText="Upload Files"
-                    />
+                    <AttachFileButton onFilesSelected={mockOnFilesSelected} buttonText='Upload Files' />
                 </TestWrapper>
             );
 
@@ -77,10 +66,7 @@ describe("AttachFileButton", () => {
         it("renders disabled button when disabled prop is true", () => {
             render(
                 <TestWrapper>
-                    <AttachFileButton 
-                        onFilesSelected={mockOnFilesSelected} 
-                        disabled={true}
-                    />
+                    <AttachFileButton onFilesSelected={mockOnFilesSelected} disabled={true} />
                 </TestWrapper>
             );
 
@@ -99,7 +85,7 @@ describe("AttachFileButton", () => {
 
             const button = screen.getByRole("button");
             const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
-            
+
             // Mock the click method
             const clickSpy = jest.spyOn(fileInput, "click").mockImplementation(() => {});
 
@@ -135,10 +121,7 @@ describe("AttachFileButton", () => {
         it("filters files by accepted types", async () => {
             const { container } = render(
                 <TestWrapper>
-                    <AttachFileButton 
-                        onFilesSelected={mockOnFilesSelected}
-                        acceptedFileTypes=".txt,.log"
-                    />
+                    <AttachFileButton onFilesSelected={mockOnFilesSelected} acceptedFileTypes='.txt,.log' />
                 </TestWrapper>
             );
 
@@ -161,10 +144,7 @@ describe("AttachFileButton", () => {
         it("filters files by size limit", async () => {
             const { container } = render(
                 <TestWrapper>
-                    <AttachFileButton 
-                        onFilesSelected={mockOnFilesSelected}
-                        maxFileSize={1024}
-                    />
+                    <AttachFileButton onFilesSelected={mockOnFilesSelected} maxFileSize={1024} />
                 </TestWrapper>
             );
 
@@ -236,10 +216,7 @@ describe("AttachFileButton", () => {
         it("does not handle drag events when disabled", () => {
             const { container } = render(
                 <TestWrapper>
-                    <AttachFileButton 
-                        onFilesSelected={mockOnFilesSelected} 
-                        disabled={true}
-                    />
+                    <AttachFileButton onFilesSelected={mockOnFilesSelected} disabled={true} />
                 </TestWrapper>
             );
 
@@ -293,10 +270,7 @@ describe("AttachFileButton", () => {
         it("allows multiple file selection when multiple is true", () => {
             const { container } = render(
                 <TestWrapper>
-                    <AttachFileButton 
-                        onFilesSelected={mockOnFilesSelected}
-                        multiple={true}
-                    />
+                    <AttachFileButton onFilesSelected={mockOnFilesSelected} multiple={true} />
                 </TestWrapper>
             );
 
@@ -307,10 +281,7 @@ describe("AttachFileButton", () => {
         it("does not allow multiple file selection when multiple is false", () => {
             const { container } = render(
                 <TestWrapper>
-                    <AttachFileButton 
-                        onFilesSelected={mockOnFilesSelected}
-                        multiple={false}
-                    />
+                    <AttachFileButton onFilesSelected={mockOnFilesSelected} multiple={false} />
                 </TestWrapper>
             );
 
