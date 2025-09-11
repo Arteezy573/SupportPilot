@@ -1,10 +1,12 @@
 const path = require("path");
 const { merge } = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
 const common = require("./webpack.common.js");
 
 module.exports = merge(common, {
     target: "electron-renderer",
+    devtool: process.env.NODE_ENV === "development" ? "inline-source-map" : "source-map",
     entry: {
         renderer: "./src/sources/renderer/index.tsx",
     },
@@ -38,9 +40,28 @@ module.exports = merge(common, {
             chunks: ["renderer"],
             inject: "body",
         }),
+        // Define global variables for the renderer process
+        new webpack.DefinePlugin({
+            // Provide a mock process object with minimal properties
+            "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development"),
+            // Define global as window
+            global: "window",
+        }),
     ],
     externals: {
         electron: "commonjs electron",
+    },
+    resolve: {
+        fallback: {
+            // Disable Node.js core modules for browser compatibility
+            fs: false,
+            path: false,
+            crypto: false,
+            stream: false,
+            util: false,
+            buffer: false,
+            process: false,
+        },
     },
     optimization: {
         splitChunks: {

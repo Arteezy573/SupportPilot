@@ -4,6 +4,7 @@ const common = require("./webpack.common.js");
 
 module.exports = merge(common, {
     target: "electron-preload",
+    devtool: process.env.NODE_ENV === "development" ? "inline-source-map" : "source-map",
     entry: {
         preload: "./src/sources/preload.ts",
     },

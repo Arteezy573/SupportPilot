@@ -4,6 +4,7 @@ const common = require("./webpack.common.js");
 
 module.exports = merge(common, {
     target: "electron-main",
+    devtool: process.env.NODE_ENV === "development" ? "inline-source-map" : "source-map",
     entry: {
         main: "./src/sources/main.ts",
     },

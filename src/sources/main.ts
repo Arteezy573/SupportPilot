@@ -133,7 +133,7 @@ function createMainWindow(): void {
             sandbox: false, // Disable sandbox to allow preload script access
 
             // Security: Script and content policies
-            webSecurity: true, // Enable web security
+            webSecurity: !isDev(), // Disable web security in development for source maps
             allowRunningInsecureContent: false, // Block mixed content
             experimentalFeatures: false, // Disable experimental web features
 
@@ -177,9 +177,6 @@ function createMainWindow(): void {
                 mainWindow.loadFile(path.join(__dirname, "renderer/index.html"));
             }
         });
-
-        // Open DevTools in development
-        mainWindow.webContents.openDevTools();
     } else {
         // Production: load from built files
         mainWindow.loadFile(path.join(__dirname, "renderer/index.html"));
@@ -201,6 +198,24 @@ function createMainWindow(): void {
             }
         }
     });
+
+    // Open DevTools after content is loaded in development mode
+    if (isDev()) {
+        mainWindow.webContents.once("did-finish-load", () => {
+            if (mainWindow) {
+                logger.info("Opening DevTools in development mode");
+                mainWindow.webContents.openDevTools();
+            }
+        });
+
+        // Also try opening DevTools when the DOM is ready as a backup
+        mainWindow.webContents.once("dom-ready", () => {
+            if (mainWindow && !mainWindow.webContents.isDevToolsOpened()) {
+                logger.info("Opening DevTools after DOM ready");
+                mainWindow.webContents.openDevTools();
+            }
+        });
+    }
 
     // Window state change event handlers
     mainWindow.on("resize", () => {

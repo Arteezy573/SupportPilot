@@ -7,7 +7,7 @@ const common = require("./webpack.common.js");
 module.exports = merge(common, {
     mode: "development",
     target: "electron-renderer",
-    devtool: "eval-source-map",
+    devtool: "inline-source-map", // Better for Electron debugging
     entry: {
         renderer: "./src/sources/renderer/index.tsx",
     },
@@ -85,6 +85,22 @@ module.exports = merge(common, {
         },
         devMiddleware: {
             writeToDisk: false, // Keep files in memory for faster reload
+        },
+        // Ensure source maps are properly served
+        setupMiddlewares: (middlewares, devServer) => {
+            if (!devServer) {
+                throw new Error('webpack-dev-server is not defined');
+            }
+            
+            // Add middleware to serve source maps with correct headers
+            devServer.app.use('*.map', (req, res, next) => {
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.setHeader('Access-Control-Allow-Methods', 'GET');
+                res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+                next();
+            });
+            
+            return middlewares;
         },
         watchFiles: {
             paths: ["src/**/*"],

@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
     mode: process.env.NODE_ENV || "development",
-    devtool: "source-map",
+    // Remove devtool from common config - let specific configs handle it
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
         alias: {

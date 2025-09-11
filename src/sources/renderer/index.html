@@ -185,6 +185,31 @@
         </style>
     </head>
     <body>
+        <!-- Global polyfills - must be first -->
+        <script>
+            // Polyfill global object for Node.js dependencies
+            if (typeof global === 'undefined') {
+                window.global = window;
+            }
+            
+            // Polyfill process object for Node.js dependencies
+            if (typeof process === 'undefined') {
+                window.process = {
+                    env: {
+                        NODE_ENV: 'development'
+                    },
+                    platform: 'browser',
+                    version: 'v16.0.0',
+                    browser: true
+                };
+            }
+            
+            // Polyfill Buffer if needed
+            if (typeof Buffer === 'undefined') {
+                window.Buffer = undefined;
+            }
+        </script>
+
         <!-- Main application container -->
         <div id="root">
             <!-- Loading indicator (shown while React app loads) -->
@@ -199,6 +224,9 @@
 
         <!-- Development tools (only in development mode) -->
         <script>
+            // Development mode detection via Electron API
+            const isDevelopment = window.electronAPI && window.electronDev;
+
             // Development mode detection
             if (window.electronAPI) {
                 // Log that the preload script is available
@@ -216,7 +244,7 @@
                 console.error("Uncaught error:", event.error);
 
                 // In development, show error details
-                if (process?.env?.NODE_ENV === "development") {
+                if (isDevelopment) {
                     const errorDiv = document.createElement("div");
                     errorDiv.style.cssText = `
                     position: fixed;
@@ -250,7 +278,7 @@
             });
 
             // Performance monitoring in development
-            if (process?.env?.NODE_ENV === "development") {
+            if (isDevelopment) {
                 window.addEventListener("load", () => {
                     console.log("Page load performance:", {
                         loadTime: performance.now(),
