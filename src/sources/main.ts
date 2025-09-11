@@ -1,6 +1,6 @@
 import { app, BrowserWindow, Menu, ipcMain, dialog, shell } from "electron";
 import * as path from "path";
-import { isDev } from "./utils/environment";
+import { isDev } from "@/utils/environment";
 
 // Keep a global reference of the window object
 let mainWindow: BrowserWindow | null = null;

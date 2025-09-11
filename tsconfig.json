@@ -30,7 +30,8 @@
       "@/components/*": ["sources/renderer/components/*"],
       "@/hooks/*": ["sources/renderer/hooks/*"],
       "@/types/*": ["sources/types/*"],
-      "@/styles/*": ["sources/renderer/styles/*"]
+      "@/styles/*": ["sources/renderer/styles/*"],
+      "@/utils/*": ["sources/utils/*"]
     },
     "typeRoots": [
       "node_modules/@types"
