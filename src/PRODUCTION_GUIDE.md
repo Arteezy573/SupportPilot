@@ -3,6 +3,7 @@
 ## Complete Production Build and Launch Instructions
 
 ### Prerequisites
+
 - Node.js 18+ installed
 - npm or yarn package manager
 - Git (for source code)
@@ -10,6 +11,7 @@
 ### 1. Production Build Process
 
 #### Full Production Build
+
 ```powershell
 # Clean previous builds
 npm run clean
@@ -24,6 +26,7 @@ npm run build:renderer  # Build React renderer with optimizations
 ```
 
 #### Expected Output Structure
+
 ```
 dist/
 ├── main.js              # Main Electron process (50.8 KiB)
@@ -40,6 +43,7 @@ dist/
 ### 2. Production Launch Methods
 
 #### Method 1: Direct Launch (Recommended for Testing)
+
 ```powershell
 # Set production environment and launch
 $env:NODE_ENV="production"
@@ -47,6 +51,7 @@ npx electron .
 ```
 
 #### Method 2: Using npm Scripts
+
 ```powershell
 # Build and launch production app
 npm run start
@@ -57,6 +62,7 @@ npm run electron
 ```
 
 #### Method 3: Package for Distribution
+
 ```powershell
 # Install electron-builder for packaging (if not already installed)
 npm install --save-dev electron-builder
@@ -73,6 +79,7 @@ npm run dist:linux  # Linux
 ### 3. Production vs Development Differences
 
 #### Production Mode Features:
+
 - ✅ **Optimized Builds**: Minified and compressed bundles
 - ✅ **No DevTools**: Developer tools disabled for security
 - ✅ **Built Files**: Loads from `dist/renderer/index.html`
@@ -81,6 +88,7 @@ npm run dist:linux  # Linux
 - ✅ **Smaller Bundle Size**: 139 KiB vs 1.14 MiB (development)
 
 #### Development Mode Features:
+
 - 🔧 **Hot Reload**: React Fast Refresh for rapid development
 - 🔧 **DevTools**: Automatic developer tools opening
 - 🔧 **Source Maps**: Full debugging capabilities
@@ -88,6 +96,7 @@ npm run dist:linux  # Linux
 - 🔧 **Fallback Loading**: Graceful fallback to built files if dev server unavailable
 
 ### 4. Environment Detection Logic
+
 The application automatically detects the environment using:
 
 1. **NODE_ENV Environment Variable** (primary)
@@ -101,39 +110,48 @@ return !app.isPackaged; // Fallback for unset NODE_ENV
 ```
 
 ### 5. Troubleshooting Production Issues
+
 #### Common Issues and Solutions:
+
 **Issue**: "Failed to load renderer files"
+
 ```
 Solution: Ensure dist/renderer/ directory exists with index.html
 Command: npm run build:renderer
 ```
 
 **Issue**: "Preload script not found"
+
 ```
 Solution: Ensure preload.js is in dist/ directory
 Command: npm run build:preload
 ```
 
 **Issue**: "App shows blank screen"
+
 ```
 Solution: Check console for JavaScript errors in DevTools
 Command: Set NODE_ENV=development and check logs
 ```
 
 **Issue**: "Window state not persisting"
+
 ```
 Solution: Check file permissions for window state JSON storage
 Location: User data directory (app.getPath('userData'))
 ```
 
 ### 6. Performance Monitoring
+
 #### Bundle Size Analysis
+
 ```powershell
 # Analyze bundle sizes and dependencies
 npx webpack-bundle-analyzer dist/renderer/vendors.js
 ```
 
 #### Production Build Metrics
+
 - **Main Process**: ~51 KiB (Electron backend)
 - **Preload Script**: ~6 KiB (Security bridge)
 - **React App**: ~139 KiB total (2 KiB app + 137 KiB vendors)
@@ -141,7 +159,9 @@ npx webpack-bundle-analyzer dist/renderer/vendors.js
 - **Total App Size**: ~205 KiB (excluding Node.js/Electron runtime)
 
 ### 7. Security Considerations
+
 #### Content Security Policy (Production)
+
 ```html
 <meta
     http-equiv="Content-Security-Policy"
@@ -154,6 +174,7 @@ npx webpack-bundle-analyzer dist/renderer/vendors.js
 ```
 
 #### Electron Security Features
+
 - ✅ **Context Isolation**: Enabled (`contextIsolation: true`)
 - ✅ **Node Integration**: Disabled (`nodeIntegration: false`)
 - ✅ **Web Security**: Enabled (`webSecurity: true`)
@@ -161,7 +182,9 @@ npx webpack-bundle-analyzer dist/renderer/vendors.js
 - ✅ **Secure IPC**: All communication via contextBridge
 
 ### 8. Deployment Automation
+
 #### GitHub Actions Workflow (Example)
+
 ```yaml
 name: Build and Release
 on:
@@ -188,12 +211,14 @@ jobs:
 ### 9. Production Monitoring
 
 #### Application Logs
+
 - **Location**: Console output and log files
 - **Levels**: DEBUG, INFO, WARN, ERROR
 - **Window State**: Automatic persistence and restoration
 - **Error Handling**: Graceful fallbacks and user notifications
 
 #### Health Checks
+
 ```powershell
 # Verify all production files exist
 Test-Path "dist/main.js"      # Should return True
@@ -204,6 +229,7 @@ Test-Path "dist/renderer/index.html" # Should return True
 ---
 
 ## Quick Production Launch Commands
+
 ```powershell
 # One-command production build and launch
 npm run clean && npm run build && $env:NODE_ENV="production" && npx electron .

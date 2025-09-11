@@ -63,4 +63,4 @@ Use existing types/interfaces
 Respect IPC channel names and structure
 Follow component architecture and file conventions
 Always include error handling and logging
-Ensure build/test/style scripts pass. The build command takes time, so make sure you wait and get the final terminal output.
+Ensure build/test/style scripts pass. The build command takes time, so make sure you wait and get the final terminal output showing 'webpack x.xxx compiled successfully in xxx ms' or any pack failures.

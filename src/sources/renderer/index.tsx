@@ -5,12 +5,7 @@
 
 import React from "react";
 import { createRoot } from "react-dom/client";
-import {
-    FluentProvider,
-    webLightTheme,
-    webDarkTheme,
-    Theme,
-} from "@fluentui/react-components";
+import { FluentProvider, webLightTheme, webDarkTheme, Theme } from "@fluentui/react-components";
 import { useAppStyles } from "./index.styles";
 
 // Theme configuration for Support Pilot
@@ -32,29 +27,17 @@ const SupportPilotApp: React.FC = () => {
     return (
         <FluentProvider theme={currentTheme}>
             <div className={styles.container}>
-                <h1 className={styles.title}>
-                    Support Pilot - Fluent UI Ready ✅
-                </h1>
-                <p className={styles.description}>
-                    FluentProvider is configured with custom theme. Hot reload is working!
-                </p>
+                <h1 className={styles.title}>Support Pilot - Fluent UI Ready ✅</h1>
+                <p className={styles.description}>FluentProvider is configured with custom theme. Hot reload is working!</p>
                 <div className={styles.buttonContainer}>
-                    <button
-                        onClick={() => setCount(count + 1)}
-                        className={styles.primaryButton}
-                    >
+                    <button onClick={() => setCount(count + 1)} className={styles.primaryButton}>
                         Count: {count}
                     </button>
-                    <button
-                        onClick={() => setIsDarkMode(!isDarkMode)}
-                        className={styles.secondaryButton}
-                    >
+                    <button onClick={() => setIsDarkMode(!isDarkMode)} className={styles.secondaryButton}>
                         {isDarkMode ? "Light Mode" : "Dark Mode"}
                     </button>
                 </div>
-                <p className={styles.statusText}>
-                    FluentProvider theme: {isDarkMode ? "Dark" : "Light"} • Theme tokens are working!
-                </p>
+                <p className={styles.statusText}>FluentProvider theme: {isDarkMode ? "Dark" : "Light"} • Theme tokens are working!</p>
             </div>
         </FluentProvider>
     );
