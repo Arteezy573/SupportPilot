@@ -102,14 +102,7 @@ const useGreetingStyles = makeStyles({
         fontSize: tokens.fontSizeBase200,
         color: tokens.colorNeutralForeground2,
         lineHeight: tokens.lineHeightBase200,
-    },
-    footer: {
-        fontSize: tokens.fontSizeBase200,
-        color: tokens.colorNeutralForeground3,
-        lineHeight: tokens.lineHeightBase200,
-        fontStyle: "italic",
-        marginTop: tokens.spacingVerticalL,
-    },
+    }
 });
 
 // =============================================================================
@@ -221,10 +214,6 @@ export const GreetingText: React.FC<GreetingTextProps> = ({
                             </div>
                         </div>
                     </div>
-
-                    <Text className={styles.footer}>
-                        You can also use the suggested actions below to quickly summarize issues or create ICM drafts.
-                    </Text>
                 </div>
             )}
         </div>

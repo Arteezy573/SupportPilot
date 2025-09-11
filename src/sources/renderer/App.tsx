@@ -9,7 +9,7 @@ import { makeStyles, tokens, shorthands } from "@fluentui/react-components";
 // Import components (these will be implemented in subsequent tasks)
 import { SupportPilotHeader } from "./components/SupportPilotHeader";
 import { GreetingText } from "./components/GreetingText";
-// import { SuggestedActions } from "./components/SuggestedActions";
+import { SuggestedActions } from "./components/SuggestedActions";
 // import { MessageInputArea } from "./components/MessageInputArea";
 // import { AgentMessageCard } from "./components/AgentMessageCard";
 
@@ -127,6 +127,15 @@ export const App: React.FC<AppProps> = ({
         // TODO: Implement settings functionality in task 3.18
     }, []);
 
+    // Event handlers for suggested actions
+    const handleSummarizeClick = React.useCallback(() => {
+        // TODO: Implement issue summarization in task 3.16
+    }, []);
+
+    const handleCreateIcmClick = React.useCallback(() => {
+        // TODO: Implement ICM creation in task 3.16
+    }, []);
+
     return (
                 <div className={styles.root}>
             {/* Header Section */}
@@ -144,9 +153,10 @@ export const App: React.FC<AppProps> = ({
                         /* Welcome Section */
                         <div className={styles.welcomeSection}>
                             <GreetingText userName="Support Engineer" />
-                            <div className={styles.placeholder}>
-                                SuggestedActions Component (Task 3.7)
-                            </div>
+                            <SuggestedActions
+                                onSummarizeClick={handleSummarizeClick}
+                                onCreateIcmClick={handleCreateIcmClick}
+                            />
                         </div>
                     ) : (
                         /* Messages Container */
