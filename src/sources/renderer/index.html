@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Character encoding and viewport -->
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- Security and compatibility -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;"
+        />
+
+        <!-- Application metadata -->
+        <title>Support Pilot</title>
+        <meta
+            name="description"
+            content="Desktop application for support engineers to analyze logs, emails, and create structured livesite tickets using AI assistance."
+        />
+        <meta name="author" content="Support Pilot Team" />
+        <meta name="application-name" content="Support Pilot" />
+
+        <!-- Disable pinch-to-zoom on desktop -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <!-- Prevent caching of the HTML file -->
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+
+        <!-- Theme and styling -->
+        <meta name="theme-color" content="#0078d4" />
+        <meta name="color-scheme" content="light dark" />
+
+        <!-- Fluent UI CSS Variables and Base Styles -->
+        <style>
+            /* CSS Reset and Base Styles */
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            html,
+            body {
+                height: 100%;
+                width: 100%;
+                overflow: hidden; /* Prevent scrollbars in Electron window */
+            }
+
+            body {
+                font-family: "Segoe UI", system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+                font-size: 14px;
+                line-height: 1.5;
+                color: var(--colorNeutralForeground1);
+                background-color: var(--colorNeutralBackground1);
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            /* Fluent UI CSS Variables (will be overridden by FluentProvider) */
+            :root {
+                /* Light theme defaults */
+                --colorNeutralForeground1: #242424;
+                --colorNeutralBackground1: #ffffff;
+                --colorNeutralBackground2: #f5f5f5;
+                --colorBrandBackground: #0078d4;
+                --colorBrandForeground1: #0078d4;
+                --colorNeutralStroke1: #d1d1d1;
+                --colorNeutralStroke2: #e5e5e5;
+
+                /* Typography */
+                --fontFamilyBase: "Segoe UI", system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+                --fontSizeBase200: 12px;
+                --fontSizeBase300: 14px;
+                --fontSizeBase400: 16px;
+                --fontSizeBase500: 18px;
+                --fontSizeBase600: 20px;
+
+                /* Spacing */
+                --spacingHorizontalXS: 4px;
+                --spacingHorizontalSNudge: 6px;
+                --spacingHorizontalS: 8px;
+                --spacingHorizontalM: 12px;
+                --spacingHorizontalL: 16px;
+                --spacingHorizontalXL: 20px;
+                --spacingHorizontalXXL: 24px;
+
+                /* Border radius */
+                --borderRadiusSmall: 4px;
+                --borderRadiusMedium: 6px;
+                --borderRadiusLarge: 8px;
+            }
+
+            /* Dark theme CSS variables (will be applied automatically by FluentProvider) */
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --colorNeutralForeground1: #ffffff;
+                    --colorNeutralBackground1: #1f1f1f;
+                    --colorNeutralBackground2: #2a2a2a;
+                    --colorBrandBackground: #0078d4;
+                    --colorBrandForeground1: #4cc2ff;
+                    --colorNeutralStroke1: #3d3d3d;
+                    --colorNeutralStroke2: #2a2a2a;
+                }
+            }
+
+            /* Application container */
+            #root {
+                width: 100%;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
+            /* Loading indicator styles */
+            .loading-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                flex-direction: column;
+                gap: var(--spacingHorizontalL);
+            }
+
+            .loading-spinner {
+                width: 32px;
+                height: 32px;
+                border: 3px solid var(--colorNeutralStroke2);
+                border-top: 3px solid var(--colorBrandBackground);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+
+            .loading-text {
+                font-size: var(--fontSizeBase300);
+                color: var(--colorNeutralForeground1);
+                opacity: 0.8;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            /* Focus visible styles for accessibility */
+            *:focus-visible {
+                outline: 2px solid var(--colorBrandBackground);
+                outline-offset: 2px;
+            }
+
+            /* Disable text selection on non-text elements */
+            button,
+            .non-selectable {
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+
+            /* High contrast mode support */
+            @media (prefers-contrast: high) {
+                :root {
+                    --colorNeutralStroke1: #000000;
+                    --colorNeutralStroke2: #000000;
+                }
+            }
+
+            /* Reduced motion support */
+            @media (prefers-reduced-motion: reduce) {
+                *,
+                *::before,
+                *::after {
+                    animation-duration: 0.01ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.01ms !important;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Main application container -->
+        <div id="root">
+            <!-- Loading indicator (shown while React app loads) -->
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Loading Support Pilot...</div>
+            </div>
+        </div>
+
+        <!-- Application scripts will be injected by webpack -->
+        <!-- The renderer bundle will be automatically included by HtmlWebpackPlugin -->
+
+        <!-- Development tools (only in development mode) -->
+        <script>
+            // Development mode detection
+            if (window.electronAPI) {
+                // Log that the preload script is available
+                console.log("Electron API available:", window.electronAPI);
+
+                // Development helper to inspect available APIs
+                if (window.electronDev) {
+                    console.log("Development APIs available:", window.electronDev);
+                    window.electronDev.inspectAPI();
+                }
+            }
+
+            // Handle uncaught errors
+            window.addEventListener("error", event => {
+                console.error("Uncaught error:", event.error);
+
+                // In development, show error details
+                if (process?.env?.NODE_ENV === "development") {
+                    const errorDiv = document.createElement("div");
+                    errorDiv.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #ff4444;
+                    color: white;
+                    padding: 12px;
+                    border-radius: 6px;
+                    font-family: monospace;
+                    font-size: 12px;
+                    max-width: 400px;
+                    z-index: 10000;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                `;
+                    errorDiv.textContent = `Error: ${event.error?.message || "Unknown error"}`;
+                    document.body.appendChild(errorDiv);
+
+                    // Auto-remove after 5 seconds
+                    setTimeout(() => {
+                        if (errorDiv.parentNode) {
+                            errorDiv.parentNode.removeChild(errorDiv);
+                        }
+                    }, 5000);
+                }
+            });
+
+            // Handle unhandled promise rejections
+            window.addEventListener("unhandledrejection", event => {
+                console.error("Unhandled promise rejection:", event.reason);
+            });
+
+            // Performance monitoring in development
+            if (process?.env?.NODE_ENV === "development") {
+                window.addEventListener("load", () => {
+                    console.log("Page load performance:", {
+                        loadTime: performance.now(),
+                        timing: performance.timing,
+                    });
+                });
+            }
+        </script>
+    </body>
+</html>
