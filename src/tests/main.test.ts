@@ -291,8 +291,10 @@ describe("Main Process - Window Creation", () => {
         // Reset the BrowserWindow mock before this test
         jest.clearAllMocks();
         
-        const { createMainWindow } = require("../sources/main");
-        createMainWindow();
+        // Use import instead of require to avoid ESLint error
+        delete require.cache[require.resolve("../sources/main")];
+        const mainModule = require("../sources/main");
+        mainModule.createMainWindow();
 
         // Check that BrowserWindow was called
         expect(BrowserWindow).toHaveBeenCalledTimes(1);

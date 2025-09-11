@@ -44,66 +44,89 @@ Object.defineProperty(window, "matchMedia", {
     })),
 });
 
-// Mock File and FileReader for file upload testing
-(global as any).File = class MockFile {
+// Type definitions for test mocks
+interface MockFileProperties {
+    type?: string;
+    lastModified?: number;
+}
+
+class MockFile {
     name: string;
     size: number;
     type: string;
     lastModified: number;
 
-    constructor(parts: any[], filename: string, properties?: any) {
+    constructor(parts: (string | ArrayBuffer | ArrayBufferView)[], filename: string, properties?: MockFileProperties) {
         this.name = filename;
-        this.size = parts.reduce((acc, part) => acc + part.length, 0);
+        this.size = parts.reduce((acc, part) => acc + (typeof part === 'string' ? part.length : part.byteLength), 0);
         this.type = properties?.type || "text/plain";
-        this.lastModified = Date.now();
+        this.lastModified = properties?.lastModified || Date.now();
     }
 
-    arrayBuffer() {
+    arrayBuffer(): Promise<ArrayBuffer> {
         return Promise.resolve(new ArrayBuffer(8));
     }
 
-    text() {
+    text(): Promise<string> {
         return Promise.resolve("mock file content");
     }
 
-    stream() {
+    stream(): ReadableStream {
         return new ReadableStream();
     }
-};
+}
 
-(global as any).FileReader = class MockFileReader {
-    result: any = null;
-    error: any = null;
-    readyState: number = 0;
-    onload: any = null;
-    onerror: any = null;
-    onabort: any = null;
-    onloadend: any = null;
-
-    readAsText(_file: any) {
+class MockFileReader {
+    public result: string | ArrayBuffer | null = null;
+    public error: DOMException | null = null;
+    public readyState = 0;
+    public onload: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null = null;
+    public onerror: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null = null;
+    
+    readAsText(_file: File): void {
         setTimeout(() => {
+            this.result = 'mocked file content';
             this.readyState = 2;
-            this.result = "mock file content";
-            if (this.onload) this.onload({ target: this });
-            if (this.onloadend) this.onloadend({ target: this });
+            if (this.onload) {
+                this.onload.call(this as any, {} as ProgressEvent<FileReader>);
+            }
         }, 0);
     }
-
-    readAsDataURL(_file: any) {
+    
+    readAsDataURL(_file: File): void {
         setTimeout(() => {
+            this.result = 'data:text/plain;base64,bW9ja2VkIGZpbGUgY29udGVudA==';
             this.readyState = 2;
-            this.result = "data:text/plain;base64,bW9jayBmaWxlIGNvbnRlbnQ=";
-            if (this.onload) this.onload({ target: this });
-            if (this.onloadend) this.onloadend({ target: this });
+            if (this.onload) {
+                this.onload.call(this as any, {} as ProgressEvent<FileReader>);
+            }
         }, 0);
     }
-
-    abort() {
+    
+    readAsArrayBuffer(_file: File): void {
+        setTimeout(() => {
+            this.result = new ArrayBuffer(0);
+            this.readyState = 2;
+            if (this.onload) {
+                this.onload.call(this as any, {} as ProgressEvent<FileReader>);
+            }
+        }, 0);
+    }
+    
+    abort(): void {
         this.readyState = 2;
-        if (this.onabort) this.onabort({ target: this });
-        if (this.onloadend) this.onloadend({ target: this });
     }
-};
+}
+
+interface MockGlobal {
+    File: typeof MockFile;
+    FileReader: new() => MockFileReader;
+}
+
+// Mock File and FileReader for file upload testing
+(global as unknown as MockGlobal).File = MockFile;
+
+(global as unknown as MockGlobal).FileReader = MockFileReader;
 
 // Suppress console errors for cleaner test output
 const originalError = console.error;
