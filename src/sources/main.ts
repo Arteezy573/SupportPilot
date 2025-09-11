@@ -18,7 +18,7 @@ function createMainWindow(): void {
         minHeight: 600,
         maxWidth: 2560, // Reasonable maximum for ultrawide monitors
         maxHeight: 1440, // Reasonable maximum height
-        
+
         // Window behavior and appearance
         show: false, // Don't show until ready-to-show to prevent visual flash
         center: true, // Center window on screen
@@ -26,76 +26,76 @@ function createMainWindow(): void {
         minimizable: true, // Allow window minimization
         maximizable: true, // Allow window maximization
         closable: true, // Allow window closing
-        
+
         // Frame and title bar configuration
         frame: true, // Show window frame with native controls
         titleBarStyle: "default", // Use system default title bar
         title: "Support Pilot", // Application title
         icon: path.join(__dirname, "../assets/icon.png"), // App icon
-        
+
         // Transparency and visual effects
         transparent: false, // Disable transparency for better performance
         opacity: 1.0, // Full opacity
         hasShadow: true, // Enable window shadow on macOS
-        
+
         // Focus and visibility behavior
         alwaysOnTop: false, // Don't keep window always on top
         skipTaskbar: false, // Show in taskbar
         kiosk: false, // Disable kiosk mode
         fullscreen: false, // Start in windowed mode
         fullscreenable: true, // Allow fullscreen mode
-        
+
         // Background and loading
         backgroundColor: "#ffffff", // White background while loading
-        
+
         // Platform-specific optimizations
         ...(process.platform === "darwin" && {
             vibrancy: "content", // macOS vibrancy effect
             visualEffectState: "active", // macOS visual effect state
             titleBarOverlay: false, // Disable title bar overlay on macOS
         }),
-        
+
         ...(process.platform === "win32" && {
             thickFrame: true, // Windows thick frame for better resize experience
         }),
-        
+
         // Web security and isolation settings
         webPreferences: {
             // Security: Core isolation settings
             nodeIntegration: false, // Disable Node.js integration in renderer
             contextIsolation: true, // Enable context isolation for security
             sandbox: false, // Disable sandbox to allow preload script access
-            
+
             // Security: Script and content policies
             webSecurity: true, // Enable web security
             allowRunningInsecureContent: false, // Block mixed content
             experimentalFeatures: false, // Disable experimental web features
-            
+
             // Preload script for secure IPC bridge
             preload: path.join(__dirname, "preload.js"),
-            
+
             // Additional security settings
             nodeIntegrationInWorker: false, // Disable Node.js in web workers
             nodeIntegrationInSubFrames: false, // Disable Node.js in subframes
-            
+
             // Content and navigation restrictions
             navigateOnDragDrop: false, // Prevent navigation on drag and drop
             autoplayPolicy: "user-gesture-required", // Require user gesture for autoplay
-            
+
             // Development and debugging
             devTools: isDev(), // Enable DevTools only in development
-            
+
             // Performance optimizations
             backgroundThrottling: false, // Disable throttling for consistent performance
             offscreen: false, // Disable offscreen rendering
-            
+
             // Image and media handling
             images: true, // Enable image loading
             webgl: true, // Enable WebGL for potential future features
-            
+
             // Spell checking and language features
             spellcheck: true, // Enable spell checking in text inputs
-            
+
             // Zoom and scaling
             zoomFactor: 1.0, // Default zoom level
         },

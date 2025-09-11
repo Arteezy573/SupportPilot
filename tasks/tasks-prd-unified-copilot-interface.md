@@ -1,8 +1,10 @@
 ## Relevant Files
 
 - `src/sources/main.ts` - Main Electron process entry point with comprehensive window management, lifecycle handling, application menu, secure IPC handlers, single-instance enforcement, and production-ready window configuration with security settings.
+- `src/sources/preload.ts` - Secure preload script with contextBridge for safe IPC communication, exposing typed APIs for app control, file operations, and Support Pilot functionality.
 - `src/sources/utils/environment.ts` - Environment detection utilities for development/production mode and app packaging status.
 - `src/sources/utils/index.ts` - Utils module index for clean imports.
+- `src/sources/types/electron.ts` - TypeScript definitions for Electron APIs exposed to renderer process, ensuring type safety across IPC boundaries.
 - `src/sources/preload.ts` - Preload script for secure IPC communication between main and renderer.
 - `src/sources/renderer/index.html` - Main HTML template with Fluent UI theme provider setup.
 - `src/sources/renderer/index.tsx` - React app entry point with FluentProvider and theme configuration.
@@ -71,7 +73,7 @@
 - [ ] 2.0 Basic Electron Application Structure
   - [x] 2.1 Create main process entry point (src/sources/main.ts) with window creation and lifecycle management
   - [x] 2.2 Implement window configuration with proper dimensions, frame options, and web security settings
-  - [ ] 2.3 Create preload script (src/sources/preload.ts) with contextBridge for secure IPC communication
+  - [x] 2.3 Create preload script (src/sources/preload.ts) with contextBridge for secure IPC communication
   - [ ] 2.4 Set up IPC channels for future message passing between main and renderer processes
   - [ ] 2.5 Create main HTML template (src/sources/renderer/index.html) with proper meta tags and Fluent UI setup
   - [ ] 2.6 Implement application menu with basic File and View options
