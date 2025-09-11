@@ -11,6 +11,7 @@
 - `src/sources/preload.ts` - Preload script for secure IPC communication between main and renderer.
 - `src/sources/renderer/index.html` - Main HTML template with Fluent UI theme provider setup.
 - `src/sources/renderer/index.tsx` - React app entry point with FluentProvider and theme configuration.
+- `src/sources/renderer/index.styles.ts` - Extracted styles using makeStyles and design tokens for the app entry point.
 - `src/sources/renderer/App.tsx` - Root React component with main application layout using Fluent UI Stack.
 - `src/sources/renderer/components/SupportPilotHeader.tsx` - Header component with tool branding and chat history access.
 - `src/sources/renderer/components/GreetingText.tsx` - Personalized greeting and usage guidance component.
@@ -86,7 +87,7 @@
   - [ ] 2.10 Write unit tests for main process and preload script functionality
 
 - [ ] 3.0 Support Pilot Interface Implementation with Fluent UI
-  - [ ] 3.1 Create React app entry point (src/sources/renderer/index.tsx) with FluentProvider and theme setup
+  - [x] 3.1 Create React app entry point (src/sources/renderer/index.tsx) with FluentProvider and theme setup
   - [ ] 3.2 Define TypeScript interfaces for support pilot types (Message, AgentAction, SupportSession, IssueContext) in src/sources/types/chat.ts
   - [ ] 3.3 Create custom Fluent UI theme configuration with dark/light mode support in src/sources/renderer/styles/theme.ts
   - [ ] 3.4 Implement root App component (src/sources/renderer/App.tsx) with main layout using Fluent UI Stack

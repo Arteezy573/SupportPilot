@@ -1,57 +1,70 @@
 /**
- * Minimal React entry point for hot reload testing
- * This is a placeholder until the full renderer implementation in task 3.0
+ * React app entry point with FluentProvider and theme setup
+ * Main entry point for the Support Pilot renderer process
  */
 
 import React from "react";
 import { createRoot } from "react-dom/client";
+import {
+    FluentProvider,
+    webLightTheme,
+    webDarkTheme,
+    Theme,
+} from "@fluentui/react-components";
+import { useAppStyles } from "./index.styles";
 
-// Simple test component for hot reload verification
-const TestApp: React.FC = () => {
+// Theme configuration for Support Pilot
+const supportPilotTheme: Theme = {
+    ...webLightTheme,
+    colorBrandBackground: "#0078d4",
+    colorBrandForeground1: "#0078d4",
+    colorBrandForeground2: "#106ebe",
+};
+
+// Temporary App component until App.tsx is implemented in task 3.4
+const SupportPilotApp: React.FC = () => {
+    const [isDarkMode, setIsDarkMode] = React.useState(false);
     const [count, setCount] = React.useState(0);
+    const styles = useAppStyles();
+
+    const currentTheme = isDarkMode ? webDarkTheme : supportPilotTheme;
 
     return (
-        <div
-            style={{
-                fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
-                padding: "20px",
-                textAlign: "center",
-                height: "100vh",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#f5f5f5",
-            }}
-        >
-            <h1 style={{ color: "#0078d4", marginBottom: "20px" }}>Support Pilot - Hot Reload Test ✅</h1>
-            <p style={{ marginBottom: "20px", fontSize: "16px" }}>Hot reload is working! This text was updated without restarting the server.</p>
-            <div style={{ marginBottom: "20px" }}>
-                <button
-                    onClick={() => setCount(count + 1)}
-                    style={{
-                        padding: "10px 20px",
-                        fontSize: "16px",
-                        backgroundColor: "#0078d4",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                    }}
-                >
-                    Count: {count}
-                </button>
+        <FluentProvider theme={currentTheme}>
+            <div className={styles.container}>
+                <h1 className={styles.title}>
+                    Support Pilot - Fluent UI Ready ✅
+                </h1>
+                <p className={styles.description}>
+                    FluentProvider is configured with custom theme. Hot reload is working!
+                </p>
+                <div className={styles.buttonContainer}>
+                    <button
+                        onClick={() => setCount(count + 1)}
+                        className={styles.primaryButton}
+                    >
+                        Count: {count}
+                    </button>
+                    <button
+                        onClick={() => setIsDarkMode(!isDarkMode)}
+                        className={styles.secondaryButton}
+                    >
+                        {isDarkMode ? "Light Mode" : "Dark Mode"}
+                    </button>
+                </div>
+                <p className={styles.statusText}>
+                    FluentProvider theme: {isDarkMode ? "Dark" : "Light"} • Theme tokens are working!
+                </p>
             </div>
-            <p style={{ fontSize: "14px", color: "#666" }}>Try modifying this file - changes should appear instantly!</p>
-        </div>
+        </FluentProvider>
     );
 };
 
-// Initialize React app
+// Initialize React app with FluentProvider
 const container = document.getElementById("root");
 if (container) {
     const root = createRoot(container);
-    root.render(<TestApp />);
+    root.render(<SupportPilotApp />);
 } else {
-    throw new Error("Root element not found");
+    throw new Error("Root element not found. Make sure the HTML template has a div with id='root'");
 }
