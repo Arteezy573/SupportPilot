@@ -149,7 +149,7 @@ function createMainWindow(): void {
 }
 
 /**
- * Creates and sets up the application menu
+ * Creates and sets up the application menu with Support Pilot specific options
  */
 function createApplicationMenu(): void {
     const template: Electron.MenuItemConstructorOptions[] = [
@@ -166,6 +166,7 @@ function createApplicationMenu(): void {
                         }
                     },
                 },
+                { type: "separator" },
                 {
                     label: "Open Files...",
                     accelerator: "CmdOrCtrl+O",
@@ -183,6 +184,59 @@ function createApplicationMenu(): void {
                             if (!result.canceled && result.filePaths.length > 0) {
                                 mainWindow.webContents.send("menu:files-selected", result.filePaths);
                             }
+                        }
+                    },
+                },
+                {
+                    label: "Open Log Directory...",
+                    accelerator: "CmdOrCtrl+Shift+O",
+                    click: async () => {
+                        if (mainWindow) {
+                            const result = await dialog.showOpenDialog(mainWindow, {
+                                properties: ["openDirectory"],
+                                title: "Select Log Directory",
+                            });
+
+                            if (!result.canceled && result.filePaths.length > 0) {
+                                // Find all log files in the selected directory
+                                const fs = await import("fs/promises");
+                                const path = await import("path");
+                                
+                                try {
+                                    const dirPath = result.filePaths[0];
+                                    const files = await fs.readdir(dirPath);
+                                    const logFiles = files
+                                        .filter(file => /\.(log|txt)$/i.test(file))
+                                        .map(file => path.join(dirPath, file));
+                                    
+                                    if (logFiles.length > 0) {
+                                        mainWindow.webContents.send("menu:files-selected", logFiles);
+                                    } else {
+                                        // Show info that no log files were found
+                                        dialog.showMessageBox(mainWindow, {
+                                            type: "info",
+                                            title: "No Log Files Found",
+                                            message: "No log files (.log, .txt) were found in the selected directory.",
+                                            buttons: ["OK"],
+                                        });
+                                    }
+                                } catch (error) {
+                                    logger.error("Failed to read log directory:", error);
+                                    dialog.showErrorBox("Error", "Failed to read the selected directory.");
+                                }
+                            }
+                        }
+                    },
+                },
+                { type: "separator" },
+                {
+                    label: "Export Analysis...",
+                    accelerator: "CmdOrCtrl+E",
+                    enabled: false, // Will be enabled when there's content to export
+                    click: () => {
+                        // Send IPC message to renderer to export current analysis
+                        if (mainWindow) {
+                            mainWindow.webContents.send("menu:export-analysis");
                         }
                     },
                 },
@@ -207,6 +261,70 @@ function createApplicationMenu(): void {
                 { role: "forceReload" },
                 { role: "toggleDevTools" },
                 { type: "separator" },
+                {
+                    label: "Focus Message Input",
+                    accelerator: "CmdOrCtrl+K",
+                    click: () => {
+                        if (mainWindow) {
+                            mainWindow.webContents.send("menu:focus-input");
+                        }
+                    },
+                },
+                {
+                    label: "Clear Chat History",
+                    accelerator: "CmdOrCtrl+Shift+Delete",
+                    click: () => {
+                        if (mainWindow) {
+                            dialog.showMessageBox(mainWindow, {
+                                type: "warning",
+                                title: "Clear Chat History",
+                                message: "Are you sure you want to clear all chat history? This action cannot be undone.",
+                                buttons: ["Cancel", "Clear History"],
+                                defaultId: 0,
+                                cancelId: 0,
+                            }).then((result) => {
+                                if (result.response === 1 && mainWindow) {
+                                    mainWindow.webContents.send("menu:clear-history");
+                                }
+                            });
+                        }
+                    },
+                },
+                { type: "separator" },
+                {
+                    label: "Theme",
+                    submenu: [
+                        {
+                            label: "Light Theme",
+                            type: "radio",
+                            checked: true, // Default to light theme
+                            click: () => {
+                                if (mainWindow) {
+                                    mainWindow.webContents.send("menu:theme-change", "light");
+                                }
+                            },
+                        },
+                        {
+                            label: "Dark Theme",
+                            type: "radio",
+                            click: () => {
+                                if (mainWindow) {
+                                    mainWindow.webContents.send("menu:theme-change", "dark");
+                                }
+                            },
+                        },
+                        {
+                            label: "System Theme",
+                            type: "radio",
+                            click: () => {
+                                if (mainWindow) {
+                                    mainWindow.webContents.send("menu:theme-change", "system");
+                                }
+                            },
+                        },
+                    ],
+                },
+                { type: "separator" },
                 { role: "resetZoom" },
                 { role: "zoomIn" },
                 { role: "zoomOut" },
@@ -217,6 +335,77 @@ function createApplicationMenu(): void {
         {
             label: "Window",
             submenu: [{ role: "minimize" }, { role: "close" }],
+        },
+        {
+            label: "Help",
+            submenu: [
+                {
+                    label: "About Support Pilot",
+                    click: () => {
+                        if (mainWindow) {
+                            dialog.showMessageBox(mainWindow, {
+                                type: "info",
+                                title: "About Support Pilot",
+                                message: "Support Pilot",
+                                detail: `Version: ${app.getVersion()}\n\nDesktop application for support engineers to analyze logs, emails, and create structured livesite tickets using AI assistance.\n\nBuilt with Electron, React, and TypeScript.`,
+                                buttons: ["OK"],
+                            });
+                        }
+                    },
+                },
+                { type: "separator" },
+                {
+                    label: "Keyboard Shortcuts",
+                    accelerator: "CmdOrCtrl+?",
+                    click: () => {
+                        if (mainWindow) {
+                            const shortcuts = [
+                                "Ctrl+N (Cmd+N) - New Session",
+                                "Ctrl+O (Cmd+O) - Open Files",
+                                "Ctrl+Shift+O (Cmd+Shift+O) - Open Log Directory",
+                                "Ctrl+E (Cmd+E) - Export Analysis",
+                                "Ctrl+K (Cmd+K) - Focus Message Input",
+                                "Ctrl+Shift+Delete (Cmd+Shift+Delete) - Clear Chat History",
+                                "Ctrl+R (Cmd+R) - Reload",
+                                "F12 - Toggle Developer Tools",
+                                "F11 - Toggle Fullscreen",
+                            ].join("\n");
+
+                            dialog.showMessageBox(mainWindow, {
+                                type: "info",
+                                title: "Keyboard Shortcuts",
+                                message: "Support Pilot Keyboard Shortcuts",
+                                detail: shortcuts,
+                                buttons: ["OK"],
+                            });
+                        }
+                    },
+                },
+                {
+                    label: "User Guide",
+                    click: async () => {
+                        // Open user guide in external browser
+                        await shell.openExternal("https://docs.microsoft.com/support-pilot"); // Placeholder URL
+                    },
+                },
+                {
+                    label: "Report Issue",
+                    click: async () => {
+                        // Open issue reporting page in external browser
+                        await shell.openExternal("https://github.com/microsoft/support-pilot/issues"); // Placeholder URL
+                    },
+                },
+                { type: "separator" },
+                {
+                    label: "Developer Tools",
+                    accelerator: "F12",
+                    click: () => {
+                        if (mainWindow) {
+                            mainWindow.webContents.toggleDevTools();
+                        }
+                    },
+                },
+            ],
         },
     ];
 
@@ -237,8 +426,15 @@ function createApplicationMenu(): void {
             ],
         });
 
-        // Window menu for macOS
-        template[4].submenu = [{ role: "close" }, { role: "minimize" }, { role: "zoom" }, { type: "separator" }, { role: "front" }];
+        // Window menu for macOS (now at index 5 due to Help menu)
+        template[5].submenu = [{ role: "close" }, { role: "minimize" }, { role: "zoom" }, { type: "separator" }, { role: "front" }];
+        
+        // Move About to app menu on macOS and remove from Help menu
+        const helpMenu = template[6].submenu as Electron.MenuItemConstructorOptions[];
+        helpMenu.shift(); // Remove "About Support Pilot"
+        if (helpMenu[0]?.type === "separator") {
+            helpMenu.shift(); // Remove separator after About
+        }
     }
 
     const menu = Menu.buildFromTemplate(template);
