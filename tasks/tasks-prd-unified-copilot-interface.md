@@ -63,7 +63,7 @@
   - [x] 1.6 Configure Webpack for main and renderer processes with TypeScript compilation
   - [x] 1.7 Configure Jest testing framework with TypeScript and React Testing Library
   - [x] 1.8 Set up npm scripts for development, build, test, and electron execution
-  - [ ] 1.9 Create .gitignore file with Node.js, Electron, and build artifact patterns
+  - [x] 1.9 Create .gitignore file with Node.js, Electron, and build artifact patterns
   - [ ] 1.10 Create initial project directory structure (src/sources, src/tests)
 
 - [ ] 2.0 Basic Electron Application Structure
