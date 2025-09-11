@@ -81,7 +81,7 @@
   - [x] 2.5 Create main HTML template (src/sources/renderer/index.html) with proper meta tags and Fluent UI setup
   - [x] 2.6 Implement application menu with basic File and View options
   - [x] 2.7 Add window state management (minimize, maximize, close) and proper app quit handling
-  - [ ] 2.8 Configure development hot reload for renderer process
+  - [x] 2.8 Configure development hot reload for renderer process
   - [ ] 2.9 Test basic Electron app launch and window functionality
   - [ ] 2.10 Write unit tests for main process and preload script functionality
 

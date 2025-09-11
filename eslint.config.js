@@ -236,6 +236,7 @@ module.exports = [
       "build/",
       "node_modules/",
       "coverage/",
+      "scripts/",
       "*.config.js",
       "webpack.*.js",
       "jest.config.js",
