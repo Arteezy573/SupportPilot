@@ -8,7 +8,7 @@ import { makeStyles, tokens, shorthands } from "@fluentui/react-components";
 
 // Import components (these will be implemented in subsequent tasks)
 import { SupportPilotHeader } from "./components/SupportPilotHeader";
-// import { GreetingText } from "./components/GreetingText";
+import { GreetingText } from "./components/GreetingText";
 // import { SuggestedActions } from "./components/SuggestedActions";
 // import { MessageInputArea } from "./components/MessageInputArea";
 // import { AgentMessageCard } from "./components/AgentMessageCard";
@@ -143,8 +143,10 @@ export const App: React.FC<AppProps> = ({
                     {shouldShowWelcome ? (
                         /* Welcome Section */
                         <div className={styles.welcomeSection}>
-                            <div className={styles.placeholder}>GreetingText Component (Task 3.6)</div>
-                            <div className={styles.placeholder}>SuggestedActions Component (Task 3.7)</div>
+                            <GreetingText userName="Support Engineer" />
+                            <div className={styles.placeholder}>
+                                SuggestedActions Component (Task 3.7)
+                            </div>
                         </div>
                     ) : (
                         /* Messages Container */

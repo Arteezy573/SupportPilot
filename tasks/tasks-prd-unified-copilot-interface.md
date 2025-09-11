@@ -92,19 +92,17 @@
   - [x] 3.3 Create custom Fluent UI theme configuration with dark/light mode support in src/sources/renderer/styles/theme.ts
   - [x] 3.4 Implement root App component (src/sources/renderer/App.tsx) with main layout using Fluent UI Stack
   - [x] 3.5 Create SupportPilotHeader component with tool branding and ChatHistoryButton integration
-  - [ ] 3.6 Implement GreetingText component with personalized welcome message and usage guidance
+  - [x] 3.6 Implement GreetingText component with personalized welcome message and usage guidance
   - [ ] 3.7 Create SuggestedActions component containing SummarizeIssueButton and CreateICMButton with Fluent UI Button styling
   - [ ] 3.8 Implement MessageInputArea component with AttachFileButton and MessageInputField using Fluent UI TextField
   - [ ] 3.9 Create AgentMessageCard component with expandable sections for ReAct pattern support
-  - [ ] 3.10 Implement AgentThoughtSection component to display agent reasoning with Fluent UI Text styling
-  - [ ] 3.11 Create AgentActionSection component to show agent actions with appropriate icons and status indicators
-  - [ ] 3.12 Implement AgentResultExpandable component using Fluent UI Accordion for collapsible result display
-  - [ ] 3.13 Create AgentCitationsList component using Fluent UI DetailsList for references and sources
-  - [ ] 3.14 Develop useChat custom hook for support session management, message handling, and local storage persistence
+  - [ ] 3.10 Implement AgentThoughtSection component to display agent reasoning with Fluent UI Text styling, use mock lorem ipsum data for further integration
+  - [ ] 3.11 Create AgentActionSection component to show agent actions with appropriate icons and status indicators, use mock lorem ipsum data for further integration
+  - [ ] 3.12 Implement AgentResultExpandable component using Fluent UI Accordion for collapsible result display, use mock lorem ipsum data for further integration
+  - [ ] 3.13 Create AgentCitationsList component using Fluent UI DetailsList for references and sources, use mock lorem ipsum data for further integration
+  - [ ] 3.14 Develop useChat custom hook for support session management, message handling, and local storage persistence, use mock lorem ipsum data for further integration
   - [ ] 3.15 Implement file attachment functionality with drag-and-drop support and file preview capabilities
-  - [ ] 3.16 Add suggested action handlers for issue summarization and ICM creation workflows
-  - [ ] 3.17 Implement chat history persistence and retrieval functionality
+  - [ ] 3.16 Add suggested action handlers for issue summarization and ICM creation workflows, leave implementation blank for further integration.
+  - [ ] 3.17 Implement chat history persistence and retrieval functionality, use mock lorem ipsum data for further integration.
   - [ ] 3.18 Add theme toggle functionality for switching between dark and light modes
   - [ ] 3.19 Implement proper error handling and loading states for all support operations
-  - [ ] 3.20 Write comprehensive unit tests for all React components and custom hooks
-  - [ ] 3.21 Test complete support pilot interface functionality including file attachment, agent interactions, and workflow triggers
