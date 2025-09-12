@@ -76,7 +76,8 @@ module.exports = merge(common, {
         open: false, // Don't open browser automatically
         allowedHosts: "all",
         headers: {
-            "Content-Security-Policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: ws: wss:;",
+            "Content-Security-Policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: ws: wss:; connect-src 'self' https://*.openai.azure.com https://cognitiveservices.azure.com ws: wss:;",
+            // TODO: work to allow mcp resource connection if they use http
         },
         client: false, // Disable webpack-dev-server client to avoid Node.js module issues
         devMiddleware: {
