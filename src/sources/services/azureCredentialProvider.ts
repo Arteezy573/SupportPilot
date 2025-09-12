@@ -4,8 +4,8 @@
  * Following the pattern from SimpleAzureOpenAITest.js
  */
 
-import { DefaultAzureCredential, getBearerTokenProvider } from "@azure/identity";
 import type { AzureCredentialConfig } from "../types/azure";
+import { TokenCredential } from "@azure/identity";
 import { logger } from "../utils/logger";
 
 /**
@@ -18,7 +18,7 @@ const DEFAULT_SCOPE = "https://cognitiveservices.azure.com/.default";
  * Manages Azure authentication and token provider creation
  */
 export class AzureCredentialProvider {
-    private credential?: DefaultAzureCredential;
+    private credential?: TokenCredential;
     private config: AzureCredentialConfig;
     private preRetrievedToken?: string;
 
@@ -32,21 +32,42 @@ export class AzureCredentialProvider {
             ...config,
         };
 
-        // Initialize DefaultAzureCredential with optional configuration
-        const credentialOptions = {
-            ...(this.config.tenantId && { tenantId: this.config.tenantId }),
-            ...(this.config.clientId && { managedIdentityClientId: this.config.clientId }),
-        };
-
         this.preRetrievedToken = process.env.AZURE_BEARER_TOKEN;
-        this.credential = this.preRetrievedToken ? undefined : new DefaultAzureCredential(credentialOptions);
 
         logger.info("AzureCredentialProvider initialized", {
             tenantId: this.config.tenantId ? "[REDACTED]" : "not provided",
             clientId: this.config.clientId ? "[REDACTED]" : "not provided",
             useManagedIdentity: this.config.useManagedIdentity,
             scopes: this.config.scopes,
+            usingPreRetrievedToken: !!this.preRetrievedToken,
         });
+    }
+
+    /**
+     * Dynamically initialize DefaultAzureCredential only when needed
+     */
+    private async ensureCredential(): Promise<void> {
+        if (this.credential || this.preRetrievedToken) {
+            return; // Already have credential or using pre-retrieved token
+        }
+
+        try {
+            const { DefaultAzureCredential } = await import("@azure/identity");
+            
+            const credentialOptions = {
+                ...(this.config.tenantId && { tenantId: this.config.tenantId }),
+                ...(this.config.clientId && { managedIdentityClientId: this.config.clientId }),
+            };
+
+            this.credential = new DefaultAzureCredential(credentialOptions);
+            
+            logger.debug("DefaultAzureCredential initialized dynamically");
+        } catch (error) {
+            logger.error("Failed to initialize DefaultAzureCredential", {
+                error: error instanceof Error ? error.message : "Unknown error",
+            });
+            throw error;
+        }
     }
 
     /**
@@ -71,23 +92,31 @@ export class AzureCredentialProvider {
 
         logger.debug("Creating bearer token provider with DefaultAzureCredential", { scope: tokenScope });
 
-        if (!this.credential) {
-            throw new Error("DefaultAzureCredential is not initialized. Cannot create bearer token provider.");
-        }
+        return async () => {
+            try {
+                await this.ensureCredential();
+                
+                if (!this.credential) {
+                    throw new Error("DefaultAzureCredential could not be initialized");
+                }
 
-        try {
-            const tokenProvider = getBearerTokenProvider(this.credential, tokenScope);
+                const { getBearerTokenProvider } = await import("@azure/identity");
+                // Type assertion needed for compatibility with Azure SDK types
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const tokenProvider = getBearerTokenProvider(this.credential as any, tokenScope);
+                const token = await tokenProvider();
 
-            logger.info("Bearer token provider created successfully", { scope: tokenScope });
+                logger.info("Bearer token provider created and token retrieved successfully", { scope: tokenScope });
 
-            return tokenProvider;
-        } catch (error) {
-            logger.error("Failed to create bearer token provider", {
-                error: error instanceof Error ? error.message : "Unknown error",
-                scope: tokenScope,
-            });
-            throw new Error(`Failed to create bearer token provider: ${error instanceof Error ? error.message : "Unknown error"}`);
-        }
+                return token;
+            } catch (error) {
+                logger.error("Failed to create bearer token provider or retrieve token", {
+                    error: error instanceof Error ? error.message : "Unknown error",
+                    scope: tokenScope,
+                });
+                throw new Error(`Failed to get bearer token: ${error instanceof Error ? error.message : "Unknown error"}`);
+            }
+        };
     }
 
     /**
@@ -97,17 +126,14 @@ export class AzureCredentialProvider {
      */
     public async testCredential(scope?: string): Promise<boolean> {
         // Check if we have a pre-retrieved bearer token from environment
-        const preRetrievedToken = this.preRetrievedToken;
-
-        if (preRetrievedToken) {
+        if (this.preRetrievedToken) {
             logger.info("Testing pre-retrieved bearer token from environment");
 
             // For pre-retrieved tokens, we assume they are valid since they were just retrieved
-            // In a production scenario, you might want to validate the token format or expiry
-            if (preRetrievedToken.length > 0) {
+            if (this.preRetrievedToken.length > 0) {
                 logger.info("Pre-retrieved bearer token validation successful", {
-                    tokenLength: preRetrievedToken.length,
-                    tokenPrefix: preRetrievedToken.substring(0, 20) + "...",
+                    tokenLength: this.preRetrievedToken.length,
+                    tokenPrefix: this.preRetrievedToken.substring(0, 20) + "...",
                 });
                 return true;
             } else {
@@ -119,12 +145,14 @@ export class AzureCredentialProvider {
         // Fall back to DefaultAzureCredential testing
         const tokenScope = scope || this.config.scopes![0];
 
-        if (!this.credential) {
-            logger.error("DefaultAzureCredential is not initialized. Cannot test credential.");
-            return false;
-        }
-
         try {
+            await this.ensureCredential();
+
+            if (!this.credential) {
+                logger.error("DefaultAzureCredential could not be initialized");
+                return false;
+            }
+
             logger.debug("Testing Azure credential with DefaultAzureCredential", { scope: tokenScope });
 
             const token = await this.credential.getToken(tokenScope);
@@ -158,7 +186,7 @@ export class AzureCredentialProvider {
             clientId: this.config.clientId ? "[REDACTED]" : undefined,
             useManagedIdentity: this.config.useManagedIdentity,
             scopes: this.config.scopes,
-            usingPreRetrievedToken: !!process.env.AZURE_BEARER_TOKEN,
+            usingPreRetrievedToken: !!this.preRetrievedToken,
         };
     }
 
@@ -167,32 +195,31 @@ export class AzureCredentialProvider {
      * @returns True if using pre-retrieved token, false if using DefaultAzureCredential
      */
     public isUsingPreRetrievedToken(): boolean {
-        return !!process.env.AZURE_BEARER_TOKEN;
+        return !!this.preRetrievedToken;
     }
 
     /**
      * Update the credential configuration
      * @param newConfig - New configuration options
      */
-    public updateConfig(newConfig: Partial<AzureCredentialConfig>): void {
+    public async updateConfig(newConfig: Partial<AzureCredentialConfig>): Promise<void> {
         this.config = {
             ...this.config,
             ...newConfig,
         };
 
-        // Reinitialize credential with new configuration
-        const credentialOptions = {
-            ...(this.config.tenantId && { tenantId: this.config.tenantId }),
-            ...(this.config.clientId && { managedIdentityClientId: this.config.clientId }),
-        };
+        // Re-check for pre-retrieved token
+        this.preRetrievedToken = process.env.AZURE_BEARER_TOKEN;
 
-        this.credential = new DefaultAzureCredential(credentialOptions);
+        // Reset credential to force re-initialization with new config
+        this.credential = undefined;
 
         logger.info("Azure credential configuration updated", {
             tenantId: this.config.tenantId ? "[REDACTED]" : "not provided",
             clientId: this.config.clientId ? "[REDACTED]" : "not provided",
             useManagedIdentity: this.config.useManagedIdentity,
             scopes: this.config.scopes,
+            usingPreRetrievedToken: !!this.preRetrievedToken,
         });
     }
 }
