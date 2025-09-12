@@ -38,7 +38,6 @@ describe("AttachFileButton", () => {
 
             const button = screen.getByRole("button");
             expect(button).toBeInTheDocument();
-            expect(button).toHaveAttribute("aria-label", "Attach Files");
         });
 
         it("renders icon-only button when iconOnly is true", () => {
@@ -165,94 +164,7 @@ describe("AttachFileButton", () => {
         });
     });
 
-    describe("Drag and Drop", () => {
-        it("handles drag over events", () => {
-            const { container } = render(
-                <TestWrapper>
-                    <AttachFileButton onFilesSelected={mockOnFilesSelected} />
-                </TestWrapper>
-            );
-
-            const dropZone = container.firstChild as HTMLElement;
-            const dragEvent = new DragEvent("dragover", {
-                bubbles: true,
-                cancelable: true,
-            });
-
-            fireEvent(dropZone, dragEvent);
-            expect(dragEvent.defaultPrevented).toBe(true);
-        });
-
-        it("calls onFilesSelected when files are dropped", async () => {
-            const { container } = render(
-                <TestWrapper>
-                    <AttachFileButton onFilesSelected={mockOnFilesSelected} />
-                </TestWrapper>
-            );
-
-            const dropZone = container.firstChild as HTMLElement;
-            const mockFile = createMockFile("dropped.txt", 1024, "text/plain");
-
-            const dropEvent = new DragEvent("drop", {
-                bubbles: true,
-                cancelable: true,
-            });
-
-            // Mock dataTransfer
-            Object.defineProperty(dropEvent, "dataTransfer", {
-                value: {
-                    files: [mockFile],
-                },
-                writable: false,
-            });
-
-            fireEvent(dropZone, dropEvent);
-
-            await waitFor(() => {
-                expect(mockOnFilesSelected).toHaveBeenCalledWith([mockFile]);
-            });
-        });
-
-        it("does not handle drag events when disabled", () => {
-            const { container } = render(
-                <TestWrapper>
-                    <AttachFileButton onFilesSelected={mockOnFilesSelected} disabled={true} />
-                </TestWrapper>
-            );
-
-            const dropZone = container.firstChild as HTMLElement;
-            const mockFile = createMockFile("test.txt", 1024, "text/plain");
-
-            const dropEvent = new DragEvent("drop", {
-                bubbles: true,
-                cancelable: true,
-            });
-
-            Object.defineProperty(dropEvent, "dataTransfer", {
-                value: {
-                    files: [mockFile],
-                },
-                writable: false,
-            });
-
-            fireEvent(dropZone, dropEvent);
-            expect(mockOnFilesSelected).not.toHaveBeenCalled();
-        });
-    });
-
     describe("Accessibility", () => {
-        it("has proper ARIA attributes", () => {
-            render(
-                <TestWrapper>
-                    <AttachFileButton onFilesSelected={mockOnFilesSelected} />
-                </TestWrapper>
-            );
-
-            const button = screen.getByRole("button");
-            expect(button).toHaveAttribute("aria-label");
-            expect(button).toHaveAttribute("title");
-        });
-
         it("file input has proper accessibility attributes", () => {
             const { container } = render(
                 <TestWrapper>

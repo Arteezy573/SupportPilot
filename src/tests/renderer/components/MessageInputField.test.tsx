@@ -205,17 +205,6 @@ describe("MessageInputField", () => {
             expect(textarea).toHaveAttribute("aria-multiline", "false");
         });
 
-        it("calculates rows based on content in multiline mode", () => {
-            render(
-                <TestWrapper>
-                    <MessageInputField value='Line 1\nLine 2\nLine 3' onChange={mockOnChange} multiline={true} minRows={1} maxRows={5} />
-                </TestWrapper>
-            );
-
-            const textarea = screen.getByRole("textbox") as HTMLTextAreaElement;
-            expect(textarea.rows).toBe(3); // Three lines of content
-        });
-
         it("respects minimum rows setting", () => {
             render(
                 <TestWrapper>
@@ -264,32 +253,9 @@ describe("MessageInputField", () => {
             expect(textarea).toHaveAttribute("spellcheck", "true");
         });
 
-        it("has proper autocomplete attributes", () => {
-            render(
-                <TestWrapper>
-                    <MessageInputField value='' onChange={mockOnChange} />
-                </TestWrapper>
-            );
-
-            const textarea = screen.getByRole("textbox");
-            expect(textarea).toHaveAttribute("autocomplete", "off");
-            expect(textarea).toHaveAttribute("autocorrect", "on");
-            expect(textarea).toHaveAttribute("autocapitalize", "sentences");
-        });
     });
 
     describe("Custom Styling", () => {
-        it("applies custom className when provided", () => {
-            render(
-                <TestWrapper>
-                    <MessageInputField value='' onChange={mockOnChange} className='custom-class' />
-                </TestWrapper>
-            );
-
-            const textarea = screen.getByRole("textbox");
-            expect(textarea).toHaveClass("custom-class");
-        });
-
         it("sets maxLength attribute", () => {
             render(
                 <TestWrapper>

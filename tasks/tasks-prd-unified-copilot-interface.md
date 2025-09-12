@@ -27,6 +27,8 @@
 - `src/sources/renderer/hooks/useChat.ts` - Custom React hook for chat state management and message handling.
 - `src/sources/renderer/styles/theme.ts` - Fluent UI custom theme configuration with dark/light mode support.
 - `src/sources/types/chat.ts` - TypeScript interfaces for Message, ChatState, and related types.
+- `src/sources/types/azure.ts` - TypeScript interfaces for Azure AI Foundry configuration, service integration, and API response types.
+- `src/sources/types/index.ts` - Types module index for clean imports across the application.
 - `src/sources/types/electron.ts` - TypeScript definitions for Electron IPC communication.
 - `src/tests/main.test.ts` - Unit tests for main process functionality.
 - `src/tests/preload.test.ts` - Unit tests for preload script.
@@ -99,7 +101,7 @@
 
 - [ ] 4.0 Azure AI Foundry Chat Completion Integration
   - [x] 4.1 Install required dependencies: openai, @azure/identity for Azure credential authentication
-  - [ ] 4.2 Create Azure AI Foundry configuration interface with endpoint, apiVersion, and deploymentName
+  - [x] 4.2 Create Azure AI Foundry configuration interface with endpoint, apiVersion, and deploymentName
   - [ ] 4.3 Implement Azure credential service using DefaultAzureCredential and getBearerTokenProvider
   - [ ] 4.4 Create Azure OpenAI client service with proper endpoint and token provider configuration
   - [ ] 4.5 Implement chat completion service with message formatting and response handling

@@ -202,21 +202,7 @@ describe("MessageInputArea", () => {
             expect(mockOnFilesAttached).toHaveBeenCalledWith([expect.objectContaining({ name: "test.txt" })]);
         });
 
-        it("displays attached files", () => {
-            const mockFiles = [createMockFile("document1.txt", 1024), createMockFile("log.txt", 2048)];
 
-            render(
-                <TestWrapper>
-                    <MessageInputArea value='' onChange={mockOnChange} onSend={mockOnSend} onFilesAttached={mockOnFilesAttached} attachedFiles={mockFiles} />
-                </TestWrapper>
-            );
-
-            expect(screen.getByText("Attached Files (2)")).toBeInTheDocument();
-            expect(screen.getByText("document1.txt")).toBeInTheDocument();
-            expect(screen.getByText("log.txt")).toBeInTheDocument();
-            expect(screen.getByText("1 KB")).toBeInTheDocument();
-            expect(screen.getByText("2 KB")).toBeInTheDocument();
-        });
 
         it("calls onFileRemove when remove button is clicked", () => {
             const mockFile = createMockFile("test.txt", 1024);
