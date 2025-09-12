@@ -1,5 +1,7 @@
 ## Agent ReAct State Diagram
+
 Install mermaid extension in vscode to view preview properly.
+
 ```mermaid
 stateDiagram-v2
     [*] --> UserPrompted

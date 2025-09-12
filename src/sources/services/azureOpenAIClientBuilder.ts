@@ -4,23 +4,18 @@
  * Integrates with Azure credential provider for secure authentication
  */
 
-import { AzureOpenAI } from 'openai';
-import type { 
-    AzureAIFoundryConfig, 
-    AzureAIFoundryServiceConfig, 
-    AzureConnectionTestResult,
-    AzureServiceStatus
-} from '../types/azure';
-import { AzureCredentialProvider, createAzureCredentialProvider } from './azureCredentialProvider';
-import { logger } from '../utils/logger';
+import { AzureOpenAI } from "openai";
+import type { AzureAIFoundryConfig, AzureAIFoundryServiceConfig, AzureConnectionTestResult, AzureServiceStatus } from "../types/azure";
+import { AzureCredentialProvider, createAzureCredentialProvider } from "./azureCredentialProvider";
+import { logger } from "../utils/logger";
 
 /**
  * Default configuration values for Azure OpenAI client
  */
 const DEFAULT_CONFIG: Partial<AzureAIFoundryConfig> = {
-    apiVersion: '2024-10-21',
+    apiVersion: "2024-10-21",
     timeout: 30000,
-    maxRetries: 3
+    maxRetries: 3,
 };
 
 /**
@@ -43,18 +38,18 @@ export class AzureOpenAIClientBuilder {
         // Merge with default configuration
         this.config = {
             ...DEFAULT_CONFIG,
-            ...serviceConfig.foundry
+            ...serviceConfig.foundry,
         };
 
         // Initialize credential provider
         this.credentialProvider = createAzureCredentialProvider(serviceConfig.credentials);
 
-        logger.info('AzureOpenAIClientBuilder initialized', {
+        logger.info("AzureOpenAIClientBuilder initialized", {
             endpoint: this.config.endpoint,
             apiVersion: this.config.apiVersion,
             deploymentName: this.config.deploymentName,
             timeout: this.config.timeout,
-            maxRetries: this.config.maxRetries
+            maxRetries: this.config.maxRetries,
         });
     }
 
@@ -64,7 +59,7 @@ export class AzureOpenAIClientBuilder {
      */
     public async initializeClient(): Promise<void> {
         try {
-            logger.debug('Initializing Azure OpenAI client');
+            logger.debug("Initializing Azure OpenAI client");
 
             // Get bearer token provider from credential provider
             const azureADTokenProvider = this.credentialProvider.getBearerTokenProvider();
@@ -75,25 +70,24 @@ export class AzureOpenAIClientBuilder {
                 azureADTokenProvider,
                 apiVersion: this.config.apiVersion,
                 timeout: this.config.timeout,
-                maxRetries: this.config.maxRetries
+                maxRetries: this.config.maxRetries,
             });
 
             this.isInitialized = true;
             this.lastError = null;
             this.lastConnected = new Date();
 
-            logger.info('Azure OpenAI client initialized successfully', {
+            logger.info("Azure OpenAI client initialized successfully", {
                 endpoint: this.config.endpoint,
-                deploymentName: this.config.deploymentName
+                deploymentName: this.config.deploymentName,
             });
-
         } catch (error) {
             this.isInitialized = false;
-            this.lastError = error instanceof Error ? error.message : 'Unknown error during client initialization';
-            
-            logger.error('Failed to initialize Azure OpenAI client', {
+            this.lastError = error instanceof Error ? error.message : "Unknown error during client initialization";
+
+            logger.error("Failed to initialize Azure OpenAI client", {
                 error: this.lastError,
-                endpoint: this.config.endpoint
+                endpoint: this.config.endpoint,
             });
 
             throw new Error(`Failed to initialize Azure OpenAI client: ${this.lastError}`);
@@ -107,7 +101,7 @@ export class AzureOpenAIClientBuilder {
      */
     public getClient(): AzureOpenAI {
         if (!this.client || !this.isInitialized) {
-            throw new Error('Azure OpenAI client is not initialized. Call initializeClient() first.');
+            throw new Error("Azure OpenAI client is not initialized. Call initializeClient() first.");
         }
 
         return this.client;
@@ -121,15 +115,15 @@ export class AzureOpenAIClientBuilder {
         const startTime = Date.now();
 
         try {
-            logger.debug('Testing Azure OpenAI connection');
+            logger.debug("Testing Azure OpenAI connection");
 
             // First test credential
             const credentialValid = await this.credentialProvider.testCredential();
             if (!credentialValid) {
                 return {
                     success: false,
-                    error: 'Azure credential validation failed',
-                    responseTime: Date.now() - startTime
+                    error: "Azure credential validation failed",
+                    responseTime: Date.now() - startTime,
                 };
             }
 
@@ -140,20 +134,20 @@ export class AzureOpenAIClientBuilder {
 
             // Test connection with a simple chat completion
             const response = await this.client!.chat.completions.create({
-                messages: [{ role: 'user', content: 'Test connection' }],
+                messages: [{ role: "user", content: "Test connection" }],
                 model: this.config.deploymentName,
                 max_tokens: 10,
-                tools: [] // Ensure tools parameter is included for v4.x compatibility
+                tools: [], // Ensure tools parameter is included for v4.x compatibility
             });
 
             const responseTime = Date.now() - startTime;
             this.lastConnected = new Date();
             this.lastError = null;
 
-            logger.info('Azure OpenAI connection test successful', {
+            logger.info("Azure OpenAI connection test successful", {
                 responseTime,
                 deploymentName: this.config.deploymentName,
-                responseId: response.id
+                responseId: response.id,
             });
 
             return {
@@ -164,25 +158,24 @@ export class AzureOpenAIClientBuilder {
                     maxTokens: 4096, // Default, could be configurable
                     supportsFunctions: true,
                     supportsVision: false, // Could be determined by model type
-                    supportsStreaming: true
-                }
+                    supportsStreaming: true,
+                },
             };
-
         } catch (error) {
             const responseTime = Date.now() - startTime;
-            this.lastError = error instanceof Error ? error.message : 'Unknown connection error';
+            this.lastError = error instanceof Error ? error.message : "Unknown connection error";
 
-            logger.error('Azure OpenAI connection test failed', {
+            logger.error("Azure OpenAI connection test failed", {
                 error: this.lastError,
                 responseTime,
                 endpoint: this.config.endpoint,
-                deploymentName: this.config.deploymentName
+                deploymentName: this.config.deploymentName,
             });
 
             return {
                 success: false,
                 error: this.lastError,
-                responseTime
+                responseTime,
             };
         }
     }
@@ -197,7 +190,7 @@ export class AzureOpenAIClientBuilder {
             isConnected: this.client !== null && this.lastError === null,
             lastConnected: this.lastConnected || undefined,
             currentConfig: this.config,
-            error: this.lastError || undefined
+            error: this.lastError || undefined,
         };
     }
 
@@ -206,12 +199,12 @@ export class AzureOpenAIClientBuilder {
      * @param newServiceConfig - New Azure AI Foundry service configuration
      */
     public async updateConfig(newServiceConfig: AzureAIFoundryServiceConfig): Promise<void> {
-        logger.info('Updating Azure OpenAI client configuration');
+        logger.info("Updating Azure OpenAI client configuration");
 
         // Update configuration
         this.config = {
             ...DEFAULT_CONFIG,
-            ...newServiceConfig.foundry
+            ...newServiceConfig.foundry,
         };
 
         // Update credential provider
@@ -225,7 +218,7 @@ export class AzureOpenAIClientBuilder {
         // Reinitialize client
         await this.initializeClient();
 
-        logger.info('Azure OpenAI client configuration updated successfully');
+        logger.info("Azure OpenAI client configuration updated successfully");
     }
 
     /**
@@ -239,7 +232,7 @@ export class AzureOpenAIClientBuilder {
             deploymentName: this.config.deploymentName,
             region: this.config.region,
             timeout: this.config.timeout,
-            maxRetries: this.config.maxRetries
+            maxRetries: this.config.maxRetries,
         };
     }
 
@@ -247,8 +240,8 @@ export class AzureOpenAIClientBuilder {
      * Dispose of the service and clean up resources
      */
     public dispose(): void {
-        logger.info('Disposing Azure OpenAI client builder');
-        
+        logger.info("Disposing Azure OpenAI client builder");
+
         this.client = null;
         this.isInitialized = false;
         this.lastError = null;
@@ -279,10 +272,10 @@ let defaultAzureOpenAIClientBuilder: AzureOpenAIClientBuilder | null = null;
 export function getDefaultAzureOpenAIClientBuilder(serviceConfig?: AzureAIFoundryServiceConfig): AzureOpenAIClientBuilder {
     if (!defaultAzureOpenAIClientBuilder) {
         if (!serviceConfig) {
-            throw new Error('Service configuration is required for first-time initialization of default Azure OpenAI client builder');
+            throw new Error("Service configuration is required for first-time initialization of default Azure OpenAI client builder");
         }
         defaultAzureOpenAIClientBuilder = new AzureOpenAIClientBuilder(serviceConfig);
     }
-    
+
     return defaultAzureOpenAIClientBuilder;
 }

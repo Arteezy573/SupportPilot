@@ -1,7 +1,25 @@
 /**
  * TypeScript interfaces for Azure AI Foundry integration
  * Defines configuration types and service interfaces for Azure OpenAI
+ * Uses openai package types where possible to avoid duplication
  */
+
+// Re-export commonly used openai types for convenience
+export type {
+    ChatCompletion,
+    ChatCompletionCreateParams,
+    ChatCompletionCreateParamsNonStreaming,
+    ChatCompletionCreateParamsStreaming,
+    ChatCompletionMessage,
+    ChatCompletionMessageParam,
+    ChatCompletionTool,
+    ChatCompletionToolChoiceOption,
+    ChatCompletionMessageToolCall,
+} from "openai/resources/chat/completions";
+
+export type { CompletionUsage } from "openai/resources";
+
+import { ChatCompletion, CompletionUsage } from "openai/resources";
 
 // =============================================================================
 // AZURE AI FOUNDRY CONFIGURATION
@@ -184,95 +202,22 @@ export interface AzureServiceStatus {
 
 /**
  * Token usage information from Azure OpenAI
+ * Re-uses openai package CompletionUsage type
  */
-export interface AzureTokenUsage {
-    /**
-     * Number of prompt tokens used
-     */
-    promptTokens: number;
-
-    /**
-     * Number of completion tokens generated
-     */
-    completionTokens: number;
-
-    /**
-     * Total tokens used in the request
-     */
-    totalTokens: number;
-}
-
-/**
- * Azure AI Foundry chat completion request options
- */
-export interface AzureChatCompletionOptions {
-    /**
-     * Maximum tokens to generate in response
-     */
-    maxTokens?: number;
-
-    /**
-     * Temperature for response generation (0.0 to 2.0)
-     */
-    temperature?: number;
-
-    /**
-     * Top-p sampling parameter (0.0 to 1.0)
-     */
-    topP?: number;
-
-    /**
-     * Whether to stream the response
-     */
-    stream?: boolean;
-
-    /**
-     * Stop sequences to end generation
-     */
-    stop?: string[];
-
-    /**
-     * Presence penalty (-2.0 to 2.0)
-     */
-    presencePenalty?: number;
-
-    /**
-     * Frequency penalty (-2.0 to 2.0)
-     */
-    frequencyPenalty?: number;
-}
+export type AzureTokenUsage = CompletionUsage;
 
 /**
  * Azure AI Foundry chat completion response
+ * Extends openai ChatCompletion with Azure-specific metadata
  */
-export interface AzureChatCompletionResponse {
+export interface AzureChatCompletionResponse extends ChatCompletion {
     /**
-     * Generated response content
-     */
-    content: string;
-
-    /**
-     * Token usage information
-     */
-    usage: AzureTokenUsage;
-
-    /**
-     * Model used for generation
-     */
-    model: string;
-
-    /**
-     * Finish reason (stop, length, content_filter, etc.)
-     */
-    finishReason: string;
-
-    /**
-     * Response timestamp
+     * Response timestamp (Azure-specific addition)
      */
     timestamp: Date;
 
     /**
-     * Request ID for tracking
+     * Request ID for tracking (Azure-specific addition)
      */
     requestId?: string;
 }

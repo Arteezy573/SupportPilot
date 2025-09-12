@@ -4,7 +4,6 @@
     "typescript.preferences.includePackageJsonAutoImports": "auto",
     "typescript.tsc.autoDetect": "on",
     "files.exclude": {
-        "**/node_modules": true,
         "**/.git": true
     },
     "search.exclude": {

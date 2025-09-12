@@ -4,14 +4,14 @@
  * Following the pattern from SimpleAzureOpenAITest.js
  */
 
-import { DefaultAzureCredential, getBearerTokenProvider } from '@azure/identity';
-import type { AzureCredentialConfig } from '../types/azure';
-import { logger } from '../utils/logger';
+import { DefaultAzureCredential, getBearerTokenProvider } from "@azure/identity";
+import type { AzureCredentialConfig } from "../types/azure";
+import { logger } from "../utils/logger";
 
 /**
  * Default scope for Azure Cognitive Services
  */
-const DEFAULT_SCOPE = 'https://cognitiveservices.azure.com/.default';
+const DEFAULT_SCOPE = "https://cognitiveservices.azure.com/.default";
 
 /**
  * Azure Credential Provider class
@@ -28,7 +28,7 @@ export class AzureCredentialProvider {
     constructor(config: AzureCredentialConfig = {}) {
         this.config = {
             scopes: [DEFAULT_SCOPE],
-            ...config
+            ...config,
         };
 
         // Initialize DefaultAzureCredential with optional configuration
@@ -38,12 +38,12 @@ export class AzureCredentialProvider {
         };
 
         this.credential = new DefaultAzureCredential(credentialOptions);
-        
-        logger.info('AzureCredentialProvider initialized', {
-            tenantId: this.config.tenantId ? '[REDACTED]' : 'not provided',
-            clientId: this.config.clientId ? '[REDACTED]' : 'not provided',
+
+        logger.info("AzureCredentialProvider initialized", {
+            tenantId: this.config.tenantId ? "[REDACTED]" : "not provided",
+            clientId: this.config.clientId ? "[REDACTED]" : "not provided",
             useManagedIdentity: this.config.useManagedIdentity,
-            scopes: this.config.scopes
+            scopes: this.config.scopes,
         });
     }
 
@@ -54,21 +54,21 @@ export class AzureCredentialProvider {
      */
     public getBearerTokenProvider(scope?: string) {
         const tokenScope = scope || this.config.scopes![0];
-        
-        logger.debug('Creating bearer token provider', { scope: tokenScope });
-        
+
+        logger.debug("Creating bearer token provider", { scope: tokenScope });
+
         try {
             const tokenProvider = getBearerTokenProvider(this.credential, tokenScope);
-            
-            logger.info('Bearer token provider created successfully', { scope: tokenScope });
-            
+
+            logger.info("Bearer token provider created successfully", { scope: tokenScope });
+
             return tokenProvider;
         } catch (error) {
-            logger.error('Failed to create bearer token provider', { 
-                error: error instanceof Error ? error.message : 'Unknown error',
-                scope: tokenScope 
+            logger.error("Failed to create bearer token provider", {
+                error: error instanceof Error ? error.message : "Unknown error",
+                scope: tokenScope,
             });
-            throw new Error(`Failed to create bearer token provider: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            throw new Error(`Failed to create bearer token provider: ${error instanceof Error ? error.message : "Unknown error"}`);
         }
     }
 
@@ -79,26 +79,26 @@ export class AzureCredentialProvider {
      */
     public async testCredential(scope?: string): Promise<boolean> {
         const tokenScope = scope || this.config.scopes![0];
-        
+
         try {
-            logger.debug('Testing Azure credential', { scope: tokenScope });
-            
+            logger.debug("Testing Azure credential", { scope: tokenScope });
+
             const token = await this.credential.getToken(tokenScope);
-            
+
             if (token && token.token) {
-                logger.info('Azure credential test successful', { 
+                logger.info("Azure credential test successful", {
                     scope: tokenScope,
-                    expiresOn: token.expiresOnTimestamp 
+                    expiresOn: token.expiresOnTimestamp,
                 });
                 return true;
             } else {
-                logger.warn('Azure credential test failed - no token returned', { scope: tokenScope });
+                logger.warn("Azure credential test failed - no token returned", { scope: tokenScope });
                 return false;
             }
         } catch (error) {
-            logger.error('Azure credential test failed', { 
-                error: error instanceof Error ? error.message : 'Unknown error',
-                scope: tokenScope 
+            logger.error("Azure credential test failed", {
+                error: error instanceof Error ? error.message : "Unknown error",
+                scope: tokenScope,
             });
             return false;
         }
@@ -110,10 +110,10 @@ export class AzureCredentialProvider {
      */
     public getConfig(): Partial<AzureCredentialConfig> {
         return {
-            tenantId: this.config.tenantId ? '[REDACTED]' : undefined,
-            clientId: this.config.clientId ? '[REDACTED]' : undefined,
+            tenantId: this.config.tenantId ? "[REDACTED]" : undefined,
+            clientId: this.config.clientId ? "[REDACTED]" : undefined,
             useManagedIdentity: this.config.useManagedIdentity,
-            scopes: this.config.scopes
+            scopes: this.config.scopes,
         };
     }
 
@@ -124,7 +124,7 @@ export class AzureCredentialProvider {
     public updateConfig(newConfig: Partial<AzureCredentialConfig>): void {
         this.config = {
             ...this.config,
-            ...newConfig
+            ...newConfig,
         };
 
         // Reinitialize credential with new configuration
@@ -134,12 +134,12 @@ export class AzureCredentialProvider {
         };
 
         this.credential = new DefaultAzureCredential(credentialOptions);
-        
-        logger.info('Azure credential configuration updated', {
-            tenantId: this.config.tenantId ? '[REDACTED]' : 'not provided',
-            clientId: this.config.clientId ? '[REDACTED]' : 'not provided',
+
+        logger.info("Azure credential configuration updated", {
+            tenantId: this.config.tenantId ? "[REDACTED]" : "not provided",
+            clientId: this.config.clientId ? "[REDACTED]" : "not provided",
             useManagedIdentity: this.config.useManagedIdentity,
-            scopes: this.config.scopes
+            scopes: this.config.scopes,
         });
     }
 }

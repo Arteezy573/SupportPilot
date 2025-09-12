@@ -252,7 +252,6 @@ describe("MessageInputField", () => {
             expect(textarea).toHaveAttribute("aria-label", "Message input");
             expect(textarea).toHaveAttribute("spellcheck", "true");
         });
-
     });
 
     describe("Custom Styling", () => {

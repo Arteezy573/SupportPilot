@@ -9,9 +9,7 @@ import { UserMessageCard } from "../../../sources/renderer/components/UserMessag
 import type { UserMessage } from "../../../sources/types/chat";
 
 // Test wrapper with FluentProvider
-const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <FluentProvider theme={webLightTheme}>{children}</FluentProvider>
-);
+const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => <FluentProvider theme={webLightTheme}>{children}</FluentProvider>;
 
 describe("UserMessageCard", () => {
     const mockUserMessage: UserMessage = {

@@ -139,12 +139,7 @@ export const MessageInputField: React.FC<MessageInputFieldProps> = ({
         return contentRows;
     };
 
-    const textareaClassName = mergeClasses(
-        styles.textarea,
-        multiline ? styles.multiLine : styles.singleLine,
-        disabled && styles.disabled,
-        className
-    );
+    const textareaClassName = mergeClasses(styles.textarea, multiline ? styles.multiLine : styles.singleLine, disabled && styles.disabled, className);
 
     return (
         <div className={styles.root}>

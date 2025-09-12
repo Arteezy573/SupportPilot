@@ -5,14 +5,14 @@
 export type MessageRole = "user" | "agent" | "system";
 
 export interface ChatMessageProps {
-  id: string;
-  role: MessageRole;
-  content: string;
-  timestamp: Date;
-  status: "pending" | "processing" | "completed" | "failed";
-  attachedFiles?: FileAttachmentProps[];
-  steps?: (AgentThoughtProps | AgentActionProps)[];
-  citations?: CitationProps[];
+    id: string;
+    role: MessageRole;
+    content: string;
+    timestamp: Date;
+    status: "pending" | "processing" | "completed" | "failed";
+    attachedFiles?: FileAttachmentProps[];
+    steps?: (AgentThoughtProps | AgentActionProps)[];
+    citations?: CitationProps[];
 }
 
 // ===============================
@@ -20,9 +20,9 @@ export interface ChatMessageProps {
 // ===============================
 
 export interface AgentThoughtProps {
-  id: string;
-  content: string;
-  timestamp: Date;
+    id: string;
+    content: string;
+    timestamp: Date;
 }
 
 // ===============================
@@ -30,15 +30,15 @@ export interface AgentThoughtProps {
 // ===============================
 
 export interface AgentActionProps {
-  id: string;
-  type: string; // e.g. "search_code", "query_kusto"
-  status: "pending" | "processing" | "completed" | "failed";
-  startedAt: Date;
-  completedAt?: Date;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  parameters?: any;
-  result?: AgentActionResultProps;
-  error?: string;
+    id: string;
+    type: string; // e.g. "search_code", "query_kusto"
+    status: "pending" | "processing" | "completed" | "failed";
+    startedAt: Date;
+    completedAt?: Date;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    parameters?: any;
+    result?: AgentActionResultProps;
+    error?: string;
 }
 
 // ===============================
@@ -46,13 +46,13 @@ export interface AgentActionProps {
 // ===============================
 
 export interface AgentActionResultProps {
-  success: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any;
-  summary?: string;
-  confidence?: number;
-  recommendations?: string[];
-  nextActions?: string[];
+    success: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data?: any;
+    summary?: string;
+    confidence?: number;
+    recommendations?: string[];
+    nextActions?: string[];
 }
 
 // ===============================
@@ -60,12 +60,12 @@ export interface AgentActionResultProps {
 // ===============================
 
 export interface FileAttachmentProps {
-  id: string;
-  name: string;
-  type: string;
-  preview?: string;
-  size: number;
-  uploadedAt: Date;
+    id: string;
+    name: string;
+    type: string;
+    preview?: string;
+    size: number;
+    uploadedAt: Date;
 }
 
 // ===============================
@@ -73,13 +73,13 @@ export interface FileAttachmentProps {
 // ===============================
 
 export interface CitationProps {
-  id: string;
-  source: string;
-  type: string; // e.g. "file", "code", "external"
-  title: string;
-  url?: string;
-  relevance: number;
-  excerpt?: string;
+    id: string;
+    source: string;
+    type: string; // e.g. "file", "code", "external"
+    title: string;
+    url?: string;
+    relevance: number;
+    excerpt?: string;
 }
 
 // ===============================
@@ -87,10 +87,10 @@ export interface CitationProps {
 // ===============================
 
 export interface ChatStateProps {
-  sessionId: string;
-  stage: "user_prompted" | "agent_reasoning" | "agent_action" | "agent_observation" | "agent_conclusion";
-  isLoading: boolean;
-  error?: string;
+    sessionId: string;
+    stage: "user_prompted" | "agent_reasoning" | "agent_action" | "agent_observation" | "agent_conclusion";
+    isLoading: boolean;
+    error?: string;
 }
 
 // ===============================
@@ -98,11 +98,11 @@ export interface ChatStateProps {
 // ===============================
 
 export interface TimelineEventProps {
-  id: string;
-  timestamp: Date;
-  description: string;
-  severity: "critical" | "high" | "medium" | "low";
-  source: string;
+    id: string;
+    timestamp: Date;
+    description: string;
+    severity: "critical" | "high" | "medium" | "low";
+    source: string;
 }
 
 // ===============================
@@ -110,12 +110,22 @@ export interface TimelineEventProps {
 // ===============================
 
 export interface IssueContextProps {
-  id: string;
-  title: string;
-  description: string;
-  severity: "critical" | "high" | "medium" | "low";
-  timeline: TimelineEventProps[];
-  symptoms?: string[];
-  solutions?: string[];
+    id: string;
+    title: string;
+    description: string;
+    severity: "critical" | "high" | "medium" | "low";
+    timeline: TimelineEventProps[];
+    symptoms?: string[];
+    solutions?: string[];
 }
 
+// ===============================
+// 10. Type Aliases for Convenience
+// ===============================
+
+export type Message = ChatMessageProps;
+export type AgentMessage = ChatMessageProps & { role: "agent" };
+export type UserMessage = ChatMessageProps & { role: "user" };
+export type SystemMessage = ChatMessageProps & { role: "system" };
+export type AgentThought = AgentThoughtProps;
+export type AgentAction = AgentActionProps;

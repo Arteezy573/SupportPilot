@@ -202,8 +202,6 @@ describe("MessageInputArea", () => {
             expect(mockOnFilesAttached).toHaveBeenCalledWith([expect.objectContaining({ name: "test.txt" })]);
         });
 
-
-
         it("calls onFileRemove when remove button is clicked", () => {
             const mockFile = createMockFile("test.txt", 1024);
 

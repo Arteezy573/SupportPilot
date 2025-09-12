@@ -4,23 +4,28 @@
  */
 
 // Azure services
-export { 
-    AzureCredentialProvider, 
-    azureCredentialProvider, 
-    createAzureCredentialProvider 
-} from './azureCredentialProvider';
+export { AzureCredentialProvider, azureCredentialProvider, createAzureCredentialProvider } from "./azureCredentialProvider";
+
+export { AzureOpenAIClientBuilder, createAzureOpenAIClientBuilder, getDefaultAzureOpenAIClientBuilder } from "./azureOpenAIClientBuilder";
 
 export {
-    AzureOpenAIClientBuilder,
-    createAzureOpenAIClientBuilder,
-    getDefaultAzureOpenAIClientBuilder
-} from './azureOpenAIClientBuilder';
+    AzureChatCompletionService,
+    createChatCompletionService,
+    type ChatCompletionRequest,
+    type ChatCompletionResponse,
+    type StreamingChatCompletionResponse,
+    type ChatCompletionServiceConfig,
+} from "./azureChatCompletionService";
+
+export {
+    ToolManager,
+    createToolManager,
+    type ToolMeta,
+    type ToolParameter,
+    type ToolInvocation,
+    type ToolInvocationResult,
+    type ToolType,
+} from "./toolRegistryService";
 
 // Export types for convenience
-export type { 
-    AzureCredentialConfig,
-    AzureAIFoundryConfig,
-    AzureAIFoundryServiceConfig,
-    AzureConnectionTestResult,
-    AzureServiceStatus
-} from '../types/azure';
+export type { AzureCredentialConfig, AzureAIFoundryConfig, AzureAIFoundryServiceConfig, AzureConnectionTestResult, AzureServiceStatus } from "../types/azure";

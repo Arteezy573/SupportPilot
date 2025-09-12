@@ -197,12 +197,7 @@ export const App: React.FC<AppProps> = ({ initialMessages = [], showWelcome = tr
                                         />
                                     );
                                 } else if (message.role === "user") {
-                                    return (
-                                        <UserMessageCard
-                                            key={`message-${index}`}
-                                            message={message as UserMessage}
-                                        />
-                                    );
+                                    return <UserMessageCard key={`message-${index}`} message={message as UserMessage} />;
                                 }
                             })}
                         </div>

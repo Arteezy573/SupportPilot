@@ -44,7 +44,7 @@ describe("SuggestedActions", () => {
     describe("Basic Rendering", () => {
         it("renders the component without crashing", () => {
             renderWithProvider();
-            
+
             // Test that the component renders some expected content
             expect(screen.getByText("Summarize the customer issue and suggest the next step.")).toBeInTheDocument();
             expect(screen.getByText("Use the info from attachments to create an ICM for the Operations team")).toBeInTheDocument();
@@ -52,13 +52,13 @@ describe("SuggestedActions", () => {
 
         it("shows loading state for summarize button", () => {
             renderWithProvider({ summarizeLoading: true });
-            
+
             expect(screen.getByText("Analyzing...")).toBeInTheDocument();
         });
 
         it("shows loading state for create ICM button", () => {
             renderWithProvider({ createIcmLoading: true });
-            
+
             expect(screen.getByText("Creating...")).toBeInTheDocument();
         });
     });
