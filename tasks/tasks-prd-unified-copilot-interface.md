@@ -28,6 +28,8 @@
 - `src/sources/renderer/styles/theme.ts` - Fluent UI custom theme configuration with dark/light mode support.
 - `src/sources/types/chat.ts` - TypeScript interfaces for Message, ChatState, and related types.
 - `src/sources/types/azure.ts` - TypeScript interfaces for Azure AI Foundry configuration, service integration, and API response types.
+- `src/sources/services/azureCredentialService.ts` - Azure credential service using DefaultAzureCredential and getBearerTokenProvider for secure authentication.
+- `src/sources/services/index.ts` - Services module index for clean imports across the application.
 - `src/sources/types/index.ts` - Types module index for clean imports across the application.
 - `src/sources/types/electron.ts` - TypeScript definitions for Electron IPC communication.
 - `src/tests/main.test.ts` - Unit tests for main process functionality.
@@ -43,6 +45,7 @@
 - `src/tests/renderer/components/AgentResultExpandable.test.tsx` - Unit tests for AgentResultExpandable component.
 - `src/tests/renderer/components/AgentCitationsList.test.tsx` - Unit tests for AgentCitationsList component.
 - `src/tests/renderer/hooks/useChat.test.ts` - Unit tests for useChat hook.
+- `src/tests/services/azureCredentialService.test.ts` - Unit tests for Azure credential service authentication and token management.
 - `package.json` - Project dependencies including Electron, React, TypeScript, and Fluent UI.
 - `webpack.config.js` - Webpack configuration for TypeScript and React compilation.
 - `tsconfig.json` - TypeScript configuration with strict mode and React JSX support.
@@ -102,7 +105,7 @@
 - [ ] 4.0 Azure AI Foundry Chat Completion Integration
   - [x] 4.1 Install required dependencies: openai, @azure/identity for Azure credential authentication
   - [x] 4.2 Create Azure AI Foundry configuration interface with endpoint, apiVersion, and deploymentName
-  - [ ] 4.3 Implement Azure credential service using DefaultAzureCredential and getBearerTokenProvider (following SimpleAzureOpenAITest.js pattern)
+  - [x] 4.3 Implement Azure credential service using DefaultAzureCredential and getBearerTokenProvider (following SimpleAzureOpenAITest.js pattern)
   - [ ] 4.4 Create Azure OpenAI client service with proper endpoint and token provider configuration (using AzureOpenAI from "openai" package v4.x)
   - [ ] 4.5 Implement chat completion service with message formatting and response handling (prioritize tool_calls support - handle both message.content and message.tool_calls responses)
   - [ ] 4.6 Implement MCP or custom tool interface with proper metadata structure for chat completion tools parameter and tool_choice configuration
