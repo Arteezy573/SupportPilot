@@ -10,5 +10,17 @@ export {
     createAzureCredentialService 
 } from './azureCredentialService';
 
+export {
+    AzureOpenAIClientService,
+    createAzureOpenAIClientService,
+    getDefaultAzureOpenAIService
+} from './azureOpenAIClientService';
+
 // Export types for convenience
-export type { AzureCredentialConfig } from '../types/azure';
+export type { 
+    AzureCredentialConfig,
+    AzureAIFoundryConfig,
+    AzureAIFoundryServiceConfig,
+    AzureConnectionTestResult,
+    AzureServiceStatus
+} from '../types/azure';

@@ -106,7 +106,7 @@
   - [x] 4.1 Install required dependencies: openai, @azure/identity for Azure credential authentication
   - [x] 4.2 Create Azure AI Foundry configuration interface with endpoint, apiVersion, and deploymentName
   - [x] 4.3 Implement Azure credential service using DefaultAzureCredential and getBearerTokenProvider (following SimpleAzureOpenAITest.js pattern)
-  - [ ] 4.4 Create Azure OpenAI client service with proper endpoint and token provider configuration (using AzureOpenAI from "openai" package v4.x)
+  - [x] 4.4 Create Azure OpenAI client service with proper endpoint and token provider configuration (using AzureOpenAI from "openai" package v4.x)
   - [ ] 4.5 Implement chat completion service with message formatting and response handling (prioritize tool_calls support - handle both message.content and message.tool_calls responses)
   - [ ] 4.6 Implement MCP or custom tool interface with proper metadata structure for chat completion tools parameter and tool_choice configuration
   - [ ] 4.7 Add connection testing functionality to validate Azure AI Foundry connectivity (extend SimpleAzureOpenAITest.js approach)
