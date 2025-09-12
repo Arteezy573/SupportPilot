@@ -628,6 +628,20 @@ async function attemptAppQuit(): Promise<void> {
 app.whenReady().then(() => {
     logger.info("Electron app is ready");
 
+    // Log Azure authentication method being used
+    const preRetrievedToken = process.env.AZURE_BEARER_TOKEN;
+    if (preRetrievedToken) {
+        logger.info("Azure authentication: Using pre-retrieved bearer token", {
+            tokenLength: preRetrievedToken.length,
+            tokenPrefix: preRetrievedToken.substring(0, 20) + "...",
+            authMethod: "pre-retrieved-token",
+        });
+    } else {
+        logger.info("Azure authentication: Will use DefaultAzureCredential", {
+            authMethod: "default-azure-credential",
+        });
+    }
+
     createMainWindow();
     createApplicationMenu();
     setupIpcHandlers(mainWindow);
