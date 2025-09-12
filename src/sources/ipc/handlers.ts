@@ -36,6 +36,16 @@ function setupAppHandlers(): void {
     ipcMain.handle("app:get-name", () => {
         return app.getName();
     });
+
+    // Handle Azure bearer token request
+    ipcMain.handle("app:get-azure-bearer-token", () => {
+        const token = process.env.AZURE_BEARER_TOKEN;
+        logger.debug("Azure bearer token requested from renderer process", {
+            hasToken: !!token,
+            tokenLength: token ? token.length : 0,
+        });
+        return token || null;
+    });
 }
 
 /**

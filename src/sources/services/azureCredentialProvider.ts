@@ -21,6 +21,7 @@ export class AzureCredentialProvider {
     private credential?: TokenCredential;
     private config: AzureCredentialConfig;
     private preRetrievedToken?: string;
+    private tokenInitialized = false;
 
     /**
      * Initialize the Azure Credential Provider
@@ -32,15 +33,53 @@ export class AzureCredentialProvider {
             ...config,
         };
 
-        this.preRetrievedToken = process.env.AZURE_BEARER_TOKEN;
-
         logger.info("AzureCredentialProvider initialized", {
             tenantId: this.config.tenantId ? "[REDACTED]" : "not provided",
             clientId: this.config.clientId ? "[REDACTED]" : "not provided",
             useManagedIdentity: this.config.useManagedIdentity,
             scopes: this.config.scopes,
-            usingPreRetrievedToken: !!this.preRetrievedToken,
         });
+    }
+
+    /**
+     * Initialize pre-retrieved token from available sources (lazy initialization)
+     * In Electron renderer: use window.electronAPI
+     * In Node.js/main process: use process.env
+     */
+    private async initializePreRetrievedToken(): Promise<void> {
+        if (this.tokenInitialized) {
+            return;
+        }
+
+        try {
+            // Check if we're in an Electron renderer process
+            if (typeof window !== 'undefined' && (window as { electronAPI?: { app: { getAzureBearerToken: () => Promise<string | null> } } }).electronAPI) {
+                logger.debug("Attempting to get Azure bearer token from Electron API");
+                const electronAPI = (window as { electronAPI: { app: { getAzureBearerToken: () => Promise<string | null> } } }).electronAPI;
+                const token = await electronAPI.app.getAzureBearerToken();
+                this.preRetrievedToken = token || undefined;
+                logger.debug("Retrieved Azure bearer token from Electron API", {
+                    hasToken: !!this.preRetrievedToken,
+                    tokenLength: this.preRetrievedToken ? this.preRetrievedToken.length : 0,
+                });
+            } else if (typeof process !== 'undefined' && process.env) {
+                // Fallback to process.env (main process or Node.js environment)
+                logger.debug("Attempting to get Azure bearer token from environment variables");
+                this.preRetrievedToken = process.env.AZURE_BEARER_TOKEN;
+                logger.debug("Retrieved Azure bearer token from environment", {
+                    hasToken: !!this.preRetrievedToken,
+                    tokenLength: this.preRetrievedToken ? this.preRetrievedToken.length : 0,
+                });
+            } else {
+                logger.debug("No token sources available (neither Electron API nor process.env)");
+            }
+        } catch (error) {
+            logger.warn("Failed to retrieve pre-retrieved Azure bearer token", {
+                error: error instanceof Error ? error.message : "Unknown error",
+            });
+        } finally {
+            this.tokenInitialized = true;
+        }
     }
 
     /**
@@ -76,23 +115,24 @@ export class AzureCredentialProvider {
      * @returns Bearer token provider function
      */
     public getBearerTokenProvider(scope?: string): () => Promise<string> {
-        // Check if we have a pre-retrieved bearer token from environment
-        if (this.preRetrievedToken) {
-            logger.info("Using pre-retrieved bearer token from environment");
-
-            // Return a simple function that provides the pre-retrieved token
-            return () => {
-                logger.debug("Returning pre-retrieved bearer token");
-                return Promise.resolve(this.preRetrievedToken!);
-            };
-        }
-
-        // Fall back to DefaultAzureCredential behavior
         const tokenScope = scope || this.config.scopes![0];
 
-        logger.debug("Creating bearer token provider with DefaultAzureCredential", { scope: tokenScope });
+        logger.debug("Creating bearer token provider", { scope: tokenScope });
 
         return async () => {
+            // Ensure token is initialized
+            await this.initializePreRetrievedToken();
+
+            // Check if we have a pre-retrieved bearer token
+            if (this.preRetrievedToken) {
+                logger.info("Using pre-retrieved bearer token");
+                logger.debug("Returning pre-retrieved bearer token");
+                return this.preRetrievedToken;
+            }
+
+            // Fall back to DefaultAzureCredential behavior
+            logger.debug("Using DefaultAzureCredential for token provider");
+
             try {
                 await this.ensureCredential();
                 
@@ -125,9 +165,12 @@ export class AzureCredentialProvider {
      * @returns Promise that resolves to true if credential is valid
      */
     public async testCredential(scope?: string): Promise<boolean> {
-        // Check if we have a pre-retrieved bearer token from environment
+        // Ensure token is initialized
+        await this.initializePreRetrievedToken();
+
+        // Check if we have a pre-retrieved bearer token
         if (this.preRetrievedToken) {
-            logger.info("Testing pre-retrieved bearer token from environment");
+            logger.info("Testing pre-retrieved bearer token");
 
             // For pre-retrieved tokens, we assume they are valid since they were just retrieved
             if (this.preRetrievedToken.length > 0) {
@@ -180,7 +223,9 @@ export class AzureCredentialProvider {
      * Get the current credential configuration
      * @returns Current Azure credential configuration (sensitive data redacted)
      */
-    public getConfig(): Partial<AzureCredentialConfig> & { usingPreRetrievedToken?: boolean } {
+    public async getConfig(): Promise<Partial<AzureCredentialConfig> & { usingPreRetrievedToken?: boolean }> {
+        await this.initializePreRetrievedToken();
+        
         return {
             tenantId: this.config.tenantId ? "[REDACTED]" : undefined,
             clientId: this.config.clientId ? "[REDACTED]" : undefined,
@@ -194,7 +239,8 @@ export class AzureCredentialProvider {
      * Check if using a pre-retrieved bearer token from environment
      * @returns True if using pre-retrieved token, false if using DefaultAzureCredential
      */
-    public isUsingPreRetrievedToken(): boolean {
+    public async isUsingPreRetrievedToken(): Promise<boolean> {
+        await this.initializePreRetrievedToken();
         return !!this.preRetrievedToken;
     }
 
@@ -208,11 +254,15 @@ export class AzureCredentialProvider {
             ...newConfig,
         };
 
-        // Re-check for pre-retrieved token
-        this.preRetrievedToken = process.env.AZURE_BEARER_TOKEN;
+        // Reset token initialization to force re-retrieval
+        this.tokenInitialized = false;
+        this.preRetrievedToken = undefined;
 
         // Reset credential to force re-initialization with new config
         this.credential = undefined;
+
+        // Re-initialize token
+        await this.initializePreRetrievedToken();
 
         logger.info("Azure credential configuration updated", {
             tenantId: this.config.tenantId ? "[REDACTED]" : "not provided",

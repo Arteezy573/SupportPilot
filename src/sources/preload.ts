@@ -12,6 +12,7 @@ const electronAPI: ElectronAPI = {
     app: {
         getVersion: () => ipcRenderer.invoke("app:get-version"),
         getName: () => ipcRenderer.invoke("app:get-name"),
+        getAzureBearerToken: () => ipcRenderer.invoke("app:get-azure-bearer-token"),
     },
 
     // Dialog APIs for file operations

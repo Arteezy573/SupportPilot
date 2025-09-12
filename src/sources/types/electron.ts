@@ -8,6 +8,7 @@ export interface ElectronAPI {
     app: {
         getVersion: () => Promise<string>;
         getName: () => Promise<string>;
+        getAzureBearerToken: () => Promise<string | null>;
     };
 
     // File system operations

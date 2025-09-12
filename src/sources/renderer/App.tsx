@@ -30,6 +30,9 @@ import {
 // Import types
 import type { Message, AgentMessage, UserMessage } from "../types/chat";
 
+// Import logger
+import { logger } from "../utils/logger";
+
 // =============================================================================
 // COMPONENT STYLES
 // =============================================================================
@@ -139,12 +142,45 @@ export const App: React.FC<AppProps> = ({ initialMessages = [], showWelcome = tr
         });
     }, []);
 
+    const [isClientInitialized, setIsClientInitialized] = React.useState(false);
+    const [_initializationError, setInitializationError] = React.useState<string | null>(null);
+
+    // Initialize the client builder
+    React.useEffect(() => {
+        let isMounted = true;
+
+        const initializeClient = async () => {
+            try {
+                await clientBuilder.initializeClient();
+                if (isMounted) {
+                    setIsClientInitialized(true);
+                    setInitializationError(null);
+                }
+            } catch (error) {
+                if (isMounted) {
+                    const errorMessage = error instanceof Error ? error.message : 'Failed to initialize Azure client';
+                    setInitializationError(errorMessage);
+                    logger.error('Azure client initialization failed', { error: errorMessage });
+                }
+            }
+        };
+
+        initializeClient();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [clientBuilder]);
+
     const chatService = React.useMemo(() => {
+        if (!isClientInitialized) {
+            return undefined;
+        }
         return createChatCompletionService(clientBuilder, {
             defaultMaxTokens: 1000,
             defaultTemperature: 0.7
         });
-    }, [clientBuilder]);
+    }, [clientBuilder, isClientInitialized]);
 
     const toolManager = React.useMemo(() => {
         return createToolManager();
@@ -283,8 +319,12 @@ export const App: React.FC<AppProps> = ({ initialMessages = [], showWelcome = tr
                     onFileRemove={handleFileRemove}
                     attachedFiles={attachedFiles}
                     isSending={isSending}
-                    disabled={false}
-                    placeholder='Ask me about your support issue...'
+                    disabled={!isClientInitialized}
+                    placeholder={
+                        isClientInitialized 
+                            ? 'Ask me about your support issue...'
+                            : 'Initializing Azure AI services...'
+                    }
                 />
             </div>
         </div>
