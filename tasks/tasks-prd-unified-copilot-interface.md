@@ -86,7 +86,7 @@
   - [x] 2.9 Test basic Electron app launch and window functionality
   - [x] 2.10 Write unit tests for main process and preload script functionality
 
-- [ ] 3.0 Support Pilot Interface Implementation with Fluent UI
+- [x] 3.0 Support Pilot Interface Implementation with Fluent UI
   - [x] 3.1 Create React app entry point (src/sources/renderer/index.tsx) with FluentProvider and theme setup
   - [x] 3.2 Define TypeScript interfaces for support pilot types (Message, AgentAction, SupportSession, IssueContext) in src/sources/types/chat.ts
   - [x] 3.3 Create custom Fluent UI theme configuration with dark/light mode support in src/sources/renderer/styles/theme.ts
@@ -96,3 +96,60 @@
   - [x] 3.7 Create SuggestedActions component containing SummarizeIssueButton and CreateICMButton with Fluent UI Button styling
   - [x] 3.8 Implement MessageInputArea component with AttachFileButton and MessageInputField using Fluent UI TextField
   - [x] 3.9 Create AgentMessageCard component with expandable sections for ReAct pattern support
+
+- [ ] 4.0 Azure AI Foundry Chat Completion Integration
+  - [x] 4.1 Install required dependencies: openai, @azure/identity for Azure credential authentication
+  - [ ] 4.2 Create Azure AI Foundry configuration interface with endpoint, apiVersion, and deploymentName
+  - [ ] 4.3 Implement Azure credential service using DefaultAzureCredential and getBearerTokenProvider
+  - [ ] 4.4 Create Azure OpenAI client service with proper endpoint and token provider configuration
+  - [ ] 4.5 Implement chat completion service with message formatting and response handling
+  - [ ] 4.6 Add connection testing functionality to validate Azure AI Foundry connectivity
+  - [ ] 4.7 Implement streaming response handling for real-time chat experience using Azure OpenAI streaming
+  - [ ] 4.8 Add message history management for context-aware conversations with proper token counting
+  - [ ] 4.9 Create IPC handlers for secure Azure AI communication from renderer to main process
+  - [ ] 4.10 Write comprehensive unit tests for Azure AI Foundry service integration
+
+- [ ] 5.0 Model Context Protocol (MCP) Client Implementation
+  - [ ] 5.1 Design MCP client architecture for external tool integration
+  - [ ] 5.2 Implement MCP protocol communication layer with proper message formatting
+  - [ ] 5.3 Create tool discovery and registration system for available MCP tools
+  - [ ] 5.4 Create configuration interface for managing available MCP tools
+  - [ ] 5.5 Implement error handling and timeout management for tool execution
+  - [ ] 5.6 Create IPC bridge for MCP tool access from renderer process
+  - [ ] 5.7 Write unit tests for MCP client functionality and tool integration
+
+- [ ] 6.0 Azure DevOps Work Item Integration
+  - [ ] 6.1 Set up Azure DevOps REST API client with OAuth 2.0 authentication
+  - [ ] 6.2 Implement work item search functionality with keyword and component filtering
+  - [ ] 6.3 Create work item data models and TypeScript interfaces
+  - [ ] 6.4 Implement work item relationship traversal (related bugs, parent features)
+  - [ ] 6.5 Add work item history and change tracking analysis
+  - [ ] 6.6 Create intelligent work item recommendation based on error patterns
+  - [ ] 6.7 Implement work item data caching and offline access capabilities
+  - [ ] 6.8 Add work item visualization components for displaying search results
+  - [ ] 6.9 Create IPC handlers for ADO operations with proper error handling
+  - [ ] 6.10 Write comprehensive unit tests for ADO service integration
+
+- [ ] 7.0 Kusto Telemetry Query Service
+  - [ ] 7.1 Set up Kusto client with proper authentication and cluster configuration
+  - [ ] 7.2 Implement telemetry query builder for error frequency and scope analysis
+  - [ ] 7.3 Create predefined query templates for common support scenarios
+  - [ ] 7.4 Implement query result parsing and data transformation
+  - [ ] 7.5 Add query performance optimization and result caching
+  - [ ] 7.6 Create intelligent query suggestion based on log analysis
+  - [ ] 7.7 Implement query history and saved queries functionality
+  - [ ] 7.8 Add data visualization components for telemetry insights
+  - [ ] 7.9 Create secure IPC communication for Kusto operations
+  - [ ] 7.10 Write unit tests for Kusto service and query functionality
+
+- [ ] 8.0 Enhanced AI Suggestions System
+  - [ ] 8.1 Design AI suggestion engine architecture with pluggable analyzers
+  - [ ] 8.2 Implement log pattern analysis for automatic error categorization
+  - [ ] 8.3 Create severity assessment engine based on error patterns and impact
+  - [ ] 8.4 Implement solution suggestion system using knowledge base and historical data
+  - [ ] 8.5 Add impact analysis engine for customer and service scope assessment
+  - [ ] 8.6 Create intelligent information synthesis from multiple data sources
+  - [ ] 8.7 Implement suggestion confidence scoring and ranking
+  - [ ] 8.8 Add suggestion feedback system for continuous improvement
+  - [ ] 8.9 Create enhanced suggestion display components with confidence indicators
+  - [ ] 8.10 Write comprehensive unit tests for AI suggestion algorithms

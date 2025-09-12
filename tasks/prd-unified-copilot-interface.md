@@ -113,6 +113,7 @@ The primary goal is to reduce the time spent on information gathering and improv
 
 **Phase 2**:
 - Chat completion api integration
+- Mcp Client
 - ADO work item integration
 - Kusto telemetry queries
 - Enhanced AI suggestions
