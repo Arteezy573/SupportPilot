@@ -4,7 +4,7 @@
  */
 
 import React, { useRef, useState } from "react";
-import { Button, makeStyles, tokens, shorthands } from "@fluentui/react-components";
+import { Button, makeStyles, tokens, shorthands, mergeClasses } from "@fluentui/react-components";
 import { Attach24Regular } from "@fluentui/react-icons";
 
 // =============================================================================
@@ -221,7 +221,7 @@ export const AttachFileButton: React.FC<AttachFileButtonProps> = ({
         }
     };
 
-    const buttonClassName = iconOnly ? styles.button : `${styles.button} ${styles.buttonWithText}`;
+    const buttonClassName = mergeClasses(styles.button, !iconOnly && styles.buttonWithText);
 
     return (
         <div className={styles.root} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>

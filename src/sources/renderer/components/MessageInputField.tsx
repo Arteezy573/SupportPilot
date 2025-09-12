@@ -4,7 +4,7 @@
  */
 
 import React from "react";
-import { Textarea, makeStyles, tokens, shorthands } from "@fluentui/react-components";
+import { Textarea, makeStyles, tokens, shorthands, mergeClasses } from "@fluentui/react-components";
 
 // =============================================================================
 // COMPONENT INTERFACES
@@ -139,9 +139,12 @@ export const MessageInputField: React.FC<MessageInputFieldProps> = ({
         return contentRows;
     };
 
-    const textareaClassName = [styles.textarea, multiline ? styles.multiLine : styles.singleLine, disabled ? styles.disabled : "", className]
-        .filter(Boolean)
-        .join(" ");
+    const textareaClassName = mergeClasses(
+        styles.textarea,
+        multiline ? styles.multiLine : styles.singleLine,
+        disabled && styles.disabled,
+        className
+    );
 
     return (
         <div className={styles.root}>

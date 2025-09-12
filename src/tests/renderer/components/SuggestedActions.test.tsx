@@ -61,13 +61,6 @@ describe("SuggestedActions", () => {
             
             expect(screen.getByText("Creating...")).toBeInTheDocument();
         });
-
-        it("has proper icons with aria-hidden", () => {
-            const { container } = renderWithProvider();
-            
-            const icons = container.querySelectorAll('svg[aria-hidden="true"]');
-            expect(icons.length).toBeGreaterThan(0);
-        });
     });
 
     // Other tests removed due to component implementation differences

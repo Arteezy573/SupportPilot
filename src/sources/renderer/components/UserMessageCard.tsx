@@ -4,7 +4,7 @@
  */
 
 import React from "react";
-import { makeStyles, tokens, shorthands, Text } from "@fluentui/react-components";
+import { makeStyles, tokens, shorthands, Text, mergeClasses } from "@fluentui/react-components";
 import { Attach12Filled } from "@fluentui/react-icons";
 import type { UserMessage } from "../../types/chat";
 
@@ -58,7 +58,7 @@ export const UserMessageCard: React.FC<UserMessageCardProps> = ({ message, class
     const styles = useUserMessageCardStyles();
 
     return (
-        <div className={`${styles.container} ${className || ""}`}>
+        <div className={mergeClasses(styles.container, className)}>
             <Text block className={styles.messageText}>
                 {message.content}
             </Text>
