@@ -5,16 +5,16 @@
 
 // Azure services
 export { 
-    AzureCredentialService, 
-    azureCredentialService, 
-    createAzureCredentialService 
-} from './azureCredentialService';
+    AzureCredentialProvider, 
+    azureCredentialProvider, 
+    createAzureCredentialProvider 
+} from './azureCredentialProvider';
 
 export {
-    AzureOpenAIClientService,
-    createAzureOpenAIClientService,
-    getDefaultAzureOpenAIService
-} from './azureOpenAIClientService';
+    AzureOpenAIClientBuilder,
+    createAzureOpenAIClientBuilder,
+    getDefaultAzureOpenAIClientBuilder
+} from './azureOpenAIClientBuilder';
 
 // Export types for convenience
 export type { 

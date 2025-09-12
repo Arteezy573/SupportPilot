@@ -1,7 +1,7 @@
 /**
- * Azure OpenAI Client Service
+ * Azure OpenAI Client Builder
  * Provides Azure OpenAI client using AzureOpenAI from "openai" package v4.x
- * Integrates with Azure credential service for secure authentication
+ * Integrates with Azure credential provider for secure authentication
  */
 
 import { AzureOpenAI } from 'openai';
@@ -11,7 +11,7 @@ import type {
     AzureConnectionTestResult,
     AzureServiceStatus
 } from '../types/azure';
-import { AzureCredentialService, createAzureCredentialService } from './azureCredentialService';
+import { AzureCredentialProvider, createAzureCredentialProvider } from './azureCredentialProvider';
 import { logger } from '../utils/logger';
 
 /**
@@ -24,19 +24,19 @@ const DEFAULT_CONFIG: Partial<AzureAIFoundryConfig> = {
 };
 
 /**
- * Azure OpenAI Client Service class
+ * Azure OpenAI Client Builder class
  * Manages Azure OpenAI client initialization and connection
  */
-export class AzureOpenAIClientService {
+export class AzureOpenAIClientBuilder {
     private client: AzureOpenAI | null = null;
-    private credentialService: AzureCredentialService;
+    private credentialProvider: AzureCredentialProvider;
     private config: AzureAIFoundryConfig;
     private isInitialized = false;
     private lastError: string | null = null;
     private lastConnected: Date | null = null;
 
     /**
-     * Initialize the Azure OpenAI Client Service
+     * Initialize the Azure OpenAI Client Builder
      * @param serviceConfig - Complete Azure AI Foundry service configuration
      */
     constructor(serviceConfig: AzureAIFoundryServiceConfig) {
@@ -46,10 +46,10 @@ export class AzureOpenAIClientService {
             ...serviceConfig.foundry
         };
 
-        // Initialize credential service
-        this.credentialService = createAzureCredentialService(serviceConfig.credentials);
+        // Initialize credential provider
+        this.credentialProvider = createAzureCredentialProvider(serviceConfig.credentials);
 
-        logger.info('AzureOpenAIClientService initialized', {
+        logger.info('AzureOpenAIClientBuilder initialized', {
             endpoint: this.config.endpoint,
             apiVersion: this.config.apiVersion,
             deploymentName: this.config.deploymentName,
@@ -66,8 +66,8 @@ export class AzureOpenAIClientService {
         try {
             logger.debug('Initializing Azure OpenAI client');
 
-            // Get bearer token provider from credential service
-            const azureADTokenProvider = this.credentialService.getBearerTokenProvider();
+            // Get bearer token provider from credential provider
+            const azureADTokenProvider = this.credentialProvider.getBearerTokenProvider();
 
             // Create Azure OpenAI client
             this.client = new AzureOpenAI({
@@ -124,7 +124,7 @@ export class AzureOpenAIClientService {
             logger.debug('Testing Azure OpenAI connection');
 
             // First test credential
-            const credentialValid = await this.credentialService.testCredential();
+            const credentialValid = await this.credentialProvider.testCredential();
             if (!credentialValid) {
                 return {
                     success: false,
@@ -214,8 +214,8 @@ export class AzureOpenAIClientService {
             ...newServiceConfig.foundry
         };
 
-        // Update credential service
-        this.credentialService.updateConfig(newServiceConfig.credentials);
+        // Update credential provider
+        this.credentialProvider.updateConfig(newServiceConfig.credentials);
 
         // Reset client state
         this.client = null;
@@ -247,7 +247,7 @@ export class AzureOpenAIClientService {
      * Dispose of the service and clean up resources
      */
     public dispose(): void {
-        logger.info('Disposing Azure OpenAI client service');
+        logger.info('Disposing Azure OpenAI client builder');
         
         this.client = null;
         this.isInitialized = false;
@@ -257,32 +257,32 @@ export class AzureOpenAIClientService {
 }
 
 /**
- * Factory function to create a new Azure OpenAI Client Service instance
+ * Factory function to create a new Azure OpenAI Client Builder instance
  * @param serviceConfig - Azure AI Foundry service configuration
- * @returns New AzureOpenAIClientService instance
+ * @returns New AzureOpenAIClientBuilder instance
  */
-export function createAzureOpenAIClientService(serviceConfig: AzureAIFoundryServiceConfig): AzureOpenAIClientService {
-    return new AzureOpenAIClientService(serviceConfig);
+export function createAzureOpenAIClientBuilder(serviceConfig: AzureAIFoundryServiceConfig): AzureOpenAIClientBuilder {
+    return new AzureOpenAIClientBuilder(serviceConfig);
 }
 
 /**
- * Default Azure OpenAI Client Service instance
+ * Default Azure OpenAI Client Builder instance
  * Can be configured and used throughout the application
  */
-let defaultAzureOpenAIService: AzureOpenAIClientService | null = null;
+let defaultAzureOpenAIClientBuilder: AzureOpenAIClientBuilder | null = null;
 
 /**
- * Get or create the default Azure OpenAI service instance
+ * Get or create the default Azure OpenAI client builder instance
  * @param serviceConfig - Configuration for the default service (required on first call)
- * @returns Default Azure OpenAI service instance
+ * @returns Default Azure OpenAI client builder instance
  */
-export function getDefaultAzureOpenAIService(serviceConfig?: AzureAIFoundryServiceConfig): AzureOpenAIClientService {
-    if (!defaultAzureOpenAIService) {
+export function getDefaultAzureOpenAIClientBuilder(serviceConfig?: AzureAIFoundryServiceConfig): AzureOpenAIClientBuilder {
+    if (!defaultAzureOpenAIClientBuilder) {
         if (!serviceConfig) {
-            throw new Error('Service configuration is required for first-time initialization of default Azure OpenAI service');
+            throw new Error('Service configuration is required for first-time initialization of default Azure OpenAI client builder');
         }
-        defaultAzureOpenAIService = new AzureOpenAIClientService(serviceConfig);
+        defaultAzureOpenAIClientBuilder = new AzureOpenAIClientBuilder(serviceConfig);
     }
     
-    return defaultAzureOpenAIService;
+    return defaultAzureOpenAIClientBuilder;
 }

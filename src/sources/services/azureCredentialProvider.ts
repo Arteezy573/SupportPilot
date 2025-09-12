@@ -1,5 +1,5 @@
 /**
- * Azure Credential Service
+ * Azure Credential Provider
  * Provides Azure authentication using DefaultAzureCredential and getBearerTokenProvider
  * Following the pattern from SimpleAzureOpenAITest.js
  */
@@ -14,15 +14,15 @@ import { logger } from '../utils/logger';
 const DEFAULT_SCOPE = 'https://cognitiveservices.azure.com/.default';
 
 /**
- * Azure Credential Service class
+ * Azure Credential Provider class
  * Manages Azure authentication and token provider creation
  */
-export class AzureCredentialService {
+export class AzureCredentialProvider {
     private credential: DefaultAzureCredential;
     private config: AzureCredentialConfig;
 
     /**
-     * Initialize the Azure Credential Service
+     * Initialize the Azure Credential Provider
      * @param config - Azure credential configuration options
      */
     constructor(config: AzureCredentialConfig = {}) {
@@ -39,7 +39,7 @@ export class AzureCredentialService {
 
         this.credential = new DefaultAzureCredential(credentialOptions);
         
-        logger.info('AzureCredentialService initialized', {
+        logger.info('AzureCredentialProvider initialized', {
             tenantId: this.config.tenantId ? '[REDACTED]' : 'not provided',
             clientId: this.config.clientId ? '[REDACTED]' : 'not provided',
             useManagedIdentity: this.config.useManagedIdentity,
@@ -145,16 +145,16 @@ export class AzureCredentialService {
 }
 
 /**
- * Default Azure Credential Service instance
+ * Default Azure Credential Provider instance
  * Can be used throughout the application for Azure authentication
  */
-export const azureCredentialService = new AzureCredentialService();
+export const azureCredentialProvider = new AzureCredentialProvider();
 
 /**
- * Factory function to create a new Azure Credential Service instance
+ * Factory function to create a new Azure Credential Provider instance
  * @param config - Azure credential configuration options
- * @returns New AzureCredentialService instance
+ * @returns New AzureCredentialProvider instance
  */
-export function createAzureCredentialService(config: AzureCredentialConfig = {}): AzureCredentialService {
-    return new AzureCredentialService(config);
+export function createAzureCredentialProvider(config: AzureCredentialConfig = {}): AzureCredentialProvider {
+    return new AzureCredentialProvider(config);
 }

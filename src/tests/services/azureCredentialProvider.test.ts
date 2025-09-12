@@ -1,9 +1,9 @@
 /**
- * Unit tests for Azure Credential Service
+ * Unit tests for Azure Credential Provider
  * Tests authentication, token provider creation, and configuration management
  */
 
-import { AzureCredentialService, createAzureCredentialService } from '../../sources/services/azureCredentialService';
+import { AzureCredentialProvider, createAzureCredentialProvider } from '../../sources/services/azureCredentialProvider';
 import { DefaultAzureCredential, getBearerTokenProvider } from '@azure/identity';
 import type { AzureCredentialConfig } from '../../sources/types/azure';
 
@@ -23,10 +23,10 @@ jest.mock('../../sources/utils/logger', () => ({
     }
 }));
 
-describe('AzureCredentialService', () => {
+describe('AzureCredentialProvider', () => {
     let mockCredential: jest.Mocked<DefaultAzureCredential>;
     let mockGetBearerTokenProvider: jest.MockedFunction<typeof getBearerTokenProvider>;
-    let service: AzureCredentialService;
+    let provider: AzureCredentialProvider;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -40,13 +40,13 @@ describe('AzureCredentialService', () => {
         
         mockGetBearerTokenProvider = getBearerTokenProvider as jest.MockedFunction<typeof getBearerTokenProvider>;
         
-        service = new AzureCredentialService();
+        provider = new AzureCredentialProvider();
     });
 
     describe('constructor', () => {
         it('should initialize with default configuration', () => {
             expect(DefaultAzureCredential).toHaveBeenCalledWith({});
-            expect(service.getConfig()).toEqual({
+            expect(provider.getConfig()).toEqual({
                 useManagedIdentity: undefined,
                 scopes: ['https://cognitiveservices.azure.com/.default']
             });
@@ -60,18 +60,18 @@ describe('AzureCredentialService', () => {
                 scopes: ['custom-scope']
             };
 
-            const customService = new AzureCredentialService(config);
+            const customProvider = new AzureCredentialProvider(config);
 
             expect(DefaultAzureCredential).toHaveBeenCalledWith({
                 tenantId: 'test-tenant-id',
                 managedIdentityClientId: 'test-client-id'
             });
 
-            const serviceConfig = customService.getConfig();
-            expect(serviceConfig.useManagedIdentity).toBe(true);
-            expect(serviceConfig.scopes).toEqual(['custom-scope']);
-            expect(serviceConfig.tenantId).toBe('[REDACTED]');
-            expect(serviceConfig.clientId).toBe('[REDACTED]');
+            const providerConfig = customProvider.getConfig();
+            expect(providerConfig.useManagedIdentity).toBe(true);
+            expect(providerConfig.scopes).toEqual(['custom-scope']);
+            expect(providerConfig.tenantId).toBe('[REDACTED]');
+            expect(providerConfig.clientId).toBe('[REDACTED]');
         });
     });
 
@@ -80,7 +80,7 @@ describe('AzureCredentialService', () => {
             const mockTokenProvider = jest.fn();
             mockGetBearerTokenProvider.mockReturnValue(mockTokenProvider);
 
-            const result = service.getBearerTokenProvider();
+            const result = provider.getBearerTokenProvider();
 
             expect(getBearerTokenProvider).toHaveBeenCalledWith(
                 mockCredential,
@@ -94,7 +94,7 @@ describe('AzureCredentialService', () => {
             const mockTokenProvider = jest.fn();
             mockGetBearerTokenProvider.mockReturnValue(mockTokenProvider);
 
-            const result = service.getBearerTokenProvider(customScope);
+            const result = provider.getBearerTokenProvider(customScope);
 
             expect(getBearerTokenProvider).toHaveBeenCalledWith(mockCredential, customScope);
             expect(result).toBe(mockTokenProvider);
@@ -106,7 +106,7 @@ describe('AzureCredentialService', () => {
                 throw error;
             });
 
-            expect(() => service.getBearerTokenProvider()).toThrow(
+            expect(() => provider.getBearerTokenProvider()).toThrow(
                 'Failed to create bearer token provider: Token provider creation failed'
             );
         });
@@ -120,7 +120,7 @@ describe('AzureCredentialService', () => {
             };
             mockCredential.getToken.mockResolvedValue(mockToken);
 
-            const result = await service.testCredential();
+            const result = await provider.testCredential();
 
             expect(mockCredential.getToken).toHaveBeenCalledWith('https://cognitiveservices.azure.com/.default');
             expect(result).toBe(true);
@@ -134,7 +134,7 @@ describe('AzureCredentialService', () => {
             };
             mockCredential.getToken.mockResolvedValue(mockToken);
 
-            const result = await service.testCredential(customScope);
+            const result = await provider.testCredential(customScope);
 
             expect(mockCredential.getToken).toHaveBeenCalledWith(customScope);
             expect(result).toBe(true);
@@ -143,7 +143,7 @@ describe('AzureCredentialService', () => {
         it('should return false when credential returns no token', async () => {
             mockCredential.getToken.mockResolvedValue(null as any);
 
-            const result = await service.testCredential();
+            const result = await provider.testCredential();
 
             expect(result).toBe(false);
         });
@@ -151,7 +151,7 @@ describe('AzureCredentialService', () => {
         it('should return false when credential returns empty token', async () => {
             mockCredential.getToken.mockResolvedValue({ token: '', expiresOnTimestamp: 0 });
 
-            const result = await service.testCredential();
+            const result = await provider.testCredential();
 
             expect(result).toBe(false);
         });
@@ -160,7 +160,7 @@ describe('AzureCredentialService', () => {
             const error = new Error('Authentication failed');
             mockCredential.getToken.mockRejectedValue(error);
 
-            const result = await service.testCredential();
+            const result = await provider.testCredential();
 
             expect(result).toBe(false);
         });
@@ -173,7 +173,7 @@ describe('AzureCredentialService', () => {
                 useManagedIdentity: true
             };
 
-            service.updateConfig(newConfig);
+            provider.updateConfig(newConfig);
 
             // Should have called DefaultAzureCredential constructor twice (initial + update)
             expect(DefaultAzureCredential).toHaveBeenCalledTimes(2);
@@ -181,7 +181,7 @@ describe('AzureCredentialService', () => {
                 tenantId: 'new-tenant-id'
             });
 
-            const config = service.getConfig();
+            const config = provider.getConfig();
             expect(config.tenantId).toBe('[REDACTED]');
             expect(config.useManagedIdentity).toBe(true);
         });
@@ -192,15 +192,15 @@ describe('AzureCredentialService', () => {
                 scopes: ['initial-scope']
             };
 
-            const serviceWithConfig = new AzureCredentialService(initialConfig);
+            const providerWithConfig = new AzureCredentialProvider(initialConfig);
             
             const updateConfig: Partial<AzureCredentialConfig> = {
                 clientId: 'new-client-id'
             };
 
-            serviceWithConfig.updateConfig(updateConfig);
+            providerWithConfig.updateConfig(updateConfig);
 
-            const finalConfig = serviceWithConfig.getConfig();
+            const finalConfig = providerWithConfig.getConfig();
             expect(finalConfig.tenantId).toBe('[REDACTED]');
             expect(finalConfig.clientId).toBe('[REDACTED]');
             expect(finalConfig.scopes).toEqual(['initial-scope']);
@@ -216,8 +216,8 @@ describe('AzureCredentialService', () => {
                 scopes: ['test-scope']
             };
 
-            const serviceWithConfig = new AzureCredentialService(config);
-            const returnedConfig = serviceWithConfig.getConfig();
+            const providerWithConfig = new AzureCredentialProvider(config);
+            const returnedConfig = providerWithConfig.getConfig();
 
             expect(returnedConfig).toEqual({
                 tenantId: '[REDACTED]',
@@ -233,8 +233,8 @@ describe('AzureCredentialService', () => {
                 scopes: ['test-scope']
             };
 
-            const serviceWithConfig = new AzureCredentialService(config);
-            const returnedConfig = serviceWithConfig.getConfig();
+            const providerWithConfig = new AzureCredentialProvider(config);
+            const returnedConfig = providerWithConfig.getConfig();
 
             expect(returnedConfig).toEqual({
                 tenantId: undefined,
@@ -246,27 +246,27 @@ describe('AzureCredentialService', () => {
     });
 });
 
-describe('createAzureCredentialService', () => {
+describe('createAzureCredentialProvider', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should create new service instance with default config', () => {
-        const service = createAzureCredentialService();
+    it('should create new provider instance with default config', () => {
+        const provider = createAzureCredentialProvider();
         
-        expect(service).toBeInstanceOf(AzureCredentialService);
+        expect(provider).toBeInstanceOf(AzureCredentialProvider);
         expect(DefaultAzureCredential).toHaveBeenCalledWith({});
     });
 
-    it('should create new service instance with custom config', () => {
+    it('should create new provider instance with custom config', () => {
         const config: AzureCredentialConfig = {
             tenantId: 'test-tenant',
             useManagedIdentity: true
         };
 
-        const service = createAzureCredentialService(config);
+        const provider = createAzureCredentialProvider(config);
         
-        expect(service).toBeInstanceOf(AzureCredentialService);
+        expect(provider).toBeInstanceOf(AzureCredentialProvider);
         expect(DefaultAzureCredential).toHaveBeenCalledWith({
             tenantId: 'test-tenant'
         });

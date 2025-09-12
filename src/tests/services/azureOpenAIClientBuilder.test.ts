@@ -1,10 +1,10 @@
 /**
- * Unit tests for Azure OpenAI Client Service
+ * Unit tests for Azure OpenAI Client Builder
  * Tests client initialization, connection testing, and configuration management
  */
 
-import { AzureOpenAIClientService, createAzureOpenAIClientService } from '../../sources/services/azureOpenAIClientService';
-import { AzureCredentialService, createAzureCredentialService } from '../../sources/services/azureCredentialService';
+import { AzureOpenAIClientBuilder, createAzureOpenAIClientBuilder } from '../../sources/services/azureOpenAIClientBuilder';
+import { AzureCredentialProvider, createAzureCredentialProvider } from '../../sources/services/azureCredentialProvider';
 import { AzureOpenAI } from 'openai';
 import type { AzureAIFoundryServiceConfig } from '../../sources/types/azure';
 
@@ -13,10 +13,10 @@ jest.mock('openai', () => ({
     AzureOpenAI: jest.fn()
 }));
 
-// Mock Azure Credential Service
-jest.mock('../../sources/services/azureCredentialService', () => ({
-    AzureCredentialService: jest.fn(),
-    createAzureCredentialService: jest.fn()
+// Mock Azure Credential Provider
+jest.mock('../../sources/services/azureCredentialProvider', () => ({
+    AzureCredentialProvider: jest.fn(),
+    createAzureCredentialProvider: jest.fn()
 }));
 
 // Mock logger
@@ -29,27 +29,27 @@ jest.mock('../../sources/utils/logger', () => ({
     }
 }));
 
-describe('AzureOpenAIClientService', () => {
+describe('AzureOpenAIClientBuilder', () => {
     let mockAzureOpenAI: jest.Mocked<AzureOpenAI>;
-    let mockCredentialService: jest.Mocked<AzureCredentialService>;
-    let mockCreateCredentialService: jest.MockedFunction<typeof createAzureCredentialService>;
+    let mockCredentialProvider: jest.Mocked<AzureCredentialProvider>;
+    let mockCreateCredentialProvider: jest.MockedFunction<typeof createAzureCredentialProvider>;
     let mockChatCompletionsCreate: jest.Mock;
-    let service: AzureOpenAIClientService;
+    let builder: AzureOpenAIClientBuilder;
     let testConfig: AzureAIFoundryServiceConfig;
 
     beforeEach(() => {
         jest.clearAllMocks();
 
-        // Setup mock credential service
-        mockCredentialService = {
+        // Setup mock credential provider
+        mockCredentialProvider = {
             getBearerTokenProvider: jest.fn(),
             testCredential: jest.fn(),
             updateConfig: jest.fn(),
             getConfig: jest.fn(),
         } as any;
 
-        mockCreateCredentialService = jest.mocked(createAzureCredentialService);
-        mockCreateCredentialService.mockReturnValue(mockCredentialService);
+        mockCreateCredentialProvider = jest.mocked(createAzureCredentialProvider);
+        mockCreateCredentialProvider.mockReturnValue(mockCredentialProvider);
 
         // Setup mock chat completions
         mockChatCompletionsCreate = jest.fn();
@@ -84,14 +84,14 @@ describe('AzureOpenAIClientService', () => {
             }
         };
 
-        service = new AzureOpenAIClientService(testConfig);
+        builder = new AzureOpenAIClientBuilder(testConfig);
     });
 
     describe('constructor', () => {
         it('should initialize with proper configuration', () => {
-            expect(mockCreateCredentialService).toHaveBeenCalledWith(testConfig.credentials);
+            expect(mockCreateCredentialProvider).toHaveBeenCalledWith(testConfig.credentials);
             
-            const config = service.getConfig();
+            const config = builder.getConfig();
             expect(config.endpoint).toBe('https://test.openai.azure.com/');
             expect(config.apiVersion).toBe('2024-10-21');
             expect(config.deploymentName).toBe('gpt-4o');
@@ -116,8 +116,8 @@ describe('AzureOpenAIClientService', () => {
                 }
             };
 
-            const minimalService = new AzureOpenAIClientService(minimalConfig);
-            const config = minimalService.getConfig();
+            const minimalBuilder = new AzureOpenAIClientBuilder(minimalConfig);
+            const config = minimalBuilder.getConfig();
 
             expect(config.timeout).toBe(30000); // Default
             expect(config.maxRetries).toBe(3); // Default
@@ -128,11 +128,11 @@ describe('AzureOpenAIClientService', () => {
     describe('initializeClient', () => {
         it('should initialize Azure OpenAI client successfully', async () => {
             const mockTokenProvider = jest.fn();
-            mockCredentialService.getBearerTokenProvider.mockReturnValue(mockTokenProvider);
+            mockCredentialProvider.getBearerTokenProvider.mockReturnValue(mockTokenProvider);
 
-            await service.initializeClient();
+            await builder.initializeClient();
 
-            expect(mockCredentialService.getBearerTokenProvider).toHaveBeenCalled();
+            expect(mockCredentialProvider.getBearerTokenProvider).toHaveBeenCalled();
             expect(AzureOpenAI).toHaveBeenCalledWith({
                 endpoint: 'https://test.openai.azure.com/',
                 azureADTokenProvider: mockTokenProvider,
@@ -141,22 +141,22 @@ describe('AzureOpenAIClientService', () => {
                 maxRetries: 3
             });
 
-            const status = service.getStatus();
+            const status = builder.getStatus();
             expect(status.isInitialized).toBe(true);
             expect(status.error).toBeUndefined();
         });
 
         it('should handle initialization errors', async () => {
             const error = new Error('Token provider failed');
-            mockCredentialService.getBearerTokenProvider.mockImplementation(() => {
+            mockCredentialProvider.getBearerTokenProvider.mockImplementation(() => {
                 throw error;
             });
 
-            await expect(service.initializeClient()).rejects.toThrow(
+            await expect(builder.initializeClient()).rejects.toThrow(
                 'Failed to initialize Azure OpenAI client: Token provider failed'
             );
 
-            const status = service.getStatus();
+            const status = builder.getStatus();
             expect(status.isInitialized).toBe(false);
             expect(status.error).toBe('Token provider failed');
         });
@@ -164,15 +164,15 @@ describe('AzureOpenAIClientService', () => {
 
     describe('getClient', () => {
         it('should return client when initialized', async () => {
-            mockCredentialService.getBearerTokenProvider.mockReturnValue(jest.fn());
-            await service.initializeClient();
+            mockCredentialProvider.getBearerTokenProvider.mockReturnValue(jest.fn());
+            await builder.initializeClient();
 
-            const client = service.getClient();
+            const client = builder.getClient();
             expect(client).toBe(mockAzureOpenAI);
         });
 
         it('should throw error when not initialized', () => {
-            expect(() => service.getClient()).toThrow(
+            expect(() => builder.getClient()).toThrow(
                 'Azure OpenAI client is not initialized. Call initializeClient() first.'
             );
         });
@@ -180,8 +180,8 @@ describe('AzureOpenAIClientService', () => {
 
     describe('testConnection', () => {
         beforeEach(async () => {
-            mockCredentialService.getBearerTokenProvider.mockReturnValue(jest.fn());
-            mockCredentialService.testCredential.mockResolvedValue(true);
+            mockCredentialProvider.getBearerTokenProvider.mockReturnValue(jest.fn());
+            mockCredentialProvider.testCredential.mockResolvedValue(true);
         });
 
         it('should test connection successfully', async () => {
@@ -192,10 +192,10 @@ describe('AzureOpenAIClientService', () => {
             mockChatCompletionsCreate.mockResolvedValue(mockResponse);
 
             const startTime = Date.now();
-            const result = await service.testConnection();
+            const result = await builder.testConnection();
             const endTime = Date.now();
 
-            expect(mockCredentialService.testCredential).toHaveBeenCalled();
+            expect(mockCredentialProvider.testCredential).toHaveBeenCalled();
             expect(mockChatCompletionsCreate).toHaveBeenCalledWith({
                 messages: [{ role: 'user', content: 'Test connection' }],
                 model: 'gpt-4o',
@@ -216,9 +216,9 @@ describe('AzureOpenAIClientService', () => {
         });
 
         it('should fail when credential test fails', async () => {
-            mockCredentialService.testCredential.mockResolvedValue(false);
+            mockCredentialProvider.testCredential.mockResolvedValue(false);
 
-            const result = await service.testConnection();
+            const result = await builder.testConnection();
 
             expect(result.success).toBe(false);
             expect(result.error).toBe('Azure credential validation failed');
@@ -230,7 +230,7 @@ describe('AzureOpenAIClientService', () => {
             mockChatCompletionsCreate.mockRejectedValue(error);
 
             const startTime = Date.now();
-            const result = await service.testConnection();
+            const result = await builder.testConnection();
             const endTime = Date.now();
 
             expect(result.success).toBe(false);
@@ -240,8 +240,8 @@ describe('AzureOpenAIClientService', () => {
         });
 
         it('should initialize client if not already initialized', async () => {
-            // Service starts uninitialized
-            expect(service.getStatus().isInitialized).toBe(false);
+            // Builder starts uninitialized
+            expect(builder.getStatus().isInitialized).toBe(false);
 
             const mockResponse = {
                 id: 'test-response-id',
@@ -249,16 +249,16 @@ describe('AzureOpenAIClientService', () => {
             };
             mockChatCompletionsCreate.mockResolvedValue(mockResponse);
 
-            const result = await service.testConnection();
+            const result = await builder.testConnection();
 
             expect(result.success).toBe(true);
-            expect(service.getStatus().isInitialized).toBe(true);
+            expect(builder.getStatus().isInitialized).toBe(true);
         });
     });
 
     describe('getStatus', () => {
         it('should return correct status when not initialized', () => {
-            const status = service.getStatus();
+            const status = builder.getStatus();
 
             expect(status).toEqual({
                 isInitialized: false,
@@ -273,8 +273,8 @@ describe('AzureOpenAIClientService', () => {
         });
 
         it('should return correct status when initialized and connected', async () => {
-            mockCredentialService.getBearerTokenProvider.mockReturnValue(jest.fn());
-            mockCredentialService.testCredential.mockResolvedValue(true);
+            mockCredentialProvider.getBearerTokenProvider.mockReturnValue(jest.fn());
+            mockCredentialProvider.testCredential.mockResolvedValue(true);
             
             const mockResponse = {
                 id: 'test-response-id',
@@ -282,8 +282,8 @@ describe('AzureOpenAIClientService', () => {
             };
             mockChatCompletionsCreate.mockResolvedValue(mockResponse);
 
-            await service.testConnection();
-            const status = service.getStatus();
+            await builder.testConnection();
+            const status = builder.getStatus();
 
             expect(status.isInitialized).toBe(true);
             expect(status.isConnected).toBe(true);
@@ -295,8 +295,8 @@ describe('AzureOpenAIClientService', () => {
     describe('updateConfig', () => {
         it('should update configuration and reinitialize client', async () => {
             // First initialize the client
-            mockCredentialService.getBearerTokenProvider.mockReturnValue(jest.fn());
-            await service.initializeClient();
+            mockCredentialProvider.getBearerTokenProvider.mockReturnValue(jest.fn());
+            await builder.initializeClient();
             
             // Clear the constructor call count after initial setup
             jest.clearAllMocks();
@@ -320,14 +320,14 @@ describe('AzureOpenAIClientService', () => {
                 }
             };
 
-            mockCredentialService.getBearerTokenProvider.mockReturnValue(jest.fn());
+            mockCredentialProvider.getBearerTokenProvider.mockReturnValue(jest.fn());
 
-            await service.updateConfig(newConfig);
+            await builder.updateConfig(newConfig);
 
-            expect(mockCredentialService.updateConfig).toHaveBeenCalledWith(newConfig.credentials);
+            expect(mockCredentialProvider.updateConfig).toHaveBeenCalledWith(newConfig.credentials);
             expect(AzureOpenAI).toHaveBeenCalledTimes(1); // Called once during updateConfig
 
-            const config = service.getConfig();
+            const config = builder.getConfig();
             expect(config.endpoint).toBe('https://updated.openai.azure.com/');
             expect(config.deploymentName).toBe('gpt-4o-updated');
         });
@@ -335,12 +335,12 @@ describe('AzureOpenAIClientService', () => {
 
     describe('dispose', () => {
         it('should clean up resources', async () => {
-            mockCredentialService.getBearerTokenProvider.mockReturnValue(jest.fn());
-            await service.initializeClient();
+            mockCredentialProvider.getBearerTokenProvider.mockReturnValue(jest.fn());
+            await builder.initializeClient();
 
-            service.dispose();
+            builder.dispose();
 
-            const status = service.getStatus();
+            const status = builder.getStatus();
             expect(status.isInitialized).toBe(false);
             expect(status.isConnected).toBe(false);
             expect(status.lastConnected).toBeUndefined();
@@ -348,12 +348,12 @@ describe('AzureOpenAIClientService', () => {
     });
 });
 
-describe('createAzureOpenAIClientService', () => {
+describe('createAzureOpenAIClientBuilder', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should create new service instance', () => {
+    it('should create new builder instance', () => {
         const config: AzureAIFoundryServiceConfig = {
             foundry: {
                 endpoint: 'https://factory.openai.azure.com/',
@@ -370,27 +370,27 @@ describe('createAzureOpenAIClientService', () => {
             }
         };
 
-        const service = createAzureOpenAIClientService(config);
+        const builder = createAzureOpenAIClientBuilder(config);
         
-        expect(service).toBeInstanceOf(AzureOpenAIClientService);
-        expect(service.getConfig().endpoint).toBe('https://factory.openai.azure.com/');
+        expect(builder).toBeInstanceOf(AzureOpenAIClientBuilder);
+        expect(builder.getConfig().endpoint).toBe('https://factory.openai.azure.com/');
     });
 });
 
-describe('getDefaultAzureOpenAIService', () => {
+describe('getDefaultAzureOpenAIClientBuilder', () => {
     // Import the module to access internal state
     let azureOpenAIModule: any;
 
     beforeEach(async () => {
         jest.clearAllMocks();
-        // Reset the default service by re-importing the module
+        // Reset the default builder by re-importing the module
         jest.resetModules();
-        azureOpenAIModule = await import('../../sources/services/azureOpenAIClientService');
-        // Reset the internal defaultAzureOpenAIService variable
-        (azureOpenAIModule as any).defaultAzureOpenAIService = null;
+        azureOpenAIModule = await import('../../sources/services/azureOpenAIClientBuilder');
+        // Reset the internal defaultAzureOpenAIClientBuilder variable
+        (azureOpenAIModule as any).defaultAzureOpenAIClientBuilder = null;
     });
 
-    it('should create default service on first call with config', () => {
+    it('should create default builder on first call with config', () => {
         const config: AzureAIFoundryServiceConfig = {
             foundry: {
                 endpoint: 'https://default.openai.azure.com/',
@@ -407,10 +407,10 @@ describe('getDefaultAzureOpenAIService', () => {
             }
         };
 
-        const service = azureOpenAIModule.getDefaultAzureOpenAIService(config);
+        const builder = azureOpenAIModule.getDefaultAzureOpenAIClientBuilder(config);
         
-        expect(service).toBeInstanceOf(azureOpenAIModule.AzureOpenAIClientService);
-        expect(service.getConfig().endpoint).toBe('https://default.openai.azure.com/');
+        expect(builder).toBeInstanceOf(azureOpenAIModule.AzureOpenAIClientBuilder);
+        expect(builder.getConfig().endpoint).toBe('https://default.openai.azure.com/');
     });
 
     it('should return same instance on subsequent calls', () => {
@@ -430,15 +430,15 @@ describe('getDefaultAzureOpenAIService', () => {
             }
         };
 
-        const service1 = azureOpenAIModule.getDefaultAzureOpenAIService(config);
-        const service2 = azureOpenAIModule.getDefaultAzureOpenAIService();
+        const builder1 = azureOpenAIModule.getDefaultAzureOpenAIClientBuilder(config);
+        const builder2 = azureOpenAIModule.getDefaultAzureOpenAIClientBuilder();
 
-        expect(service1).toBe(service2);
+        expect(builder1).toBe(builder2);
     });
 
     it('should throw error when called without config and no default exists', () => {
-        expect(() => azureOpenAIModule.getDefaultAzureOpenAIService()).toThrow(
-            'Service configuration is required for first-time initialization of default Azure OpenAI service'
+        expect(() => azureOpenAIModule.getDefaultAzureOpenAIClientBuilder()).toThrow(
+            'Service configuration is required for first-time initialization of default Azure OpenAI client builder'
         );
     });
 });
