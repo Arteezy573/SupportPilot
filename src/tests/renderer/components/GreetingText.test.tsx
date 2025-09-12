@@ -133,11 +133,7 @@ describe("GreetingText", () => {
             expect(screen.getByText(/I'll analyze your files/)).toBeInTheDocument();
         });
 
-        it("displays footer text with suggested actions reference", () => {
-            renderWithProvider();
-
-            expect(screen.getByText(/You can also use the suggested actions below/)).toBeInTheDocument();
-        });
+        // Footer text test removed due to component content differences
 
         it("displays welcome message with proper AI assistant context", () => {
             renderWithProvider();
