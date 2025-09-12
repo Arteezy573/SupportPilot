@@ -37,7 +37,12 @@ module.exports = {
     testMatch: ["<rootDir>/src/tests/**/*.test.(ts|tsx)", "<rootDir>/src/tests/**/*.spec.(ts|tsx)"],
 
     // Files to ignore
-    testPathIgnorePatterns: ["/node_modules/", "/dist/", "/build/"],
+    testPathIgnorePatterns: [
+        "/node_modules/", 
+        "/dist/", 
+        "/build/",
+        ".*\\.integration\\.test\\.(ts|tsx)$" // Exclude integration tests
+    ],
 
     // Module patterns to ignore
     modulePathIgnorePatterns: ["/dist/", "/build/"],
@@ -77,6 +82,8 @@ module.exports = {
     // Verbose output
     verbose: true,
 
-    // Transform ignore patterns
-    transformIgnorePatterns: ["node_modules/(?!(@fluentui|@microsoft)/)"],
+    // Transform ignore patterns - Allow Azure SDK and other ES modules to be transformed
+    transformIgnorePatterns: [
+        "node_modules/(?!(@azure|@fluentui|@microsoft|uuid)/)"
+    ],
 };

@@ -1,0 +1,28 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "module": "ES2022",
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "isolatedModules": true,
+    "types": [
+      "node",
+      "jest"
+    ],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node"
+  },
+  "include": [
+    "src/**/*.integration.test.ts",
+    "src/**/*.integration.test.tsx",
+    "src/sources/**/*.ts",
+    "src/sources/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build"
+  ]
+}
