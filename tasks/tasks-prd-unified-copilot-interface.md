@@ -109,12 +109,9 @@
   - [x] 4.2 Create Azure AI Foundry configuration interface with endpoint, apiVersion, and deploymentName
   - [x] 4.3 Implement Azure credential service using DefaultAzureCredential and getBearerTokenProvider (following SimpleAzureOpenAITest.js pattern)
   - [x] 4.4 Create Azure OpenAI client service with proper endpoint and token provider configuration (using AzureOpenAI from "openai" package v4.x)
-  - [ ] 4.5 Implement chat completion service with message formatting and response handling (prioritize tool_calls support - handle both message.content and message.tool_calls responses)
-  - [ ] 4.6 Implement MCP or custom tool interface with proper metadata structure for chat completion tools parameter and tool_choice configuration
-  - [ ] 4.7 Add connection testing functionality to validate Azure AI Foundry connectivity (extend SimpleAzureOpenAITest.js approach)
-  - [ ] 4.8 Implement streaming response handling for real-time chat experience using Azure OpenAI streaming (ensure tool_calls work with streaming)
-  - [ ] 4.9 Create IPC handlers for secure Azure AI communication from renderer to main process (include tool execution security)
-  - [ ] 4.10 Write comprehensive unit tests for Azure AI Foundry service integration (include tool calling scenarios)
+  - [x] 4.5 Implement chat completion service with message formatting and response handling (prioritize tool_calls support - handle both message.content and message.tool_calls responses)
+  - [ ] 4.6 Integrate useChat to React app
+  - [ ] 4.7 Implement streaming response handling for real-time chat experience using Azure OpenAI streaming (ensure tool_calls work with streaming)
 
 - [ ] 5.0 Model Context Protocol (MCP) Client Implementation
   - [ ] 5.1 Design MCP client architecture for external tool integration
